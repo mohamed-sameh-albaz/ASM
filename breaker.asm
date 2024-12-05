@@ -1,16 +1,19 @@
 .model SMALL
 .data
-      a       db 2,?,2 dup('$')
-      b       db 2,?,2 dup('$')
-      c       db 9
-      lenght  dw 50
-      Bidth   dw 10
-      yorigin dw 180
-      x       dw 120
-      y       dw 180
-      breaker db 5
-      endx    dw 170
-      endy    dw 190
+      a                db 2,?,2 dup('$')
+      b                db 2,?,2 dup('$')
+      c                db 9
+      lenght           dw 50
+      Bidth            dw 10
+      yorigin          dw 190
+      x                dw 120
+      y                dw 190
+      breaker          db 5
+      endx             dw 170
+      endy             dw 195
+      buttonpressed    db ?
+      breakersmothness dw 20
+      negativebs       dw -20
 .CODE
 
 MAIN PROC
@@ -20,19 +23,27 @@ MAIN PROC
          
                  mov ch,50
                  mov cl,10
-      loopmain:  
+
+
                  MOV BH,1
                  mov ah,0
                  mov al,13h
                  int 10h
-          
+      loopmain:  
+                 mov ax, 0A000h               ; VGA memory segment
+                 mov es, ax                   ; Point ES to VGA memory
+                 mov di, 190*320              ; Offset for the last quarter (row 150)
+                 mov al, 4Fh                  ; Desired color (e.g., purple in palette 13h)
+                 mov cx, 1600                 ; Number of pixels to repaint (50 rows * 320 pixels)
+                 rep stosb
+              
        
       loop1:     
          
-                 mov cx,x            ;Column
-                 mov dx,y            ;Row
-                 mov al,5            ;Pixel color
-                 mov ah,0ch          ;Draw Pixel Command
+                 mov cx,x                     ;Column
+                 mov dx,y                     ;Row
+                 mov al,5                     ;Pixel color
+                 mov ah,0ch                   ;Draw Pixel Command
       back:      int 10h
                  inc cx
            
@@ -51,21 +62,25 @@ MAIN PROC
 
 
       loop2:     
-                 mov dx,20
-                 mov ah,0
+                 mov dx,breakersmothness
+                 mov ah,1                     ;  make it int 16/0
                  int 16h
+                 mov buttonpressed,ah
+
+                 mov ah,0                     ;  make it int 16/0
+                 int 16h
+                 
                  cmp ah,4Dh
                  jz  movr
                  cmp ah,4Bh
-                 jnz loop2
-                 mov dx,-20
+      ;jnz loop2
+                 mov dx,negativebs
+
       movr:      
-             
-           
                  mov ax ,endx
                  add ax,dx
                  mov endx,ax
-                 cmp ax,319
+                 cmp ax,320
                  ja  rightbound
                  cmp ax,lenght
                  ja  inbound
@@ -75,9 +90,9 @@ MAIN PROC
                  jmp cont
       rightbound:
                  mov ax,lenght
-                 mov bx,319
+                 mov bx,320
                  sub bx,ax
-                 mov endx,319
+                 mov endx,320
 
       inbound:   
                  mov ax,endx
