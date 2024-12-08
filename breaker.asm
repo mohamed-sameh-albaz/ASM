@@ -12,8 +12,24 @@
       endx             dw 170
       endy             dw 195
       buttonpressed    db ?
-      breakersmothness dw 20
-      negativebs       dw -20
+      breakersmothness dw 5
+      negativebs       dw -5
+      ;========================================
+      startx dw 0
+      starty dw 0
+      mywidth dw 20
+      height dw 7
+      space dw 3
+      rows db 7
+      cols db 14
+      color db 14;11
+      end_x dw 0
+      end_y dw 0
+      starts_x dw 0, 23,46, 69, 92,115, 138, 161,184, 207, 230,253 , 276, 299
+      starts_y dw 0, 10, 20, 30, 40, 50, 60,70
+      rl db 1
+      cc db 23
+
 .CODE
 
 MAIN PROC
@@ -29,15 +45,37 @@ MAIN PROC
                  mov ah,0
                  mov al,13h
                  int 10h
+;======================================
+            call draw_grid_loop
+;======================================
+
       loopmain:  
-                 mov ax, 0A000h               ; VGA memory segment
-                 mov es, ax                   ; Point ES to VGA memory
-                 mov di, 190*320              ; Offset for the last quarter (row 150)
-                 mov al, 4Fh                  ; Desired color (e.g., purple in palette 13h)
-                 mov cx, 1600                 ; Number of pixels to repaint (50 rows * 320 pixels)
-                 rep stosb
-              
-       
+            ;      mov ax, 0A000h               ; VGA memory segment
+            ;      mov es, ax                   ; Point ES to VGA memory
+            ;      mov di, 190*320              ; Offset for the last quarter (row 150)
+            ;      mov al, 0fh                  ; Desired color (e.g., purple in palette 13h)
+            ;      mov cx, 1600                 ; Number of pixels to repaint (50 rows * 320 pixels)
+            ;      rep stosb
+           ;=================================================================
+            cmp rl,1
+            jnz l
+            mov bx,x
+            sub bx,breakersmothness
+            mov startx,bx
+            mov bx,y
+            mov starty,bx
+            jmp clr
+            
+            l:
+            mov bx,x
+            add bx,lenght
+            mov startx,bx
+            mov bx,y
+            mov starty,bx
+            clr:
+            
+            call clrbreaker_shift
+         ;================================================================
       loop1:     
          
                  mov cx,x                     ;Column
@@ -69,13 +107,13 @@ MAIN PROC
 
                  mov ah,0                     ;  make it int 16/0
                  int 16h
-                 
+                 mov rl,1  ;;;;;;;;;;
                  cmp ah,4Dh
                  jz  movr
                  cmp ah,4Bh
       ;jnz loop2
                  mov dx,negativebs
-
+                 mov rl,0   ;;;;;;;;;;
       movr:      
                  mov ax ,endx
                  add ax,dx
@@ -93,15 +131,143 @@ MAIN PROC
                  mov bx,320
                  sub bx,ax
                  mov endx,320
-
       inbound:   
                  mov ax,endx
                  mov bx,lenght
                  sub ax,bx
                  mov x,ax
                
+               
       cont:      jmp loopmain
 
 
 MAIN ENDP
+
+
+;==================================================================
+draw_grid_loop proc
+
+mov cx,0
+mov dx,0
+lea si,starts_x
+lea di,starts_y
+mov cl ,rows
+grid_loop:
+            ;change color
+            mov bl,color
+            sub cc,bl
+            mov bl,cc
+            mov color,bl
+            mov cc,23
+            
+            mov dl,cols
+            push si
+line_loop:
+            mov bx,[si]
+            mov startx,bx
+            mov bx,[di]
+            mov starty,bx
+            push cx
+            push dx
+            call myblock
+            pop dx
+            pop cx
+            inc si
+            inc si
+            dec dl
+            jnz line_loop
+            inc di
+            inc di
+            pop si
+            dec cl
+            jnz grid_loop
+            ret
+draw_grid_loop endp
+
+
+
+
+;==============================================================================
+
+myblock proc
+
+            ;=====change color====
+            mov bl,color
+            sub cc,bl
+            mov bl,cc
+            mov color,bl
+            mov cc,23
+          
+          
+            mov dx,starty           ;set start height
+            mov cx,startx           ;set start width
+       
+        ;set end width
+           
+            mov bx,startx  
+            add bx,mywidth 
+            mov end_x,bx
+
+        ; set end height
+           
+            mov bx,starty
+            add bx,height 
+            mov end_y,bx
+block:
+            inc dx
+            mov cx,startx
+            mov al,color
+            mov ah,0ch
+line:
+            int 10h
+            inc cx
+            cmp cx,end_x
+            jnz line
+            cmp dx,end_y
+            jnz block
+            ret
+myblock endp
+
+
+;==================================================================
+clrbreaker_shift proc
+
+          
+            mov color,0
+          
+          
+            mov dx,starty           ;set start height
+            dec dx
+            mov cx,startx           ;set start width
+      
+        ;set end width
+           
+            mov bx,startx  
+            add bx,breakersmothness
+            mov end_x,bx
+
+        ; set end height
+           
+            mov bx,starty
+            add bx,Bidth
+            mov end_y,bx
+
+clr_block:
+            inc dx
+            mov cx,startx
+            dec cx
+            mov al,color
+            mov ah,0ch
+clr_line:
+            int 10h
+            inc cx
+            cmp cx,end_x
+            jnz clr_line
+            cmp dx,end_y
+            jnz clr_block
+            ret
+clrbreaker_shift endp
+
+;===================================================================
+
 END MAIN
