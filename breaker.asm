@@ -135,6 +135,58 @@ MAIN PROC
 MAIN ENDP
 
 
+draw_breakerR proc
+    loop1R:          
+                     mov  bx,endx
+                     sub  bx,breakersmothness
+                     mov  cx,bx                  ;Column
+                     mov  dx,y                   ;Row
+                     mov  al,5                   ;Pixel color
+                     mov  ah,0ch                 ;Draw Pixel Command
+    backR:           int  10h
+                     inc  cx
+           
+                     cmp  cx,endx
+                     jnz  backR
+                     inc  dx
+                     mov  y,dx
+            
+                     cmp  dx,endy
+                     jnz  loop1R
+
+                     mov  ax,yorigin
+                     mov  y,ax
+                     ret
+draw_breakerR endp
+
+
+draw_breakerL proc
+                     mov  bx,x
+                     add  bx,breakersmothness
+    loop1L:          
+                     
+                     mov  cx,x                   ;Column
+                     mov  dx,y                   ;Row
+                     mov  al,5                   ;Pixel color
+                     mov  ah,0ch                 ;Draw Pixel Command
+    backL:           int  10h
+                     inc  cx
+           
+                     cmp  cx,bx
+                     jnz  backL
+                     inc  dx
+                     mov  y,dx
+            
+                     cmp  dx,endy
+                     jnz  loop1L
+
+                     mov  ax,yorigin
+                     mov  y,ax
+                     ret
+draw_breakerL endp
+
+
+
     ;==================================================================
 draw_grid_loop proc 
 
@@ -195,56 +247,11 @@ draw_breaker proc
 
                      mov  ax,yorigin
                      mov  y,ax
+                     ret
 draw_breaker endp
 
 
-draw_breakerR proc
-    loop1R:          
-                     mov  bx,endx
-                     sub  bx,breakersmothness
-                     mov  cx,bx                  ;Column
-                     mov  dx,y                   ;Row
-                     mov  al,5                   ;Pixel color
-                     mov  ah,0ch                 ;Draw Pixel Command
-    backR:           int  10h
-                     inc  cx
-           
-                     cmp  cx,endx
-                     jnz  backR
-                     inc  dx
-                     mov  y,dx
-            
-                     cmp  dx,endy
-                     jnz  loop1R
 
-                     mov  ax,yorigin
-                     mov  y,ax
-draw_breakerR endp
-
-
-draw_breakerL proc
-                     mov  bx,x
-                     add  bx,breakersmothness
-    loop1L:          
-                     
-                     mov  cx,x                   ;Column
-                     mov  dx,y                   ;Row
-                     mov  al,5                   ;Pixel color
-                     mov  ah,0ch                 ;Draw Pixel Command
-    backL:           int  10h
-                     inc  cx
-           
-                     cmp  cx,bx
-                     jnz  backL
-                     inc  dx
-                     mov  y,dx
-            
-                     cmp  dx,endy
-                     jnz  loop1L
-
-                     mov  ax,yorigin
-                     mov  y,ax
-draw_breakerL endp
 
     ;==============================================================================
 
@@ -327,5 +334,9 @@ clrbreaker_shift proc
 clrbreaker_shift endp
 
     ;===================================================================
+
+
+
+
 
 END MAIN
