@@ -15,6 +15,8 @@
     buttonpressed    db ?
     breakersmothness dw 5
     negativebs       dw -5
+    firstquarter     dw ?
+    thirdquarter     dw ?
     ;========================================
     startx           dw ?
     starty           dw ?
@@ -144,7 +146,19 @@ MovBall PROC
                      JLE  NotCollision
 
     ;Collison exists
-    call draw_breaker
+                     call draw_breaker
+                     mov  ax,CBreaker
+                     mov  bx,CBall
+    
+                     cmp  bx,ax
+                     ja   right
+                     mov 
+                     sub  ax,
+                     mov  ax,ShiftX               ;increase shift angle
+                     add  ax,2
+                     MOV  ShiftX , AX
+
+                     add  ax,breakersmothness
                      
     ; Yc=Yc-(Yc+S-y))
     ; Yc = y-S
@@ -173,7 +187,7 @@ MovBall PROC
 
                      CMP  Yc , 0
 
-                     JL NegY
+                     JL   NegY
 
 
 
@@ -243,8 +257,8 @@ MovBall PROC
 
 
     ;JMP  CheckTime
-                    ;  MOV  AX , DefaultShiftX
-                    ;  MOV  ShiftX , AX
+    ;  MOV  AX , DefaultShiftX
+    ;  MOV  ShiftX , AX
                      RET
 MovBall ENDP
 
@@ -358,7 +372,7 @@ MAIN PROC
                      int  10h
 
 
-                    ;  CALL RestartBall
+    ;  CALL RestartBall
         
 
 
