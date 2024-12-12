@@ -15,6 +15,9 @@
     buttonpressed    db ?
     breakersmothness dw 5
     negativebs       dw -5
+    firstQ           dw ?
+    thirdQ           dw ?
+   
     ;========================================
     startx           dw ?
     starty           dw ?
@@ -35,8 +38,9 @@
     Xc               DW 160d                                                           ; X of Top Left Corner of the Ball
     Yc               DW 100d                                                           ; Y of Top Left Corner of the Ball
     S                DW 4d                                                             ; Side Length of Ball
-    CBall            DW 0d                                                             ; X OF Center of the Ball (initial zero will be calculated)
-
+    CBall            DW 0d
+    ; X OF Center of the Ball (initial zero will be calculated)
+    Speed            dw 1bffh
 
     BackGroundColor  DB 00h
     Flag             DB 0                                                              ;Flag to clear the ball in its previous location
@@ -50,7 +54,15 @@
     DefaultShiftX    DW 5d
 
     PrevTime         DB 0
-
+    ChangeShiftlow   dw 1
+    ChangeShiftHigh  dw 3
+    ;=================================================================== menu
+    l                dw 30
+    lorg             dw 50
+    w                dw 9
+    worg             dw 20
+    letters db      "play$"
+    
 .CODE
 DrawPixel PROC
                      mov  cx,AX                   ;Column
@@ -128,37 +140,100 @@ MovBall PROC
                      MOV  AX , x
                      ADD  AX , lenght
                      CMP  Xc , AX
-                     JGE  NotCollision
+                     Jb   cont55
+                     jmp  NotCollision
+    cont55:          
+                     
                      MOV  AX ,Xc
                      ADD  AX , S
                      CMP  AX , x
-                     JLE  NotCollision
+                     JG   ch1
+                     jmp  NotCollision
+    ch1:             
 
                      MOV  AX , y
                      ADD  AX , Bidth
                      CMP  Yc ,AX
-                     JGE  NotCollision
+                     Jb   ch2
+                     jmp  NotCollision
+    ch2:             
                      MOV  AX ,Yc
                      ADD  AX , S
                      CMP  AX , y
-                     JLE  NotCollision
+                     JG   ch3
+                     jmp  NotCollision
+    ch3:             
 
     ;Collison exists
-    call draw_breaker
+                     
+                     call CenterBreaker
+                     mov  ax, ShiftX
+                     cmp  ax,0
+                     ja   firstquarter
+                     NEG  ChangeShiftlow
+                     NEG  ChangeShiftHigh
+    firstquarter:                                 ;here i increment by 3 as top decrease the slope of the ball
+                     mov  ax,Xc
+                     cmp  ax,firstQ
+                     ja   secQ
+                     MOV  AX,ShiftX
+                      
+                     add  ax,ChangeShiftHigh
+                     add  Speed,200h
+                     mov  ShiftX,ax
+                     call draw_breaker
+                     JMP  neutralizeshift
+    secQ:                                         ;its close to the center so i inc by 1 only
+                     mov  ax,Xc
+                     cmp  ax,CBreaker
+                     ja   thirdQuarter
+                     mov  ax,ShiftX
+                     add  ax,ChangeShiftlow
+                     add  Speed,100h
+                     mov  ShiftX,ax
+                     call draw_breaker
+                     JMP  neutralizeshift
+    thirdQuarter:                                 ;third same as sec
+                     mov  ax,Xc
+                     cmp  ax, thirdQ
+                     ja   lastq
+                     mov  ax,ShiftX
+                     add  ax,ChangeShiftlow
+                     add  Speed,200h
+                     mov  ShiftX,ax
+                     call draw_breaker
+                     JMP  neutralizeshift
+    lastq:                                        ;last part of the breaker same as the first
+                     MOV  AX,ShiftX
+                     add  ax,ChangeShiftHigh
+                     add  Speed,100h
+                     mov  ShiftX,ax
+                     call draw_breaker
+
+    neutralizeshift: 
+
+                     cmp  ShiftX,0
+                     ja   NegY
+                     NEG  ChangeShiftlow
+                     NEG  ChangeShiftHigh
+
+
+                     JMP  NegY
                      
     ; Yc=Yc-(Yc+S-y))
     ; Yc = y-S
-                     MOV  AX , y
-                     SUB  AX , S
+    ;  MOV  AX , y
+    ;  SUB  AX , S
                      
                      
-                     MOV  Yc , AX
-                     JMP  NegY
-
-
+    ;  MOV  Yc , AX
+                
+                    
 
 
     NotCollision:    
+
+  
 
 
 
@@ -168,12 +243,12 @@ MovBall PROC
                      SUB  AX , S
 
                      CMP  Yc , AX
-    ; JG ResetPosition
-                     JG   NegY
+                     JG   ResetPosition
+    ;  JG   NegY
 
                      CMP  Yc , 0
 
-                     JL NegY
+                     JL   NegY
 
 
 
@@ -215,6 +290,8 @@ MovBall PROC
                      JMP  ToDraw
 
     NegY:            
+
+
                      NEG  ShiftY
                      MOV  AX , ShiftY
                      ADD  Yc , AX
@@ -243,8 +320,8 @@ MovBall PROC
 
 
     ;JMP  CheckTime
-                    ;  MOV  AX , DefaultShiftX
-                    ;  MOV  ShiftX , AX
+    ;  MOV  AX , DefaultShiftX
+    ;  MOV  ShiftX , AX
                      RET
 MovBall ENDP
 
@@ -324,14 +401,44 @@ CenterBreaker PROC
                      MOV  BX , x
                      ADD  BX , AX
                      MOV  CBreaker , BX
+                     mov  ax, lenght
+                     mov  bx,2
+                     shr  ax,2
+                     
+                     mov  bx ,x
+                     add  bx,AX
+                     mov  firstQ,bx
+                     add  bx,ax
+                     add  bx,ax
+                     mov  thirdQ,bx
+
                      RET
 CenterBreaker ENDP
 
+draw_line_v proc
+                     mov  al,5                    ;Pixel color
+                     mov  ah,0ch
+                     
+    l1:              
+                     int  10h
+                     inc  dx
+                     cmp  dx,200
+                     jnz  l1
+                     ret
+draw_line_v endp
 
-
-
-
-
+draw_line_H proc
+                     mov  al,5                    ;Pixel color
+                     mov  ah,0ch
+                     mov  bx,dx
+                     add  bx,l
+    l12:             
+                     int  10h
+                     inc  cx
+                     cmp  cx,320
+                     jnz  l12
+                     ret
+draw_line_H endp
 
 
 
@@ -350,6 +457,47 @@ MAIN PROC
                      mov  al,13h
                      int  10h
 
+    Menu:            
+    ; play word
+    play:            
+
+    ;p
+                     mov  cx,0
+                     mov  dx,0
+    l11:             
+                     call draw_line_v
+                     add  cx, 300
+                     mov  dx,0
+                     call draw_line_v
+                     sub  cx ,300
+
+                     inc  cx
+                     mov  dx,0
+                     cmp  cx,20
+                     jnz  l11
+                     
+                     mov  cx,0
+                     mov  dx,0
+
+                     mov  ax,l
+                     sub  ax,15
+                     mov  l,AX
+
+    l22:             
+                     call draw_line_H
+                     add  dx,180
+                     mov  cx,0
+                     call draw_line_H
+                     sub  dx,180
+                     inc  dx
+                     mov  cx,0
+                     cmp  dx,20
+                     jnz  l22
+
+                     mov  l,30
+
+                     jmp  menu
+
     ;===========================
     ; Set BackGround Color
                      MOV  AH , 0Bh
@@ -358,11 +506,8 @@ MAIN PROC
                      int  10h
 
 
-                    ;  CALL RestartBall
-        
-
-
-
+    ;  CALL RestartBall
+  
 
 
     ;======================================
@@ -373,15 +518,11 @@ MAIN PROC
 
                      mov  cx,0
     game:            
-                     cmp  cx,1900h
+                     cmp  cx,1bffh
                      jnz  loop2
                      CALL MovBall
                      mov  cx,0
-                      
-
-
-
-                        
+                  
     loop2:           
                      mov  dx,breakersmothness
                      mov  ah,1
@@ -658,11 +799,6 @@ clrbreaker_shift proc
                      jnz  clr_block
                      ret
 clrbreaker_shift endp
-
     ;===================================================================
-
-
-
-
 
 END MAIN
