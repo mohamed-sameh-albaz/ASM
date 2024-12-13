@@ -1,4 +1,4 @@
-.model SMALL
+.model small
 .data
     a                db 2,?,2 dup('$')
     b                db 2,?,2 dup('$')
@@ -61,7 +61,7 @@
     lorg             dw 50
     w                dw 9
     worg             dw 20
-    letters db      "play$"
+    letters          db "play$"
     
 .CODE
 DrawPixel PROC
@@ -327,43 +327,663 @@ MovBall ENDP
 
 Draw_p PROC
 
-                    mov  cx,150
+                     mov  cx,125
                      mov  dx,50
-    d_p1:             
-                    mov  al,5                    ;Pixel color
+    d_p1:            
+                     mov  al,5                    ;Pixel color
                      mov  ah,0ch
                      
-    d_p2:              
+    d_p2:                                         ;|
+       
                      int  10h
                      inc  dx
                      cmp  dx,70
                      jnz  d_p2
                      inc  cx
                      mov  dx,50
-                     cmp  cx,155
+                     cmp  cx,130
                      jnz  d_p1
                      
-                     mov  cx,150
+                     mov  cx,130
                      mov  dx,50
 
+    ;
+    d_p3:                                         ;[]
+    ;call draw_line_H
 
-    l221:             
-                     ;call draw_line_H
-                     add  dx,180
-                     mov  cx,0
-                    ; call draw_line_H
-                     sub  dx,180
+                     mov  al,5                    ;Pixel color
+                     mov  ah,0ch
+                  
+    d_p4:            
+                     int  10h
+                     inc  cx
+                     cmp  cx,140
+                     jnz  d_p4
                      inc  dx
-                     mov  cx,0
-                     cmp  dx,20
-                     jnz  l221
+                     mov  cx,130
+                     cmp  dx,60
+                     jnz  d_p3
 
                      mov  l,30
 
-                   
+                     mov  cx,127
+                     mov  dx ,52
+
+    d_p5:                                         ;[]
+    ;call draw_line_H
+
+                     mov  al,0                  ;Pixel color
+                     mov  ah,0ch
+                  
+    d_p6:            
+                     int  10h
+                     inc  cx
+                     cmp  cx,138
+                     jnz  d_p6
+                     inc  dx
+                     mov  cx,127
+                     cmp  dx,58
+                     jnz  d_p5
+
+    ;ret
 Draw_p endp
 
+Draw_l proc
+                     mov  cx,145
+                     mov  dx,50
+    d_l1:            
+                     mov  al,5                    ;Pixel color
+                     mov  ah,0ch
+                     
+    d_l2:                                         ;|
+       
+                     int  10h
+                     inc  dx
+                     cmp  dx,70
+                     jnz  d_l2
+                     inc  cx
+                     mov  dx,50
+                     cmp  cx,150
+                     jnz  d_l1
+                     
+                     mov  cx,145
+                     mov  dx,66
+    d_l3:            
+                     mov  al,5                    ;Pixel color
+                     mov  ah,0ch
+                     
+    d_l4:                                         ;_
+       
+                     int  10h
+                     inc  cx
+                     cmp  cx,157
+                     jnz  d_l4
+                     inc  dx
+                     mov  cx,145
+                     cmp  dx,70
+                     jnz  d_l3
+    ;ret
+Draw_l endp
+Draw_a proc
+                      mov  cx,160d
+                     mov  dx,54d
 
+    d_a1:                                        ;[]
+    ;call draw_line_H
+
+                     mov  al,5                    ;Pixel color
+                     mov  ah,0ch
+                  
+    d_a2:           
+                     int  10h
+                     inc  cx
+                     cmp  cx,175
+                     jnz  d_a2
+                     inc  dx
+                     mov  cx,160
+                     cmp  dx,70
+                     jnz  d_a1
+
+                     mov  cx,164
+                     mov  dx,63
+
+    d_a3:                                        ;[]
+    ;call draw_line_H
+
+                     mov  al,0                  ;Pixel color
+                     mov  ah,0ch
+                  
+    d_a4:           
+                     int  10h
+                     inc  cx
+                     cmp  cx,172
+                     jnz  d_a3
+                     inc  dx
+                     mov  cx,164
+                     cmp  dx,67
+                     jnz  d_a4
+
+                     mov  cx,160
+                     mov  dx,58
+
+    d_a5:                                        ;[]
+    ;call draw_line_H
+
+                     mov  al,00h                  ;Pixel color
+                     mov  ah,0ch
+                  
+    d_a6:           
+                     int  10h
+                     inc  cx
+                     cmp  cx,172
+                     jnz  d_a5
+                     inc  dx
+                     mov  cx,160
+                     cmp  dx,60
+                     jnz  d_a6
+
+    ;ret
+Draw_a endp
+
+Draw_y proc
+                     mov  cx,180
+                     mov  dx,50
+    d_y1:                                         ;[]
+    ;call draw_line_H
+
+                     mov  al,5                    ;Pixel color
+                     mov  ah,0ch
+                  
+    d_y2:            
+                     int  10h
+                     inc  cx
+                     cmp  cx,193
+                     jnz  d_y2
+                     inc  dx
+                     mov  cx,180
+                     cmp  dx,60
+                     jnz  d_y1
+
+                     mov  cx,182
+                     mov  dx,50
+    d_y3:                                         ;[]
+    ;call draw_line_H
+
+                     mov  al,0                  ;Pixel color
+                     mov  ah,0ch
+                  
+    d_y4:            
+                     int  10h
+                     inc  cx
+                     cmp  cx,191
+                     jnz  d_y3
+                     inc  dx
+                     mov  cx,182
+                     cmp  dx,57
+                     jnz  d_y4
+
+                     mov  cx,191
+                     mov  dx,50
+    d_y5:            
+                     mov  al,5                    ;Pixel color
+                     mov  ah,0ch
+                     
+    d_y6:                                         ;|
+       
+                     int  10h
+                     inc  dx
+                     cmp  dx,70
+                     jnz  d_y6
+                     inc  cx
+                     mov  dx,50
+                     cmp  cx,193
+                     jnz  d_y5
+
+                     mov  cx,184
+                     mov  dx,67
+    d_y7:            
+                     mov  al,5                    ;Pixel color
+                     mov  ah,0ch
+                     
+    d_y8:                                         ;_
+       
+                     int  10h
+                     inc  cx
+                     cmp  cx,193
+                     jnz  d_y8
+                     inc  dx
+                     mov  cx,184
+                     cmp  dx,70
+                     jnz  d_y7
+
+    ;ret
+Draw_y endp
+
+Draw_s proc
+                     mov  cx,110
+                     mov  dx,80
+
+    d_s1:                                         ;[]
+    ;call draw_line_H
+
+                     mov  al,5                    ;Pixel color
+                     mov  ah,0ch
+                  
+    d_s2:            
+                     int  10h
+                     inc  cx
+                     cmp  cx,125
+                     jnz  d_s2
+                     inc  dx
+                     mov  cx,110
+                     cmp  dx,100
+                     jnz  d_s1
+
+                     mov  cx,114
+                     mov  dx,82
+    d_s3:                                         ;[]
+    ;call draw_line_H
+
+                     mov  al,0                  ;Pixel color
+                     mov  ah,0ch
+                  
+    d_s4:            
+                     int  10h
+                     inc  cx
+                     cmp  cx,125
+                     jnz  d_s4
+                     inc  dx
+                     mov  cx,114
+                     cmp  dx,87
+                     jnz  d_s3
+
+
+                     mov  cx,110
+                     mov  dx,92
+    d_s5:                                         ;[]
+    ;call draw_line_H
+
+                     mov  al,0                  ;Pixel color
+                     mov  ah,0ch
+                  
+    d_s6:            
+                     int  10h
+                     inc  cx
+                     cmp  cx,121
+                     jnz  d_s6
+                     inc  dx
+                     mov  cx,110
+                     cmp  dx,97
+                     jnz  d_s5
+
+    ;ret
+Draw_s endp
+Draw_c proc
+                     mov  cx,130
+                     mov  dx,84
+    d_c1:                                         ;[]
+    ;call draw_line_H
+
+                     mov  al,5                    ;Pixel color
+                     mov  ah,0ch
+                  
+    d_c2:            
+                     int  10h
+                     inc  cx
+                     cmp  cx,145
+                     jnz  d_c2
+                     inc  dx
+                     mov  cx,130
+                     cmp  dx,100
+                     jnz  d_c1
+                     mov  cx,133
+                     mov  dx,87
+
+    d_c3:                                         ;[]
+    ;call draw_line_H
+
+                     mov  al,0                  ;Pixel color
+                     mov  ah,0ch
+                  
+    d_c4:            
+                     int  10h
+                     inc  cx
+                     cmp  cx,145
+                     jnz  d_c4
+                     inc  dx
+                     mov  cx,133
+                     cmp  dx,97
+                     jnz  d_c3
+    ;ret
+Draw_c endp
+
+Draw_o proc
+                     mov  cx,150
+                     mov  dx,84
+    d_o1:                                         ;[]
+    ;call draw_line_H
+
+                     mov  al,5                    ;Pixel color
+                     mov  ah,0ch
+                  
+    d_o2:            
+                     int  10h
+                     inc  cx
+                     cmp  cx,165
+                     jnz  d_o2
+                     inc  dx
+                     mov  cx,150
+                     cmp  dx,100
+                     jnz  d_o1
+                     mov  cx,153
+                     mov  dx,87
+
+    d_o3:                                         ;[]
+    ;call draw_line_H
+
+                     mov  al,0                  ;Pixel color
+                     mov  ah,0ch
+                  
+    d_o4:            
+                     int  10h
+                     inc  cx
+                     cmp  cx,162
+                     jnz  d_o4
+                     inc  dx
+                     mov  cx,153
+                     cmp  dx,97
+                     jnz  d_o3
+    ;ret
+Draw_o endp
+
+
+Draw_r proc
+                     mov  cx,170d
+                     mov  dx,84d
+    d_r1:            
+                     mov  al,5                    ;Pixel color
+                     mov  ah,0ch
+                     
+    d_r2:                                         ;|
+       
+                     int  10h
+                     inc  dx
+                     cmp  dx,100
+                     jnz  d_r2
+                     inc  cx
+                     mov  dx,84
+                     cmp  cx,174
+                     jnz  d_r1
+                     mov  cx,170d
+                     mov  dx,88d
+
+    d_r3:            
+                     mov  al,5                    ;Pixel color
+                     mov  ah,0ch
+                     
+    d_r4:                                         ;_
+       
+                     int  10h
+                     inc  cx
+                     cmp  cx,181
+                     jnz  d_r4
+                     inc  dx
+                     mov  cx,170
+                     cmp  dx,92
+                     jnz  d_r3
+    ;ret
+Draw_r endp
+Draw_e proc
+                     mov  cx,187
+                     mov  dx,84
+    d_e1:                                         ;[]
+    ;call draw_line_H
+
+                     mov  al,5                    ;Pixel color
+                     mov  ah,0ch
+                  
+    d_e2:            
+                     int  10h
+                     inc  cx
+                     cmp  cx,203
+                     jnz  d_e2
+                     inc  dx
+                     mov  cx,187
+                     cmp  dx,100
+                     jnz  d_e1
+                     mov  cx,190d
+                     mov  dx,87
+
+    d_e3:                                         ;[]
+    ;call draw_line_H
+
+                     mov  al,0                  ;Pixel color
+                     mov  ah,0ch
+                  
+    d_e4:            
+                     int  10h
+                     inc  cx
+                     cmp  cx,199
+                     jnz  d_e4
+                     inc  dx
+                     mov  cx,190
+                     cmp  dx,92
+                     jnz  d_e3
+
+                     mov  cx,190d
+                     mov  dx,94d
+
+                     
+    d_e5:                                         ;[]
+    ;call draw_line_H
+
+                     mov  al,0                  ;Pixel color
+                     mov  ah,0ch
+                  
+    d_e6:            
+                     int  10h
+                     inc  cx
+                     cmp  cx,203
+                     jnz  d_e6
+                     inc  dx
+                     mov  cx,190
+                     cmp  dx,98
+                     jnz  d_e5
+    ;ret
+Draw_e endp
+Draw_c2 proc
+                     mov  cx,130d
+                     mov  dx,110d
+                   
+    d_c21:                                        ;[]
+    ;call draw_line_H
+
+                     mov  al,5                    ;Pixel color
+                     mov  ah,0ch
+                  
+    d_c22:           
+                     int  10h
+                     inc  cx
+                     cmp  cx,150
+                     jnz  d_c22
+                     inc  dx
+                     mov  cx,130
+                     cmp  dx,130
+                     jnz  d_c21
+
+                     mov  cx,133
+                     mov  dx,113
+
+    d_c23:                                        ;[]
+    ;call draw_line_H
+
+                     mov  al,0                  ;Pixel color
+                     mov  ah,0ch
+                  
+    d_c24:           
+                     int  10h
+                     inc  cx
+                     cmp  cx,150
+                     jnz  d_c24
+                     inc  dx
+                     mov  cx,133
+                     cmp  dx,127
+                     jnz  d_c23
+    ;ret
+Draw_c2 endp
+
+Draw_h proc
+                     mov  cx,155d
+                     mov  dx,110d
+
+
+    d_h1:            
+                     mov  al, 5                   ;Pixel color
+                     mov  ah,0ch
+                     
+    d_h2:                                         ;|
+       
+                     int  10h
+                     inc  dx
+                     cmp  dx,130
+                     jnz  d_h2
+                     inc  cx
+                     mov  dx,110
+                     cmp  cx,160
+                     jnz  d_h1
+                    
+                     mov  cx,155d
+                     mov  dx,118
+    d_h3:            
+                     mov  al,5                    ;Pixel color
+                     mov  ah,0ch
+                     
+    d_h4:                                         ;_
+       
+                     int  10h
+                     inc  cx
+                     cmp  cx,170
+                     jnz  d_h4
+                     inc  dx
+                     mov  cx,155
+                     cmp  dx,123
+                     jnz  d_h3
+                     mov  cx,165d
+                     mov  dx,118d
+    d_h5:            
+                     mov  al, 5                   ;Pixel color
+                     mov  ah,0ch
+                     
+    d_h6:                                         ;|
+       
+                     int  10h
+                     inc  dx
+                     cmp  dx,130
+                     jnz  d_h6
+                     inc  cx
+                     mov  dx,118
+                     cmp  cx,170
+                     jnz  d_h5
+
+    ;ret
+Draw_h endp
+Draw_a2 proc
+                     mov  cx,175d
+                     mov  dx,115d
+
+    d_a21:                                        ;[]
+    ;call draw_line_H
+
+                     mov  al,5                    ;Pixel color
+                     mov  ah,0ch
+                  
+    d_a22:           
+                     int  10h
+                     inc  cx
+                     cmp  cx,190
+                     jnz  d_a22
+                     inc  dx
+                     mov  cx,175
+                     cmp  dx,130
+                     jnz  d_a21
+
+                     mov  cx,179
+                     mov  dx,123
+
+    d_a23:                                        ;[]
+    ;call draw_line_H
+
+                     mov  al,0                  ;Pixel color
+                     mov  ah,0ch
+                  
+    d_a24:           
+                     int  10h
+                     inc  cx
+                     cmp  cx,187
+                     jnz  d_a23
+                     inc  dx
+                     mov  cx,179
+                     cmp  dx,127
+                     jnz  d_a24
+
+                     mov  cx,175
+                     mov  dx,117
+
+    d_a25:                                        ;[]
+    ;call draw_line_H
+
+                     mov  al,0                  ;Pixel color
+                     mov  ah,0ch
+                  
+    d_a26:           
+                     int  10h
+                     inc  cx
+                     cmp  cx,187
+                     jnz  d_a25
+                     inc  dx
+                     mov  cx,175
+                     cmp  dx,120
+                     jnz  d_a26
+
+    ;ret
+Draw_a2 endp
+Draw_t proc
+                     mov  cx,200d
+                     mov  dx,110d
+
+    d_t1:            
+                     mov  al, 5                   ;Pixel color
+                     mov  ah,0ch
+                     
+    d_t2:                                         ;|
+       
+                     int  10h
+                     inc  dx
+                     cmp  dx,130
+                     jnz  d_t2
+                     inc  cx
+                     mov  dx,110
+                     cmp  cx,204
+                     jnz  d_t1
+
+                     mov  cx,195d
+                     mov  dx,114
+    d_t3:            
+                     mov  al,5                    ;Pixel color
+                     mov  ah,0ch
+                     
+    d_t4:                                         ;_
+       
+                     int  10h
+                     inc  cx
+                     cmp  cx,210
+                     jnz  d_t4
+                     inc  dx
+                     mov  cx,195
+                     cmp  dx,117
+                     jnz  d_t3
+ret
+Draw_t endp
 
 DrawBall PROC
 
@@ -504,9 +1124,9 @@ MAIN PROC
 
 
     ;p
-    call Draw_p
+                     call Draw_p
 
-                     jmp  menu
+                     jmp  end1
 
     ;===========================
     ; Set BackGround Color
@@ -587,7 +1207,7 @@ MAIN PROC
                      inc  cx
                      jmp  game
 
-    
+    end1:            
 
 MAIN ENDP
 
