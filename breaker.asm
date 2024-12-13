@@ -325,6 +325,45 @@ MovBall PROC
                      RET
 MovBall ENDP
 
+Draw_p PROC
+
+                    mov  cx,150
+                     mov  dx,50
+    d_p1:             
+                    mov  al,5                    ;Pixel color
+                     mov  ah,0ch
+                     
+    d_p2:              
+                     int  10h
+                     inc  dx
+                     cmp  dx,70
+                     jnz  d_p2
+                     inc  cx
+                     mov  dx,50
+                     cmp  cx,155
+                     jnz  d_p1
+                     
+                     mov  cx,150
+                     mov  dx,50
+
+
+    l221:             
+                     ;call draw_line_H
+                     add  dx,180
+                     mov  cx,0
+                    ; call draw_line_H
+                     sub  dx,180
+                     inc  dx
+                     mov  cx,0
+                     cmp  dx,20
+                     jnz  l221
+
+                     mov  l,30
+
+                   
+Draw_p endp
+
+
 
 DrawBall PROC
 
@@ -461,40 +500,11 @@ MAIN PROC
     ; play word
     play:            
 
+
+
+
     ;p
-                     mov  cx,0
-                     mov  dx,0
-    l11:             
-                     call draw_line_v
-                     add  cx, 300
-                     mov  dx,0
-                     call draw_line_v
-                     sub  cx ,300
-
-                     inc  cx
-                     mov  dx,0
-                     cmp  cx,20
-                     jnz  l11
-                     
-                     mov  cx,0
-                     mov  dx,0
-
-                     mov  ax,l
-                     sub  ax,15
-                     mov  l,AX
-
-    l22:             
-                     call draw_line_H
-                     add  dx,180
-                     mov  cx,0
-                     call draw_line_H
-                     sub  dx,180
-                     inc  dx
-                     mov  cx,0
-                     cmp  dx,20
-                     jnz  l22
-
-                     mov  l,30
+    call Draw_p
 
                      jmp  menu
 
