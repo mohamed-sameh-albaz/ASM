@@ -1,11 +1,12 @@
 .model small
 .data
+;========================== breaker data
     a                db 2,?,2 dup('$')
     b                db 2,?,2 dup('$')
     c                db 9
-    lenght           dw 50
-    Bidth            dw 10
-    yorigin          dw 190
+    lenght           dw 50 ;------
+    Bidth            dw 10  ; |
+    yorigin          dw 190 ;190
     x                dw 120
     y                dw 190
     breaker          db 5
@@ -18,7 +19,7 @@
     firstQ           dw ?
     thirdQ           dw ?
    
-    ;========================================
+    ;======================================== ;blocks
     startx           dw ?
     starty           dw ?
     mywidth          dw 20
@@ -31,8 +32,8 @@
     end_y            dw 0
     starts_x         dw 0, 23,46, 69, 92,115, 138, 161,184, 207, 230,253 , 276, 299
     starts_y         dw 0, 10, 20, 30, 40, 50, 60,70
-    rl               db 1
-    cc               db 23
+    rl               db 1  ;?
+    cc               db 23  ;?
     ;==========================================
     ;Ball
     Xc               DW 160d                                                           ; X of Top Left Corner of the Ball
@@ -1124,9 +1125,9 @@ MAIN PROC
 
 
     ;p
-                     call Draw_p
+                     ;call Draw_p
 
-                     jmp  end1
+                    ; jmp  end1
 
     ;===========================
     ; Set BackGround Color
@@ -1149,11 +1150,21 @@ MAIN PROC
                      mov  cx,0
     game:            
                      cmp  cx,1bffh
-                     jnz  loop2
+                     jnz  Draw_break2
                      CALL MovBall
                      mov  cx,0
-                  
-    loop2:           
+                     Draw_break2:
+                    call Mov_Breaker
+                     inc  cx
+                     jmp  game
+
+    end1:            
+
+MAIN ENDP
+
+Mov_Breaker proc 
+
+ loop2:           
                      mov  dx,breakersmothness
                      mov  ah,1
                      int  16h
@@ -1204,14 +1215,9 @@ MAIN PROC
                      call draw_breakerR
     cont2:           
 
-                     inc  cx
-                     jmp  game
 
-    end1:            
-
-MAIN ENDP
-
-
+ret
+Mov_Breaker endp
 draw_breakerR proc
 
                      mov  bx,x
