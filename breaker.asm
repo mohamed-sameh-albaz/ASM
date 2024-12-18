@@ -63,6 +63,14 @@
     w                dw 9
     worg             dw 20
     letters          db "play$"
+    State    db 0
+    curX dw 90
+    curY dw 55
+    lenCur dw 5
+    WedCur dw 10
+    endCurx dw ?
+    endCurY dw ?
+    curs_color db 3
     
 .CODE
 DrawPixel PROC
@@ -325,7 +333,42 @@ MovBall PROC
     ;  MOV  ShiftX , AX
                      RET
 MovBall ENDP
+draw_curser proc
 
+                     mov  cx,curX
+                     mov  dx,curY  
+                     add dx,WedCur
+                     add cx,lenCur
+                     mov endCurx,cx
+                     mov endCurY,dx
+                     sub cx,lenCur
+                     sub dx,WedCur
+                     d_cur1:                                         ;[]
+    ;call draw_line_H
+
+                     mov  al,curs_color                   ;Pixel color
+                     mov  ah,0ch
+                  
+    d_cur2:            
+                     int  10h
+                     inc  cx
+                     cmp  cx,endCurx
+                     jnz  d_cur2
+                     inc  dx
+                     mov  cx,curX
+                     cmp  dx,endCurY
+                     jnz  d_cur1
+
+ret
+draw_curser endp
+
+ draw_menu proc
+ call draw_curser
+ call Draw_p
+
+
+ ret
+draw_menu endp
 Draw_p PROC
 
                      mov  cx,125
@@ -1123,11 +1166,42 @@ MAIN PROC
 
 
 
-
+ call draw_menu
     ;p
-                     ;call Draw_p
+                    
+mov ah,0
+ int 16h
+ cmp ah,48h
+ jnz mov_down
 
-                    ; jmp  end1
+ mov ax,curY
+ cmp ax,55
+ jb Menu
+
+ mov curs_color,0
+ call draw_curser
+  mov curs_color,3
+  mov ax,curY
+   sub ax,30
+ mov curY,ax
+ call draw_curser
+ dec State
+ mov_down:
+ cmp ah,80
+ jnz Menu
+ mov ax,curY
+ cmp ax,110
+ jg Menu
+ 
+  mov curs_color,0
+ call draw_curser
+  mov curs_color,3
+  mov ax,curY
+  add ax,30
+ mov curY,ax
+ call draw_curser
+ inc State
+ jmp  Menu
 
     ;===========================
     ; Set BackGround Color
