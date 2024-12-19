@@ -1,11 +1,13 @@
+.286
 .model small
+.stack 100h
 .data
 ;========================== breaker data
     a                db 2,?,2 dup('$')
     b                db 2,?,2 dup('$')
     c                db 9
     lenght           dw 50 ;------
-    Bidth            dw 10  ; |
+    Bidth            dw 5  ; |
     yorigin          dw 190 ;190
     x                dw 120
     y                dw 190
@@ -71,7 +73,18 @@
     endCurx dw ?
     endCurY dw ?
     curs_color db 3
-    
+    ;================================================== send
+    value db ? 
+    type1 db ?
+    ;================================================== secound player
+    sec_breac_X dw 120
+    sec_breac_Y dw 5
+    sec_breac_endx dw 140
+    sec_breac_endy dw 10
+    sec_breac_len dw 20
+    sec_breac_width dw 5
+    sec_breac_yOrg dw 5
+sec_breaker_color db 5
 .CODE
 DrawPixel PROC
                      mov  cx,AX                   ;Column
@@ -1028,6 +1041,78 @@ Draw_t proc
                      jnz  d_t3
 ret
 Draw_t endp
+send_data proc 
+
+
+ 
+    ;========================
+            mov dx , 3FDH	; Line Status Register 
+            In al , dx 			;Read Line Status
+            AND al , 00100000b
+
+trans_data:
+;Set port configuration
+    mov dx,3fbh
+    mov al,00011011b
+    out dx,al 
+
+            mov dx , 3F8H		; Transmit data register
+            mov al,value
+            out dx , al 
+            end_send:
+ret
+send_data endp
+
+recive_data proc
+ ;Set port configuration
+    mov dx,3fbh
+    mov al,00011011b
+    out dx,al
+
+    ;Check that Data Ready from UART
+    CHK:    mov dx , 3FDH		; Line Status Register
+    	    in al , dx 
+            AND al , 1
+            
+            Jnz recive_data_cont     ; if there is not char in uart go check for key pressed
+              jmp recive_data_cont2
+recive_data_cont:
+
+ 
+    ;If Ready read the VALUE in Receive data register
+            mov dx , 03F8H
+            in al , dx 
+            mov value , al    
+            ; add value to sec_curser_X
+            pusha
+            ; clear breaker then re-draw
+            
+            mov sec_breaker_color,0
+            call draw_breaker2
+            
+            mov sec_breaker_color,5
+            ;=========================
+            mov cx,sec_breac_X
+            mov bl,value
+            and bl,128
+            jnz negative
+            mov dh,0
+            jmp cont_rec1
+            negative:
+            mov dh,0ffh
+            cont_rec1:
+            mov dl,value
+            add cx,dx
+            mov sec_breac_X,cx
+            add cx,sec_breac_len
+            mov sec_breac_endx,cx
+         
+            popa
+call draw_breaker2
+recive_data_cont2:
+
+ret
+recive_data ENDP
 
 DrawBall PROC
 
@@ -1160,16 +1245,35 @@ MAIN PROC
                      mov  al,13h
                      int  10h
 
-    Menu:            
-    ; play word
-    play:            
+
+                     
+   ; initinalize COM
+    ;Set Divisor Latch Access Bit
+    mov dx,3fbh 			; Line Control Register
+    mov al,10000000b		;Set Divisor Latch Access Bit
+    out dx,al				;Out it
+    ;Set LSB byte of the Baud Rate Divisor Latch register.
+    mov dx,3f8h			
+    mov al,01h			
+    out dx,al
+
+    ;Set MSB byte of the Baud Rate Divisor Latch register.
+    mov dx,3f9h
+    mov al,00h
+    out dx,al
+
+  
+
+  
+
+  
 
 
-
- call draw_menu
-    ;p
-                    
-mov ah,0
+    ;======================================================
+jmp play
+    Menu: 
+    call draw_menu           
+    mov ah,0
  int 16h
  cmp ah,48h
  jnz mov_down
@@ -1202,6 +1306,14 @@ mov ah,0
  call draw_curser
  inc State
  jmp  Menu
+    play:            
+
+
+;jmp game
+ ;
+    ;p
+                    
+
 
     ;===========================
     ; Set BackGround Color
@@ -1216,19 +1328,30 @@ mov ah,0
 
 
     ;======================================
-                     call draw_grid_loop
+                     ;call draw_grid_loop
 
                      call draw_breaker
+                     
+                     call draw_breaker2
                     
 
                      mov  cx,0
     game:            
-                     cmp  cx,1bffh
-                     jnz  Draw_break2
+                      cmp  cx,009fh
+                    jnz  Draw_break2
                      CALL MovBall
                      mov  cx,0
                      Draw_break2:
-                    call Mov_Breaker
+                     pusha
+                     mov dx,5
+                     mov dx,0
+                     mov dl,-5
+                     
+                     call Mov_Breaker
+                     popa
+                     pusha
+                     call recive_data
+                     popa
                      inc  cx
                      jmp  game
 
@@ -1247,14 +1370,22 @@ Mov_Breaker proc
 
                      mov  ah,0                    ;  make it int 16/0
                      int  16h
-                     mov  rl,1                    ;;;;;;;;;;
+                     mov  rl,1                    ;;;;;;;;;;                          
                      cmp  ah,4Dh
                      jz   movr
                      cmp  ah,4Bh
+                     jnz cont2
     ;jnz loop2
                      mov  dx,negativebs
                      mov  rl,0                    ;;;;;;;;;;
-    movr:            
+    movr: 
+         
+    pusha
+    
+    mov value, dl                ;;;;;;;;;;;;;;;;;;;send shift value
+    call send_data
+   
+    popa
                      mov  ax ,endx
                      add  ax,dx
                      mov  endx,ax
@@ -1292,6 +1423,15 @@ Mov_Breaker proc
 
 ret
 Mov_Breaker endp
+
+
+
+
+
+
+
+
+
 draw_breakerR proc
 
                      mov  bx,x
@@ -1427,6 +1567,52 @@ draw_breaker proc
                      ret
 draw_breaker endp
 
+draw_breaker2 proc
+
+                     mov  ax ,sec_breac_endx ;endx    
+                     cmp  ax,320
+                     ja   rightbound_sec
+                     cmp  ax,sec_breac_len
+                     ja   inbound_sec
+                     mov  ax,sec_breac_len
+                     mov  sec_breac_X,0
+                     mov  sec_breac_endx,ax
+                   
+                     jmp  cont3_sec
+    rightbound_sec:      
+                     mov  ax,sec_breac_len;lenght
+                     mov  bx,320
+                     sub  bx,ax
+                     mov sec_breac_X,bx
+                     mov  sec_breac_endx,320
+    inbound_sec:         
+                     mov  ax,sec_breac_endx;endx
+                     mov  bx,sec_breac_len;lenght
+                     sub  ax,bx
+                     mov  sec_breac_X,ax
+        cont3_sec:
+
+    loop12:           
+                    
+                     mov  cx,sec_breac_X                   ;Column
+                     mov  dx,sec_breac_Y                    ;Row
+                     mov  al,sec_breaker_color                    ;Pixel color
+                     mov  ah,0ch                  ;Draw Pixel Command
+    back2:            int  10h
+                     inc  cx
+           
+                     cmp  cx,sec_breac_endx
+                     jnz  back2
+                     inc  dx
+                     mov  sec_breac_Y,dx
+            
+                     cmp  dx,sec_breac_endy
+                     jnz  loop12
+
+                     mov  ax,sec_breac_yOrg
+                     mov  sec_breac_y,ax
+                     ret
+draw_breaker2 endp
 
 
 
