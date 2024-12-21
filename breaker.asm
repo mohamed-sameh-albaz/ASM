@@ -1,12 +1,12 @@
 .model small
 .data
-;========================== breaker data
+    ;========================== breaker data
     a                db 2,?,2 dup('$')
     b                db 2,?,2 dup('$')
     c                db 9
-    lenght           dw 50 ;------
-    Bidth            dw 10  ; |
-    yorigin          dw 190 ;190
+    lenght           dw 50                                                             ;------
+    Bidth            dw 10                                                             ; |
+    yorigin          dw 190                                                            ;190
     x                dw 120
     y                dw 190
     breaker          db 5
@@ -25,17 +25,20 @@
     mywidth          dw 20
     height           dw 7
     space            dw 3
-    rows             db 7
+    rows             db 8
     cols             db 14
     color            db 14                                                             ;11
     end_x            dw 0
     end_y            dw 0
-    starts_x         dw 0, 23,46, 69, 92,115, 138, 161,184, 207, 230,253 , 276, 299
+    starts_x         dw 0, 23,46, 69, 92,115, 138, 161,184, 207, 230,253 , 276, 299         ;===========================
+                                                                                            ; --------------- ------------------
+                                                                                            ;                 |cx 
     starts_y         dw 0, 10, 20, 30, 40, 50, 60,70
-    rl               db 1  ;?
-    cc               db 23  ;?
+    rl               db 1                                                              ;?
+    cc               db 23                                                             ;?
     ;==========================================
     ;Ball
+    dummy            dw ? 
     Xc               DW 160d                                                           ; X of Top Left Corner of the Ball
     Yc               DW 100d                                                           ; Y of Top Left Corner of the Ball
     S                DW 4d                                                             ; Side Length of Ball
@@ -44,6 +47,7 @@
     Speed            dw 1bffh
 
     BackGroundColor  DB 00h
+    ballColor        DB 0Fh
     Flag             DB 0                                                              ;Flag to clear the ball in its previous location
 
     WindowWidth      DW 320d
@@ -429,13 +433,13 @@ Draw_a proc
                       mov  cx,160d
                      mov  dx,54d
 
-    d_a1:                                        ;[]
+    d_a1:                                         ;[]
     ;call draw_line_H
 
                      mov  al,5                    ;Pixel color
                      mov  ah,0ch
                   
-    d_a2:           
+    d_a2:            
                      int  10h
                      inc  cx
                      cmp  cx,175
@@ -448,13 +452,13 @@ Draw_a proc
                      mov  cx,164
                      mov  dx,63
 
-    d_a3:                                        ;[]
+    d_a3:                                         ;[]
     ;call draw_line_H
 
-                     mov  al,0                  ;Pixel color
+                     mov  al,0                    ;Pixel color
                      mov  ah,0ch
                   
-    d_a4:           
+    d_a4:            
                      int  10h
                      inc  cx
                      cmp  cx,172
@@ -467,13 +471,13 @@ Draw_a proc
                      mov  cx,160
                      mov  dx,58
 
-    d_a5:                                        ;[]
+    d_a5:                                         ;[]
     ;call draw_line_H
 
                      mov  al,00h                  ;Pixel color
                      mov  ah,0ch
                   
-    d_a6:           
+    d_a6:            
                      int  10h
                      inc  cx
                      cmp  cx,172
@@ -510,7 +514,7 @@ Draw_y proc
     d_y3:                                         ;[]
     ;call draw_line_H
 
-                     mov  al,0                  ;Pixel color
+                     mov  al,0                    ;Pixel color
                      mov  ah,0ch
                   
     d_y4:            
@@ -585,7 +589,7 @@ Draw_s proc
     d_s3:                                         ;[]
     ;call draw_line_H
 
-                     mov  al,0                  ;Pixel color
+                     mov  al,0                    ;Pixel color
                      mov  ah,0ch
                   
     d_s4:            
@@ -604,7 +608,7 @@ Draw_s proc
     d_s5:                                         ;[]
     ;call draw_line_H
 
-                     mov  al,0                  ;Pixel color
+                     mov  al,0                    ;Pixel color
                      mov  ah,0ch
                   
     d_s6:            
@@ -643,7 +647,7 @@ Draw_c proc
     d_c3:                                         ;[]
     ;call draw_line_H
 
-                     mov  al,0                  ;Pixel color
+                     mov  al,0                    ;Pixel color
                      mov  ah,0ch
                   
     d_c4:            
@@ -682,7 +686,7 @@ Draw_o proc
     d_o3:                                         ;[]
     ;call draw_line_H
 
-                     mov  al,0                  ;Pixel color
+                     mov  al,0                    ;Pixel color
                      mov  ah,0ch
                   
     d_o4:            
@@ -758,7 +762,7 @@ Draw_e proc
     d_e3:                                         ;[]
     ;call draw_line_H
 
-                     mov  al,0                  ;Pixel color
+                     mov  al,0                    ;Pixel color
                      mov  ah,0ch
                   
     d_e4:            
@@ -778,7 +782,7 @@ Draw_e proc
     d_e5:                                         ;[]
     ;call draw_line_H
 
-                     mov  al,0                  ;Pixel color
+                     mov  al,0                    ;Pixel color
                      mov  ah,0ch
                   
     d_e6:            
@@ -818,7 +822,7 @@ Draw_c2 proc
     d_c23:                                        ;[]
     ;call draw_line_H
 
-                     mov  al,0                  ;Pixel color
+                     mov  al,0                    ;Pixel color
                      mov  ah,0ch
                   
     d_c24:           
@@ -914,7 +918,7 @@ Draw_a2 proc
     d_a23:                                        ;[]
     ;call draw_line_H
 
-                     mov  al,0                  ;Pixel color
+                     mov  al,0                    ;Pixel color
                      mov  ah,0ch
                   
     d_a24:           
@@ -933,7 +937,7 @@ Draw_a2 proc
     d_a25:                                        ;[]
     ;call draw_line_H
 
-                     mov  al,0                  ;Pixel color
+                     mov  al,0                    ;Pixel color
                      mov  ah,0ch
                   
     d_a26:           
@@ -983,7 +987,7 @@ Draw_t proc
                      mov  cx,195
                      cmp  dx,117
                      jnz  d_t3
-ret
+                     ret
 Draw_t endp
 
 DrawBall PROC
@@ -1125,9 +1129,9 @@ MAIN PROC
 
 
     ;p
-                     ;call Draw_p
+    ; call Draw_p
 
-                    ; jmp  end1
+    ; jmp  end1
 
     ;===========================
     ; Set BackGround Color
@@ -1146,6 +1150,7 @@ MAIN PROC
 
                      call draw_breaker
                     
+                    ;  CALL DrawBall              ;check the upper pixel of the ball is not as the background ;;;;;;;;;;;;;;;
 
                      mov  cx,0
     game:            
@@ -1153,8 +1158,9 @@ MAIN PROC
                      jnz  Draw_break2
                      CALL MovBall
                      mov  cx,0
-                     Draw_break2:
-                    call Mov_Breaker
+                    call checkCollisionBlocks
+    Draw_break2:     
+                     call Mov_Breaker
                      inc  cx
                      jmp  game
 
@@ -1162,9 +1168,9 @@ MAIN PROC
 
 MAIN ENDP
 
-Mov_Breaker proc 
+Mov_Breaker proc
 
- loop2:           
+    loop2:           
                      mov  dx,breakersmothness
                      mov  ah,1
                      int  16h
@@ -1216,7 +1222,7 @@ Mov_Breaker proc
     cont2:           
 
 
-ret
+                     ret
 Mov_Breaker endp
 draw_breakerR proc
 
@@ -1358,6 +1364,7 @@ draw_breaker endp
 
     ;==============================================================================
 
+
 myblock proc
 
     ;=====change color====
@@ -1397,6 +1404,219 @@ myblock proc
                      ret
 myblock endp
 
+
+clearMyBlock proc
+
+                    mov color, 0          
+                     mov  dx,starty               ;set start height
+                     mov  cx,startx               ;set start width
+       
+    ;set end width
+           
+                     mov  bx,startx
+                     add  bx,mywidth
+                     mov  end_x,bx
+
+    ; set end height
+           
+                     mov  bx,starty
+                     add  bx,height
+                     mov  end_y,bx
+    clearBlock:           
+                     inc  dx
+                     mov  cx,startx
+                     mov  al,color
+                     mov  ah,0ch
+    clearLine:            
+                     int  10h
+                     inc  cx
+                     cmp  cx,end_x
+                     jnz  line
+                     cmp  dx,end_y
+                     jnz  block
+                     ret
+clearMyBlock endp
+
+; detect the background color if not black so there is collision
+; xc -> div 23 get the divisor and mul with 23 to get block start x 
+; Yc -> div 10 get the divisor and mul with 10 to get block start y
+; 
+
+detectBlockStartPoints proc
+
+mov ax, xc      ; xc of the ball
+mov cx, mywidth ; block width 
+add cx, space   ;div by block length and space in between => cx = 23 for our eg.
+mov dx, 0
+div cx          ;  AX = AX/CX and DX=AX % CX   
+mul cx          ; mul with the block width and space in between => now ax contain the startx for the block
+
+mov startx, ax          ; startx has the right posit
+
+mov ax, yc      ; xc of the ball
+mov cx, height ; block width 
+add cx, space   ;div by block length and space in between => cx = 10 for our eg.
+mov dx, 0
+div cx          ;  AX = AX/CX and DX=AX % CX   
+mul cx          ; mul with the block width and space in between => now ax contain the startx for the block
+
+mov starty, ax          ; startx has the right posit
+
+    ret
+detectBlockStartPoints endp
+
+
+checkCollisionBlocks proc 
+; upper collision
+
+mov cx, xc          ; cx -> the upper left corner of the ball 
+mov dx, Yc          
+sub dx, 1           ; check for just the upper pixel of the ball if not background then it is a block
+
+mov ax, S           ; set ax to the ball size
+mov dummy, ax
+repBallSize:
+cmp dummy, 0       ; compare till the ball size to check if there is collision with the upper pixel of the ball in each side pixel
+jnz label2
+jmp exitCheckColl
+label2:
+
+mov bh, 0               ; page number
+mov ah, 0DH             ; get background color into al
+int 10h                 ; get 
+inc cx
+cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width
+jnz colorBlockBackground
+dec dummy
+jnz repBallSize
+jnz label3
+jmp exitCheckColl
+label3:
+
+colorBlockBackground:
+
+push ax
+push bx
+push cx
+push dx
+call detectBlockStartPoints       ; set the values of startx, starty to prepare the block to hide
+pop dx
+pop cx
+pop bx
+pop ax
+
+push ax
+push bx
+push cx
+push dx
+call clearMyBlock               ; color the block in position startx, starty with background color 
+pop dx
+pop cx
+pop bx
+pop ax
+
+upperBLockCollision:
+; NEG  ShiftX
+NEG  Shifty
+jmp repBallSize
+
+
+; down block
+mov cx, xc          ; cx -> the upper left corner of the ball 
+mov dx, Yc          
+add dx, 1           ; check for just the upper pixel of the ball if not background then it is a block
+mov ax, S           ; set ax to the ball size
+mov dummy, ax
+repDownBallSize:
+cmp dummy, 0       ; compare till the ball size to check if there is collision with the upper pixel of the ball in each side pixel
+jz exitCheckColl
+mov bh, 0               ; page number
+mov ah, 0DH             ; get background color into al
+int 10h                 ; get 
+inc cx
+cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width
+jnz colorDownBlockBackground
+dec dummy
+jnz repDownBallSize
+jz exitCheckColl
+colorDownBlockBackground:
+push ax
+push bx
+push cx
+push dx
+call detectBlockStartPoints       ; set the values of startx, starty to prepare the block to hide
+pop dx
+pop cx
+pop bx
+pop ax
+
+push ax
+push bx
+push cx
+push dx
+call clearMyBlock               ; color the block in position startx, starty with background color 
+pop dx
+pop cx
+pop bx
+pop ax
+
+downBLockCollision:
+; NEG  ShiftX
+NEG  Shifty
+jmp repDownBallSize
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; side collision
+
+mov cx, xc          ; cx -> the upper left corner of the ball 
+mov dx, Yc          
+add dx, 1           ; check for just the upper pixel of the ball if not background then it is a block
+mov ax, S           ; set ax to the ball size
+mov dummy, ax
+repRightSideBallSize:
+cmp dummy, 0       ; compare till the ball size to check if there is collision with the upper pixel of the ball in each side pixel
+jz exitCheckColl
+mov bh, 0               ; page number
+mov ah, 0DH             ; get background color into al
+int 10h                 ; get 
+inc cx
+cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width
+jnz colorRightSideBlockBackground
+dec dummy
+jnz repRightSideBallSize
+jz exitCheckColl
+colorRightSideBlockBackground:
+push ax
+push bx
+push cx
+push dx
+call detectBlockStartPoints       ; set the values of startx, starty to prepare the block to hide
+pop dx
+pop cx
+pop bx
+pop ax
+; sub startx, 20
+push ax
+push bx
+push cx
+push dx
+call clearMyBlock               ; color the block in position startx, starty with background color 
+pop dx
+pop cx
+pop bx
+pop ax
+
+rightSideBLockCollision:
+; NEG  ShiftX
+NEG  Shifty
+jmp repRightSideBallSize
+
+
+
+
+    exitCheckColl:
+    ret
+checkCollisionBlocks endp
 
     ;==================================================================
 clrbreaker_shift proc
