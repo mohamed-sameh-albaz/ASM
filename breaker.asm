@@ -29,15 +29,19 @@
     space            dw 3
     rows             db 8
     cols             db 14
-    color            db 14                                                             ;11
+    color            db 15                                                      ;11
     end_x            dw 0
     end_y            dw 0
-    starts_x         dw 0, 23,46, 69, 92,115, 138, 161,184, 207, 230,253 , 276, 299         ;===========================
+    starts_x         dw 0        ;===========================
                                                                                             ; --------------- ------------------
                                                                                             ;                 |cx 
-    starts_y         dw 0, 10, 20, 30, 40, 50, 60,70
+    starts_y         dw 0
     rl               db 1                                                              ;?
-    cc               db 23                                                             ;?
+    cc               db 23  
+    
+    lvl              db 1  
+    
+    total            db 0                                                          ;?
     ;==========================================
     ;Ball
     dummy            dw ? 
@@ -1325,6 +1329,31 @@ jmp play
 
 
     ;======================================
+    ;;;;;;;;;;;;choose level;;;;;;;;;;;;;;;;;
+    ;======================================
+    mov lvl,2
+    cmp lvl,1
+    jnz cmpAgain
+    mov rows,10
+    mov cols,14
+    mov starts_x,0
+    mov starts_y,0
+    jmp choice_done
+    cmpAgain:
+    cmp lvl,2
+    jnz lvl3 
+    mov rows,7
+    mov cols,14
+    mov starts_x,0
+    mov starts_y,50
+    jmp choice_done
+    lvl3:
+    mov starts_x,46
+    mov starts_y,0
+    mov rows,10
+    mov cols,10
+    choice_done:
+    ;=======================================
                      call draw_grid_loop
 
                      call draw_breaker
@@ -1501,36 +1530,52 @@ draw_grid_loop proc
 
                      mov  cx,0
                      mov  dx,0
-                     lea  si,starts_x
-                     lea  di,starts_y
                      mov  cl ,rows
+                     push starts_x
     grid_loop:       
     ;change color
-                     mov  bl,color
-                     sub  cc,bl
-                     mov  bl,cc
-                     mov  color,bl
-                     mov  cc,23
-            
+                     pop starts_x
+                    
+                     cmp lvl,3
+                     jnz normal 
+                     cmp cl,2
+                     jbe rock
+                     mov color,4
+                     jmp done_color
+                     rock:
+                     mov color,8
+                     jmp done_color
+
+
+                     normal:
+                     cmp color,12
+                     jnz firstc1
+                     mov color,9
+                     jmp secondc1
+                     firstc1:
+                     mov color,12
+                     secondc1:
+                    
+                     
+                     done_color:
                      mov  dl,cols
-                     push si
+                     push starts_x
+
     line_loop:       
-                     mov  bx,[si]
+                     mov  bx,starts_x 
                      mov  startx,bx
-                     mov  bx,[di]
+                     mov  bx,starts_y
                      mov  starty,bx
                      push cx
                      push dx
                      call myblock
+                     inc total
                      pop  dx
                      pop  cx
-                     inc  si
-                     inc  si
+                     add starts_x,23
                      dec  dl
                      jnz  line_loop
-                     inc  di
-                     inc  di
-                     pop  si
+                     add starts_y,10
                      dec  cl
                      jnz  grid_loop
                      ret
@@ -1615,13 +1660,33 @@ draw_breaker2 endp
 myblock proc
 
     ;=====change color====
-                     mov  bl,color
-                     sub  cc,bl
-                     mov  bl,cc
-                     mov  color,bl
-                     mov  cc,23
+                     cmp lvl,3
+                     jz no_cc 
+                     cmp color,9
+                     jnz firstc
+                     mov color,12
+                     jmp secondc
+                     firstc:
+                     mov color,9
+                     secondc:
+                   
           
-          
+                     no_cc:
+                   
+
+;;;;;;;;;;;;;;;;;power up
+                      cmp lvl,1
+                      jnz start_draw
+                      cmp total,33
+                      jnz start_draw
+                        mov color,10
+                     
+
+
+
+
+
+                 start_draw:
                      mov  dx,starty               ;set start height
                      mov  cx,startx               ;set start width
        
