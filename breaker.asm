@@ -1,5 +1,5 @@
 .286
-.model small
+.model compact
 .stack 100h
 .data
     ;========================== breaker data
@@ -7,7 +7,7 @@
     b                 db 2,?,2 dup('$')
     c                 db 9
     lenght            dw 50                                                         ;------
-    Bidth             dw 10                                                         ; |
+    Bidth             dw 5                                                          ; |
     yorigin           dw 190                                                        ;190
     x                 dw 120
     y                 dw 190
@@ -80,7 +80,7 @@
     WedCur            dw 10
     endCurx           dw ?
     endCurY           dw ?
-    curs_color        db 3
+    curs_color        db 12
     ;================================================== send
     value             db ?
     type1             db ?
@@ -1374,9 +1374,9 @@ Chat proc
                                   Int   16h
                                   mov   value,al
                                   cmp   al,27
-                                  jnz    cont_chat2
-                                  jmp exit
-                                  cont_chat2:
+                                  jnz   cont_chat2
+                                  jmp   exit
+    cont_chat2:                   
     ;set curser
                                   mov   dh,sendy
                                   mov   dl,sendx
@@ -1384,12 +1384,12 @@ Chat proc
                                   mov   bh,0
                                   mov   ah,2
                                   int   10h
- cmp al,0dh
- jnz cont_chat_print
+                                  cmp   al,0dh
+                                  jnz   cont_chat_print
  
- mov dl,79
- jmp check_boundary
- cont_chat_print:
+                                  mov   dl,79
+                                  jmp   check_boundary
+    cont_chat_print:              
     ;print byte
                                   mov   ah,9                             ;Display
                                   mov   bh,0                             ;Page 0
@@ -1399,7 +1399,7 @@ Chat proc
                                   int   10h
     ;======================get curser postition here it is stored in sendx and sendy
 
-check_boundary:
+    check_boundary:               
 
     ;============
                                   cmp   dl,79
@@ -1515,10 +1515,15 @@ MAIN PROC
                                   mov   ax,curY
                                   cmp   ax,65
                                   jb    Menu
-
+                                  pusha
+                                  mov   al,curs_color
+                                  
                                   mov   curs_color,0
+                                  pusha
                                   call  draw_curser
-                                  mov   curs_color,3
+                                  popa
+                                  mov   curs_color,al
+                                  popa
                                   mov   ax,curY
                                   sub   ax,30
                                   mov   curY,ax
@@ -1531,10 +1536,14 @@ MAIN PROC
                                   mov   ax,curY
                                   cmp   ax,110
                                   jg    Menu
- 
+                                  pusha
+                                  mov   al,curs_color
                                   mov   curs_color,0
+                                  pusha
                                   call  draw_curser
-                                  mov   curs_color,3
+                                  popa
+                                  mov   curs_color,al
+                                  popa
                                   mov   ax,curY
                                   add   ax,30
                                   mov   curY,ax
@@ -1557,8 +1566,12 @@ MAIN PROC
            
 
                                   mov   ah,0
-                                  mov   al,13h
+                                  mov   al,13h                           ;13h
                                   int   10h
+                                  mov   ah, 1Ah                          ; BIOS function: Get Display Combination Code
+                                  int   10h
+    ; AL = Display code (e.g., 00h = MDA, 04h = CGA, 06h = EGA, 07h = VGA)
+    ; BL = Adapter type
 
 
     ;===========================
@@ -1576,7 +1589,7 @@ MAIN PROC
     ;======================================
     ;;;;;;;;;;;;choose level;;;;;;;;;;;;;;;;;
     ;======================================
-                                  mov   lvl,2
+                                  mov   lvl,1
                                   cmp   lvl,1
                                   jnz   cmpAgain
                                   mov   rows,10
