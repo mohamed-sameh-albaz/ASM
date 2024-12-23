@@ -8,12 +8,12 @@
     c                 db 9
     lenght            dw 50                                                         ;------
     Bidth             dw 5                                                          ; |
-    yorigin           dw 190                                                        ;190
+    yorigin           dw 192                                                        ;190
     x                 dw 120
-    y                 dw 190
+    y                 dw 192
     breaker           db 5
     endx              dw 170
-    endy              dw 195
+    endy              dw 197
     CBreaker          dw ?
     buttonpressed     db ?
     breakersmothness  dw 5
@@ -211,23 +211,33 @@ MovBall PROC
     ch3:                          
 
     ;Collison exists
-                     
+                                  pusha
                                   call  CenterBreaker
+                                  popa
                                   mov   ax, ShiftX
                                   cmp   ax,0
                                   ja    firstquarter
-                                  NEG   ChangeShiftlow
-                                  NEG   ChangeShiftHigh
+    ;NEG   ChangeShiftlow
+    ;NEG   ChangeShiftHigh
     firstquarter:                                                        ;here i increment by 3 as top decrease the slope of the ball
                                   mov   ax,Xc
                                   cmp   ax,firstQ
                                   ja    secQ
-                                  MOV   AX,ShiftX
-                      
-                                  add   ax,ChangeShiftHigh
-                                  add   Speed,200h
+                                  mov   ax,ShiftX
+                                  cmp   ax,0
+                                  jb    fristq_cont
+                                 ; NEG   ax
+                                  sub   ax,ChangeShiftHigh
+                                 
+                                 jmp fristq_cont2
+                                fristq_cont:
+                                  
+                                  add  ax,ChangeShiftHigh
+                                  fristq_cont2:
                                   mov   ShiftX,ax
+                                  pusha
                                   call  draw_breaker
+                                  popa
                                   JMP   neutralizeshift
     secQ:                                                                ;its close to the center so i inc by 1 only
                                   mov   ax,Xc
@@ -235,9 +245,11 @@ MovBall PROC
                                   ja    thirdQuarter
                                   mov   ax,ShiftX
                                   add   ax,ChangeShiftlow
-                                  add   Speed,100h
+                                 
                                   mov   ShiftX,ax
+                                  pusha
                                   call  draw_breaker
+                                  popa
                                   JMP   neutralizeshift
     thirdQuarter:                                                        ;third same as sec
                                   mov   ax,Xc
@@ -245,23 +257,34 @@ MovBall PROC
                                   ja    lastq
                                   mov   ax,ShiftX
                                   add   ax,ChangeShiftlow
-                                  add   Speed,200h
+                                 
                                   mov   ShiftX,ax
+                                  pusha
                                   call  draw_breaker
+                                  popa
                                   JMP   neutralizeshift
     lastq:                                                               ;last part of the breaker same as the first
                                   MOV   AX,ShiftX
-                                  add   ax,ChangeShiftHigh
-                                  add   Speed,100h
+                                  cmp ax,0
+                                  ja lastq_cont
+                                  sub   ax,ChangeShiftHigh
+                                  ;NEG ax
+                                   mov   ShiftX,ax
+                                  jmp lastq_cont2
+                             lastq_cont:
+                                 add  ax,ChangeShiftHigh
                                   mov   ShiftX,ax
+lastq_cont2:
+                                  pusha
                                   call  draw_breaker
+                                  popa
 
     neutralizeshift:              
 
                                   cmp   ShiftX,0
                                   ja    NegY
-                                  NEG   ChangeShiftlow
-                                  NEG   ChangeShiftHigh
+    ; NEG   ChangeShiftlow
+    ; NEG   ChangeShiftHigh
 
 
                                   JMP   NegY
@@ -1213,9 +1236,9 @@ CenterBreaker PROC
                                   MOV   BX , x
                                   ADD   BX , AX
                                   MOV   CBreaker , BX
-                                  mov   ax, lenght
+                                  
                                   mov   bx,2
-                                  shr   ax,2
+                                  shr   ax,1
                      
                                   mov   bx ,x
                                   add   bx,AX
@@ -1223,7 +1246,9 @@ CenterBreaker PROC
                                   add   bx,ax
                                   add   bx,ax
                                   mov   thirdQ,bx
-
+                                  mov   ax,firstQ
+                                  mov   bx,CBreaker
+                                  mov   bx,thirdQ
                                   RET
 CenterBreaker ENDP
 
@@ -1357,13 +1382,6 @@ Chat proc
                                   mov   dx,0a0ah
                                   int   10h
 
-   
- 
-
- 
-
-  
-
     getkey_pressed:               
                                   mov   ah,01h
                                   int   16h
@@ -1484,7 +1502,7 @@ MAIN PROC
                                   mov   ah,0
                                   mov   al,13h
                                   int   10h
-
+                                  call  CenterBreaker
 
     ; initinalize COM
     ;Set Divisor Latch Access Bit
@@ -1621,7 +1639,7 @@ MAIN PROC
 
                                   mov   cx,0
     game:                         
-                                  cmp   cx,09ffh
+                                  cmp   cx,0fffh
                                   jnz   Draw_break2
                                   CALL  MovBall
                                   mov   cx,0
@@ -1739,7 +1757,7 @@ draw_breakerR proc
                                   mov   cx,bx
                                   dec   cx                               ;Column
                                   mov   dx,y                             ;Row
-                                  mov   al,5                             ;Pixel color
+                                  mov   al,2                             ;Pixel color
                                   mov   ah,0ch                           ;Draw Pixel Command
     backR:                        int   10h
                                   inc   cx
@@ -2233,7 +2251,7 @@ clrbreaker_shift proc
                                   inc   cx
                                   cmp   cx,end_x
                                   jnz   clr_line
-                                  cmp   dx,194                           ;there was a hight greater than the hight so i changed the number
+                                  cmp   dx,end_y                         ;there was a hight greater than the hight so i changed the number
                                   jnz   clr_block
                                   ret
 clrbreaker_shift endp
