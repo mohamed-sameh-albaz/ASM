@@ -3654,12 +3654,12 @@ checkDownBlockColl proc
                     
                     ; players score
                     cmp determineFlag, 0
-                    jnz incPlayer2
+                    jnz incPlayer2Down
                     push ax
                     mov ax, increamentPoints
                     add first_score, ax
                     pop ax
-                    incPlayer2:
+                    incPlayer2Down:
                     push ax
                     mov ax, increamentPoints
                     add sec_score, ax
@@ -3697,12 +3697,12 @@ checkDownBlockColl proc
                     
                     ; players score
                     cmp determineFlag, 0
-                    jnz incPlayer2Last
+                    jnz incPlayer2DownLast
                     push ax
                     mov ax, increamentPoints
                     add first_score, ax
                     pop ax
-                    incPlayer2Last:
+                    incPlayer2DownLast:
                     push ax
                     mov ax, increamentPoints
                     add sec_score, ax
@@ -3774,6 +3774,20 @@ checkUpperBlockColl proc
 
                     call getUpperBlockStarts
                     call breakerLenPowerUp
+
+                    ; players score
+                    cmp determineFlag, 0
+                    jnz incPlayer2Upper
+                    push ax
+                    mov ax, increamentPoints
+                    add first_score, ax
+                    pop ax
+                    incPlayer2Upper:
+                    push ax
+                    mov ax, increamentPoints
+                    add sec_score, ax
+                    pop ax
+                    
                     call clearMyBlock 
                     mov checked,1         
                     mov upperCollFlag, 1       
@@ -3804,6 +3818,18 @@ checkUpperBlockColl proc
 
                     call getUpperBlockStarts
                     call breakerLenPowerUp
+                    ; players score
+                    cmp determineFlag, 0
+                    jnz incPlayer2UpperLast
+                    push ax
+                    mov ax, increamentPoints
+                    add first_score, ax
+                    pop ax
+                    incPlayer2UpperLast:
+                    push ax
+                    mov ax, increamentPoints
+                    add sec_score, ax
+                    pop ax
                     call clearMyBlock 
                     mov checked,1                
                     ;test
@@ -3871,6 +3897,19 @@ checkLeftBlockColl proc
 
                     call getLeftBlockStarts
                     call breakerLenPowerUp
+                    ; players score
+                    cmp determineFlag, 0
+                    jnz incPlayer2Left
+                    push ax
+                    mov ax, increamentPoints
+                    add first_score, ax
+                    pop ax
+                    incPlayer2Left:
+                    push ax
+                    mov ax, increamentPoints
+                    add sec_score, ax
+                    pop ax
+                    
                     call clearMyBlock     
                     mov checked,1     
                     mov leftCollFlag, 1       
@@ -3901,6 +3940,19 @@ checkLeftBlockColl proc
                     
                     call getLeftBlockStarts
                     call breakerLenPowerUp
+                    ; players score
+                    cmp determineFlag, 0
+                    jnz incPlayer2LeftLast
+                    push ax
+                    mov ax, increamentPoints
+                    add first_score, ax
+                    pop ax
+                    incPlayer2LeftLast:
+                    push ax
+                    mov ax, increamentPoints
+                    add sec_score, ax
+                    pop ax
+                    
                     call clearMyBlock
                         mov checked,1               
                     ;test
@@ -3962,10 +4014,23 @@ checkRightBlockColl proc
 
                     call getRightBlockStarts
                     call breakerLenPowerUp
+                    ; players score
+                    cmp determineFlag, 0
+                    jnz incPlayer2Right
+                    push ax
+                    mov ax, increamentPoints
+                    add first_score, ax
+                    pop ax
+                    incPlayer2Right:
+                    push ax
+                    mov ax, increamentPoints
+                    add sec_score, ax
+                    pop ax
+                    
                     ; for testing
                     mov ax, startx
                     mov bx, startY
-                   call DrawPixel 
+                ;    call DrawPixel 
                     call clearMyBlock
                         mov checked,1        
                     mov rightCollFlag, 1       
@@ -3991,6 +4056,19 @@ checkRightBlockColl proc
                     
                     call getRightBlockStarts
                     call breakerLenPowerUp
+                    ; players score
+                    cmp determineFlag, 0
+                    jnz incPlayer2RightLast
+                    push ax
+                    mov ax, increamentPoints
+                    add first_score, ax
+                    pop ax
+                    incPlayer2RightLast:
+                    push ax
+                    mov ax, increamentPoints
+                    add sec_score, ax
+                    pop ax
+
                     call clearMyBlock     
                     mov checked,1          
                     ;test
