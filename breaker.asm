@@ -18,7 +18,6 @@
     negativebs                    dw -5
     firstQ                        dw ?
     thirdQ                        dw ?
-
     ;========================== first breaker data
     first_lenght                  dw 50                                                         ;------
     first_Bidth                   dw 5                                                          ; |
@@ -34,7 +33,6 @@
     first_negativebs              dw -5
     first_firstQ                  dw ?
     first_thirdQ                  dw ?
-
 
     ;========================== second breaker data
     sec_lenght                    dw 20                                                         ;------
@@ -52,24 +50,6 @@
     sec_firstQ                    dw ?
     sec_thirdQ                    dw ?
     sec_breaker_color             db 5
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     ;======================================== ;blocks
@@ -630,141 +610,6 @@ MovBall PROC
                                    call  draw_breaker
                                    CALL  setBreaker2
     singl_mode_2:                  
-
-
-    ; Check if iam in right position
-    ;                                          MOV  AX , WindowHeight_start
-    ;                      CMP  Yc , AX
-    ;                         JL rel_jmp_down_collision_1
-    ;                         JMP cont_down_1
-    ;                          rel_jmp_down_collision_1:
-    ;                      JMP   ResetPosition
-    ;                      cont_down_1:
-    ;                     CMP flagBallCollision , 1
-    ;                     JZ rel_jmp_flag
-    ;                     JMP cont_flag
-    ;                     rel_jmp_flag:
-    ;                     jmp almost_right_postion
-    ;                     cont_flag:
-    ;                      MOV  AX , x
-    ;                      ADD  AX , lenght
-    ;                      CMP  Xc , AX
-    ;                      Jb   cont55_r1
-    ;                      jmp  almost_right_postion
-    ;     cont55_r1:
-                     
-    ;                      MOV  AX ,Xc
-    ;                      ADD  AX , S
-    ;                      CMP  AX , x
-    ;                      JG   ch1_r1
-    ;                      jmp  almost_right_postion
-    ;     ch1_r1:
-
-    ;                      MOV  AX , y
-    ;                      ADD  AX , Bidth
-    ;                      CMP  Yc ,AX
-    ;                      Jb   ch2_r1
-    ;                      jmp  almost_right_postion
-    ;     ch2_r1:
-    ;                      MOV  AX ,Yc
-    ;                      ADD  AX , S
-    ;                      CMP  AX , y
-    ;                      JG   ch3_r1
-    ;                      jmp  almost_right_postion
-    ;     ch3_r1:
-
-    ;     ; I am not in right position colliosn exists
-    ;                      call CenterBreaker
-    ;                      mov  ax, ShiftX
-    ;                      cmp  ax,0
-    ;                      ja   firstquarter_r1
-    ;                      NEG  ChangeShiftlow
-    ;                      NEG  ChangeShiftHigh
-    ;     firstquarter_r1:                                 ;here i increment by 3 as top decrease the slope of the ball
-    ;                      mov  ax,Xc
-    ;                      cmp  ax,firstQ
-    ;                      ja   secQ_r1
-    ;                      MOV  AX,ShiftX
-                      
-    ;                      add  ax,ChangeShiftHigh
-    ;                      add  Speed,200h
-    ;                      mov  ShiftX,ax
-    ;                     ;  call draw_breaker
-    ;                                          mov determine_breaker_Flag ,0
-    ;                                          CALL setBreaker1
-    ;                      call draw_breaker
-    ;                     CALL setBreaker2
-    ;                      JMP  neutralizeshift_r1
-    ;     secQ_r1:                                         ;its close to the center so i inc by 1 only
-    ;                      mov  ax,Xc
-    ;                      cmp  ax,CBreaker
-    ;                      ja   thirdQuarter_r1
-    ;                      mov  ax,ShiftX
-    ;                      add  ax,ChangeShiftlow
-    ;                      add  Speed,100h
-    ;                      mov  ShiftX,ax
-    ;                     ;  call draw_breaker
-    ;                                          mov determine_breaker_Flag ,0
-    ;                                          CALL setBreaker1
-    ;                      call draw_breaker
-    ;                     CALL setBreaker2
-    ;                      JMP  neutralizeshift_r1
-    ;     thirdQuarter_r1:                                 ;third same as sec
-    ;                      mov  ax,Xc
-    ;                      cmp  ax, thirdQ
-    ;                      ja   lastq_r1
-    ;                      mov  ax,ShiftX
-    ;                      add  ax,ChangeShiftlow
-    ;                      add  Speed,200h
-    ;                      mov  ShiftX,ax
-    ;                     ;  call draw_breaker
-    ;                                          mov determine_breaker_Flag ,0
-    ;                                          CALL setBreaker1
-    ;                      call draw_breaker
-    ;                     CALL setBreaker2
-    ;                      JMP  neutralizeshift_r1
-    ;     lastq_r1:                                        ;last part of the breaker same as the first
-    ;                      MOV  AX,ShiftX
-    ;                      add  ax,ChangeShiftHigh
-    ;                      add  Speed,100h
-    ;                      mov  ShiftX,ax
-    ;                     ;  call draw_breaker
-    ;                                          mov determine_breaker_Flag ,0
-    ;                                          CALL setBreaker1
-    ;                      call draw_breaker
-    ;                     CALL setBreaker2
-
-    ;     neutralizeshift_r1:
-
-    ;                      cmp  ShiftX,0
-    ;                      ja   reljmp_r1
-    ;                      NEG  ChangeShiftlow
-    ;                      NEG  ChangeShiftHigh
-
-    ;                     reljmp_r1 :
-    ;                     MOV flagBallCollision ,1
-    ;                      JMP  NegY
-
-
-    ;                     almost_right_postion:
-
-    ; MOV flagBallCollision ,0
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2659,6 +2504,31 @@ MAIN PROC
     je cont_chooseLeve
    jmp cont_chooseleve2
    cont_chooseleve:
+   ;====================================================================== send that u are ready
+   ;Set port configuration
+    mov dx,3fbh
+    mov al,00011011b
+    out dx,al
+
+    ;===================
+       AGAIN_to_start: ;Check that Transmitter Holding Register is Empty
+            mov dx , 3FDH	; Line Status Register 
+            In al , dx 			;Read Line Status
+            AND al , 00100000b
+            Jz AGAIN_to_start
+                  
+                               ;If empty put the VALUE in Transmit data ;register
+            mov dx , 3F8H		; Transmit data register
+            mov al,1
+            out dx , al 
+   ;=======================================================================
+   
+       CHK_to_start:    mov dx , 3FDH		; Line Status Register
+    	    in al , dx 
+            AND al , 1
+            JZ    CHK_to_start ;whait for user 2 to connect
+
+            ;===============================================================================
    mov al,2
   cont_chooseleve2:
                                    mov   lvl,al
