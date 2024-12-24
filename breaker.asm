@@ -75,6 +75,7 @@
     total                         db 0
     grey_block                    db 8
     red_block                     db 4
+    green_block                   db 10
     ;==========================================     ;Ball
     determineFlag                 db 0                                                          ; To know which ball will be set
     dummy                         dw ? 
@@ -119,7 +120,7 @@
 
     ; ShiftX DW  0d
 
-    first_ball_ShiftX             DW 5d
+    first_ball_ShiftX             DW 1d
     first_ball_ShiftY             DW 2d
     first_ball_DefaultShiftX      DW 5d
     first_ball_DefaultShiftY       DW 2d
@@ -220,7 +221,8 @@
     emptystr                      db 10,13,'$'
     page1                         db 0
 
-
+;===============================================PowerUps
+    incBreakerFlag                DB 0
 
 
 .CODE
@@ -2603,6 +2605,7 @@ MAIN PROC
     game:                          
                                    cmp   cx,Speed
                                    jnz   Draw_break2
+                                   
     ; first ball
                                    MOV   determineFlag , 0
                                    CALL  setBall1
@@ -2621,6 +2624,7 @@ MAIN PROC
                                    popa
 
                                    CALL  setBall2
+
 
     singl_mode_1:  
 
@@ -3074,7 +3078,7 @@ myblock proc
     ;;;;;;;;;;;;;;;;;power up
                                    cmp   lvl,0
                                    jnz   start_draw
-                                   cmp   total,33
+                                   cmp   total,134
                                    jnz   start_draw
                                    mov   color,10
                      
@@ -3186,8 +3190,15 @@ checkDownBlockColl         proc
                     int 10h                 ; get 
                     cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
                     jz skipFirstDown
+
+                    ; check for rock
+                    cmp al, grey_block
+                    mov lowerCollFlag, 1       
+                    jz skipFirstDown
                     
+                    ; if not grey
                     call getDownBlockStarts
+                    call breakerLenPowerUp
                     call clearMyBlock  
                       mov checked,1        
                     mov lowerCollFlag, 1       
@@ -3210,8 +3221,13 @@ checkDownBlockColl         proc
                     int 10h                 ; get 
                     cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
                     jz exitDownColl
-                    
+                    ; check for rock
+                    cmp al, grey_block
+                    mov lowerCollFlag, 1
+                    jz exitDownColl
+
                     call getDownBlockStarts
+                    call breakerLenPowerUp
                     call clearMyBlock   
                     mov checked,1            
                     ;test
@@ -3271,10 +3287,15 @@ checkUpperBlockColl         proc
                     int 10h                 ; get 
                     cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
                     jz skipFirstUpper
-                    
+
+                    cmp al, grey_block
+                    mov upperCollFlag, 1       
+                    jz skipFirstUpper
+
                     call getUpperBlockStarts
+                    call breakerLenPowerUp
                     call clearMyBlock 
-                      mov checked,1         
+                    mov checked,1         
                     mov upperCollFlag, 1       
 
                     ; for testing
@@ -3297,7 +3318,12 @@ checkUpperBlockColl         proc
                     cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
                     jz exitUpperColl
                     
+                    cmp al, grey_block
+                    mov upperCollFlag, 1
+                    jz exitUpperColl
+
                     call getUpperBlockStarts
+                    call breakerLenPowerUp
                     call clearMyBlock 
                     mov checked,1                
                     ;test
@@ -3359,7 +3385,12 @@ checkLeftBlockColl         proc
                     cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
                     jz skipFirstLeft
                     
+                    cmp al, grey_block
+                    mov leftCollFlag, 1       
+                    jz skipFirstLeft
+
                     call getLeftBlockStarts
+                    call breakerLenPowerUp
                     call clearMyBlock     
                     mov checked,1     
                     mov leftCollFlag, 1       
@@ -3384,7 +3415,12 @@ checkLeftBlockColl         proc
                     cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
                     jz exitLeftColl
                     
+                    cmp al, grey_block
+                    mov leftCollFlag, 1
+                    jz exitLeftColl
+                    
                     call getLeftBlockStarts
+                    call breakerLenPowerUp
                     call clearMyBlock
                         mov checked,1               
                     ;test
@@ -3440,15 +3476,20 @@ checkRightBlockColl         proc
                     cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
                     jz skipFirstRight
                     
+                    cmp al, grey_block
+                    mov rightCollFlag, 1       
+                    jz skipFirstRight
+
                     call getRightBlockStarts
+                    call breakerLenPowerUp
+                    ; for testing
+                    mov ax, startx
+                    mov bx, startY
+                   call DrawPixel 
                     call clearMyBlock
                         mov checked,1        
                     mov rightCollFlag, 1       
 
-                    ; for testing
-                    mov ax, startx
-                    mov bx, startY
-                ;    call DrawPixel 
                     
                     skipFirstRight:
                     ; check the end of the ball
@@ -3464,7 +3505,12 @@ checkRightBlockColl         proc
                     cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
                     jz exitRightColl
                     
+                    cmp al, grey_block
+                    mov rightCollFlag, 1
+                    jz exitRightColl
+                    
                     call getRightBlockStarts
+                    call breakerLenPowerUp
                     call clearMyBlock     
                     mov checked,1          
                     ;test
@@ -3488,11 +3534,16 @@ checkRightBlockColl         endp
 
 bricksCollision             proc 
 pusha
-
+; mode 0, 1 => single  ------------- mode 2, 3 => multi 
                                 call checkDownBlockColl
                                 popa
                                 cmp yc, 180
-                                jge skipUp
+                                jge skipRight
+                                cmp mode, 2
+                                JL rightCollLabel
+                                cmp yc, 20
+                                JLE skipRight
+                                rightCollLabel:
                                 pusha
                                 call checkUpperBlockColl
                                 popa
@@ -3516,6 +3567,32 @@ pusha
 
 bricksCollision             endp 
     ;==================================================================
+breakerLenPowerUp           proc 
+
+                    ; detect green color
+                    mov cx, startX
+                    mov dx, startY
+                    inc cx
+                    inc dx
+                    mov bh, 0               ; page number
+                    mov ah, 0DH             ; get background color into al
+                    int 10h                 ; get 
+                    cmp al, green_block ; if the current pixel color not same as the background loop till end of ball width
+                    jnz exitBreakerPowerUp
+                    
+                    
+                    MOV determineFlag ,0
+                    CALL setBreaker1
+                    sub x, 20
+                    add endx, 20
+                    add lenght, 40
+                    call draw_breaker
+                    CALL setBreaker2
+                    
+                    exitBreakerPowerUp:
+                    ret
+
+breakerLenPowerUp           endp 
 clrbreaker_shift proc
 
           
