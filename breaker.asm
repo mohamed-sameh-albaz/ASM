@@ -9,7 +9,7 @@
     yorigin                       dw 192                                                        ;190
     x                             dw 120
     y                             dw 192
-    breaker                       db 5
+    breaker_color                 db 5
     endx                          dw 170
     endy                          dw 197
     CBreaker                      dw ?
@@ -75,9 +75,9 @@
     ;======================================== ;blocks
     startx                        dw ?
     starty                        dw ?
-    mywidth                       dw 22
-    height                        dw 9
-    space                         dw 1
+    mywidth                       dw 21
+    height                        dw 8
+    space                         dw 2
     rows                          db 8
     cols                          db 14
     color                         db 15                                                         ;11
@@ -93,6 +93,8 @@
     lvl                           db 1
     
     total                         db 0
+    grey_block                    db 8
+    red_block                     db 4
     ;==========================================     ;Ball
     determineFlag                 db 0                                                          ; To know which ball will be set
     dummy                         dw ? 
@@ -124,7 +126,7 @@
     flagBallCollision             db 0
     ;================================================== first player ball
     first_ball_Xc                 DW 160d                                                       ; X of Top Left Corner of the 1St Ball
-    first_ball_Yc                 DW 100d                                                       ; Y of Top Left Corner of the 1St Ball
+    first_ball_Yc                 DW 30d                                                       ; Y of Top Left Corner of the 1St Ball
     first_ball_S                  DW 4d                                                         ; Side Length of 1St  Ball
     first_ball_CBall              DW 0d                                                         ; X OF Center of the 1St Ball (initial zero will be calculated)
     first_ball_BackGroundColor    DB 00h
@@ -260,7 +262,7 @@ setBreaker1 PROC
                                    MOV   AX  ,first_y
                                    MOV   y             ,AX
                                    MOV   AL   ,first_breaker
-                                   MOV   breaker       ,AL
+                                   MOV   breaker_color       ,AL
                                    MOV   AX  ,first_endx
                                    MOV   endx          ,AX
                                    MOV   AX ,first_endy
@@ -296,7 +298,7 @@ setBreaker1 PROC
                                    MOV   AX  ,sec_y
                                    MOV   y             ,AX
                                    MOV   AL   ,sec_breaker
-                                   MOV   breaker       ,AL
+                                   MOV   breaker_color       ,AL
                                    MOV   AX  ,sec_endx
                                    MOV   endx          ,AX
                                    MOV   AX ,sec_endy
@@ -336,7 +338,7 @@ setBreaker2 PROC
                                    MOV   first_x          ,AX
                                    MOV   AX  ,y
                                    MOV   first_y          ,AX
-                                   MOV   AL   ,breaker
+                                   MOV   AL   ,breaker_color
                                    MOV   first_breaker    ,AL
                                    MOV   AX  ,endx
                                    MOV   first_endx     ,AX
@@ -369,7 +371,7 @@ setBreaker2 PROC
                                    MOV   sec_x          ,AX
                                    MOV   AX  ,y
                                    MOV   sec_y          ,AX
-                                   MOV   AL   ,breaker
+                                   MOV   AL   ,breaker_color
                                    MOV   sec_breaker    ,AL
                                    MOV   AX  ,endx
                                    MOV   sec_endx     ,AX
@@ -787,7 +789,7 @@ MovBall PROC
                                    NEG   ShiftX
                                    MOV   AX , ShiftX
                                    ADD   Xc , AX
-                            
+                                ;    JMP ToDraw
 
     ToY:                           
 
@@ -3619,8 +3621,8 @@ pusha
 
                                 call checkDownBlockColl
                                 popa
-                                cmp yc, 190
-                                jg skipUp
+                                cmp yc, 180
+                                jge skipUp
                                 pusha
                                 call checkUpperBlockColl
                                 popa
