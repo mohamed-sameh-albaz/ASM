@@ -2499,47 +2499,26 @@ MAIN PROC
                                    cmp   cx,Speed
                                    jnz   Draw_break2
     ; first ball
-                                ; collision with breaks
-                                 MOV   determineFlag , 0
+                                   MOV   determineFlag , 0
                                    CALL  setBall1
                                    CALL  MovBall
-  
+                                   pusha
+                                   call bricksCollision
+                                   popa
+                                   CALL  setBall2
                                    CMP   mode ,1
                                    JLE   singl_mode_1
                                    MOV   determineFlag , 1
                                    CALL  setBall1
                                    CALL  MovBall
+                                   pusha
+                                   call  bricksCollision
+                                   popa
 
                                    CALL  setBall2
+
     singl_mode_1:  
 
-                                pusha
-
-                                call checkDownBlockColl
-                                popa
-                                cmp yc, 190
-                                jg skipUp
-                                pusha
-                                call checkUpperBlockColl
-                                popa
-                                skipUp:
-                                mov ax, WindowWidth
-                                sub ax, S
-                                cmp ax, xc
-                                jz skipLeft
-                                pusha
-                                call checkLeftBlockColl
-                                popa
-                                skipLeft:
-                                cmp xc, 0
-                                jz skipRight
-                                pusha
-                                call checkRightBlockColl
-                                popa
-                                skipRight:
-                                ; collision part  => make proc
-
-                                  CALL  setBall2
                 
                                    mov   cx,0
     ; Second ball
@@ -3370,6 +3349,35 @@ checkRightBlockColl         proc
                     ret
 checkRightBlockColl         endp
 
+bricksCollision             proc 
+pusha
+
+                                call checkDownBlockColl
+                                popa
+                                cmp yc, 190
+                                jg skipUp
+                                pusha
+                                call checkUpperBlockColl
+                                popa
+                                skipUp:
+                                mov ax, WindowWidth
+                                sub ax, S
+                                cmp ax, xc
+                                jz skipLeft
+                                pusha
+                                call checkLeftBlockColl
+                                popa
+                                skipLeft:
+                                cmp xc, 0
+                                jz skipRight
+                                pusha
+                                call checkRightBlockColl
+                                popa
+                                skipRight:
+                                ; collision part  => make proc
+                            ret
+
+bricksCollision             endp 
     ;==================================================================
 clrbreaker_shift proc
 
