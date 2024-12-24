@@ -2662,7 +2662,7 @@ MAIN PROC
    mov al,2
   cont_chooseleve2:
                                    mov   lvl,al
-                                   cmp   lvl,1
+                                   cmp   lvl,0
                                    jnz   cmpAgain
                                    mov   rows,10
                                    mov   cols,14
@@ -2670,18 +2670,18 @@ MAIN PROC
                                    mov   starts_y,0
                                    jmp   choice_done
     cmpAgain:                      
-                                   cmp   lvl,2
+                                   cmp   lvl,1
                                    jnz   lvl3
-                                   mov   rows,7
-                                   mov   cols,14
-                                   mov   starts_x,0
-                                   mov   starts_y,50
-                                   jmp   choice_done
-    lvl3:                          
-                                   mov   starts_x,46
-                                   mov   starts_y,0
                                    mov   rows,10
                                    mov   cols,10
+                                   mov   starts_x,46
+                                   mov   starts_y,0
+                                   jmp   choice_done
+    lvl3:                          
+                                   mov   starts_x,0
+                                   mov   starts_y,50
+                                   mov   rows,7
+                                   mov   cols,14
     choice_done:                   
     ;=======================================
                                    call  draw_grid_loop
@@ -2979,7 +2979,7 @@ draw_grid_loop proc
     ;change color
                                    pop   starts_x
                     
-                                   cmp   lvl,3
+                                   cmp   lvl,1
                                    jnz   normal
                                    cmp   cl,2
                                    jbe   rock
@@ -3158,7 +3158,7 @@ draw_breaker endp
 myblock proc
 
     ;=====change color====
-                                   cmp   lvl,3
+                                   cmp   lvl,1
                                    jz    no_cc
                                    cmp   color,9
                                    jnz   firstc
@@ -3173,7 +3173,7 @@ myblock proc
                    
 
     ;;;;;;;;;;;;;;;;;power up
-                                   cmp   lvl,1
+                                   cmp   lvl,0
                                    jnz   start_draw
                                    cmp   total,33
                                    jnz   start_draw
