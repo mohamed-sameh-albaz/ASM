@@ -2687,13 +2687,20 @@ MAIN PROC
                                    cmp   cx,Speed
                                    jnz   Draw_break2
     ; first ball
+<<<<<<< HEAD
     
+=======
+>>>>>>> 4e2dbba221c7eacd70cfa9a68a4cf7c725c56c75
                                    MOV   determineFlag , 0
                                    CALL  setBall1
                                    
                                    CALL  MovBall
                                    pusha
+<<<<<<< HEAD
                                    call  checkCollisionBlocks
+=======
+                                   call bricksCollision
+>>>>>>> 4e2dbba221c7eacd70cfa9a68a4cf7c725c56c75
                                    popa
                                    CALL  setBall2
                                    CMP   mode ,1
@@ -2702,11 +2709,22 @@ MAIN PROC
                                    CALL  setBall1
                                    CALL  MovBall
                                    pusha
+<<<<<<< HEAD
                                    call  checkCollisionBlocks
                                    popa
 
                                    CALL  setBall2
     singl_mode_1:                  
+=======
+                                   call  bricksCollision
+                                   popa
+
+                                   CALL  setBall2
+
+    singl_mode_1:  
+
+                
+>>>>>>> 4e2dbba221c7eacd70cfa9a68a4cf7c725c56c75
                                    mov   cx,0
     ; Second ball
     ;      MOV determineFlag ,1
@@ -3380,6 +3398,35 @@ checkCollisionBlocks proc
                                    ret
 checkCollisionBlocks endp
 
+bricksCollision             proc 
+pusha
+
+                                call checkDownBlockColl
+                                popa
+                                cmp yc, 190
+                                jg skipUp
+                                pusha
+                                call checkUpperBlockColl
+                                popa
+                                skipUp:
+                                mov ax, WindowWidth
+                                sub ax, S
+                                cmp ax, xc
+                                jz skipLeft
+                                pusha
+                                call checkLeftBlockColl
+                                popa
+                                skipLeft:
+                                cmp xc, 0
+                                jz skipRight
+                                pusha
+                                call checkRightBlockColl
+                                popa
+                                skipRight:
+                                ; collision part  => make proc
+                            ret
+
+bricksCollision             endp 
     ;==================================================================
 clrbreaker_shift proc
 
