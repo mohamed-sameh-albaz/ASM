@@ -37,12 +37,12 @@
     ;========================== second breaker data
     sec_lenght                    dw 50                                                         ;------
     sec_Bidth                     dw 5                                                          ; |
-    sec_yorigin                   dw 5                                                          ;190
+    sec_yorigin                   dw 3                                                          ;190
     sec_x                         dw 120
-    sec_y                         dw 5
+    sec_y                         dw 3
     sec_breaker                   db 5
     sec_endx                      dw 170
-    sec_endy                      dw 10
+    sec_endy                      dw 8
     sec_CBreaker                  dw ?
     sec_buttonpressed             db ?
     sec_breakersmothness          dw 5
@@ -77,7 +77,7 @@
     red_block                     db 4
     ;==========================================     ;Ball
     determineFlag                 db 0                                                          ; To know which ball will be set
-    dummy                         dw ? 
+    dummy                         dw ?
     upperCollFlag                 db 0
     lowerCollFlag                 db 0
     leftCollFlag                  db 0
@@ -87,7 +87,7 @@
     S                             DW 6d                                                         ; Side Length of Ball
     CBall                         DW 0d
     ;09ffh                                                       ; X OF Center of the Ball (initial zero will be calculated)
-    Speed                         dw 09ffh
+    Speed                         dw 3fffh
     BackGroundColor               DB 00h
     ballColor                     DB 0Fh
     Flag                          DB 0                                                          ;Flag to clear the ball in its previous location
@@ -95,18 +95,19 @@
     WindowHeight                  DW 200d
     WindowHeight_start            DW 0                                                          ;
     ; ShiftX DW  0d
-    ShiftX           DW 2d
-    ShiftY           DW 3d
-    DefaultShiftX    DW 5d
-    DefaultShiftY                  DW 3d
+    ShiftX                        DW 2d
+    ShiftY                        DW 3d
+    DefaultShiftX                 DW 2d
+    DefaultShiftY                 DW 3d
 
     PrevTime                      DB 0
-    ChangeShiftlow                dw 1
-    ChangeShiftHigh               dw 3
+    ChangeShiftlow                dw 0
+    ChangeShiftHigh               dw 0
     flagBallCollision             db 0
+    x_limit                       dw 5
     ;================================================== first player ball
     first_ball_Xc                 DW 160d                                                       ; X of Top Left Corner of the 1St Ball
-    first_ball_Yc                 DW 30d                                                       ; Y of Top Left Corner of the 1St Ball
+    first_ball_Yc                 DW 30d                                                        ; Y of Top Left Corner of the 1St Ball
     first_ball_S                  DW 4d                                                         ; Side Length of 1St  Ball
     first_ball_CBall              DW 0d                                                         ; X OF Center of the 1St Ball (initial zero will be calculated)
     first_ball_BackGroundColor    DB 00h
@@ -119,14 +120,14 @@
 
     ; ShiftX DW  0d
 
-    first_ball_ShiftX             DW 5d
+    first_ball_ShiftX             DW 2d
     first_ball_ShiftY             DW 2d
-    first_ball_DefaultShiftX      DW 5d
-    first_ball_DefaultShiftY       DW 2d
+    first_ball_DefaultShiftX      DW 2d
+    first_ball_DefaultShiftY      DW 3d
 
     ; PrevTime         DB 0
-    first_ball_ChangeShiftlow     dw 1
-    first_ball_ChangeShiftHigh    dw 3
+    first_ball_ChangeShiftlow     dw 0
+    first_ball_ChangeShiftHigh    dw 0
     first_ball_flag_collision     db 0
     ;================================================== second player ball
     sec_ball_Xc                   DW 160d                                                       ; X of Top Left Corner of the 2nd Ball
@@ -142,20 +143,20 @@
     sec_ball_WindowHeight_end     DW 200d                                                       ; end of window height of  second player
 
     ; ShiftX DW  0d
-    sec_ball_ShiftX               DW 5d
+    sec_ball_ShiftX               DW 2d
     sec_ball_ShiftY               DW 2d
-    sec_ball_DefaultShiftX        DW 5d
-    sec_ball_DefaultShiftY             DW -2d
+    sec_ball_DefaultShiftX        DW -2d
+    sec_ball_DefaultShiftY        DW -3d
     ; PrevTime         DB 0
-    sec_ball_ChangeShiftlow       dw 1
-    sec_ball_ChangeShiftHigh      dw 3
+    sec_ball_ChangeShiftlow       dw 0
+    sec_ball_ChangeShiftHigh      dw 0
     sec_ball_flag_collision       db 0
     ;=================================================================== menu
-    l                dw 30
-    lorg             dw 50
-    w                dw 9
-    worg             dw 20
-    letters          db "play$"
+    l                             dw 30
+    lorg                          dw 50
+    w                             dw 9
+    worg                          dw 20
+    letters                       db "play$"
     State                         db 0
     curX                          dw 90
     curY                          dw 55
@@ -183,21 +184,21 @@
     ; sec_breaker_center dw ?
     ;================================================== first player
     first_heart                   db 3
-    first_score                   db 0
+    first_score                   dw 12
     ;================================================== secound player
     sec_heart                     db 3
-    sec_score                     db 0
+    sec_score                     dw 3242
     ;========================================================= mode
     mode                          db 3
-        first_player_butt             db 0
-    sec_player_butt             db 1
+    first_player_butt             db 0
+    sec_player_butt               db 1
 
-    right_arrow  db 4DH 
-    left_arrow   db 4BH 
-    right_butt   db 20H   
-    left_butt    db 1EH  
-    curr_right   db ?
-    curr_left    db ?
+    right_arrow                   db 4DH
+    left_arrow                    db 4BH
+    right_butt                    db 20H
+    left_butt                     db 1EH
+    curr_right                    db ?
+    curr_left                     db ?
     
     ; mode 0 single player in level 1
     ; mode 1 single player in level 2
@@ -205,7 +206,7 @@
     ; mode 3 multiplayer in level 3  send and recieve (2 devices)
     ;=================================================================chat
     ;===================================================================
-    checked db 0
+    checked                       db 0
 
     messsage                      DB 'reciever on , press esc to end session', 0AH, 0DH, "$"
     messsage2                     DB 'Enter your string', 0AH, 0DH, "$"
@@ -220,9 +221,13 @@
     emptystr                      db 10,13,'$'
     page1                         db 0
 
-
-
-
+    ;=========================================score
+    ;name db 12,?,12 dup('$'),10,13
+    player1_str                   db "Player1:   $",13,10
+    string_score1                 db "$$$$$$$$$"
+    player2_str                   db "Player2:   $",13,10
+    string_score2                 db "$$$$$$$$$$",13,10
+    who_lost_flage                db ?
 .CODE
 
 setBreaker1 PROC
@@ -373,13 +378,6 @@ setBreaker2 PROC
                                    RET
 setBreaker2 ENDP
 
-
-
-
-
-
-
-
 setBall1 PROC
                                    cmp   determineFlag , 1
                                    jz    sec_ball_set
@@ -414,7 +412,7 @@ setBall1 PROC
                                    MOV   AX ,first_ball_DefaultShiftX
                                    MOV   DefaultShiftX    , AX
 
-                                                                       MOV   AX ,first_ball_DefaultShiftY
+                                   MOV   AX ,first_ball_DefaultShiftY
                                    MOV   DefaultShiftY    , AX
                                    MOV   AX ,first_ball_ChangeShiftlow
                                    MOV   ChangeShiftlow  , AX
@@ -457,7 +455,7 @@ setBall1 PROC
                                    MOV   AX ,sec_ball_DefaultShiftX
                                    MOV   DefaultShiftX    , AX
 
-                                                                      MOV   AX ,sec_ball_DefaultShiftY
+                                   MOV   AX ,sec_ball_DefaultShiftY
                                    MOV   DefaultShiftY    , AX
 
                                    MOV   AX ,sec_ball_ChangeShiftlow
@@ -504,7 +502,6 @@ setBall2 PROC
                                    MOV   first_ball_DefaultShiftX   , AX
                                    MOV   AX , DefaultShiftY
                                    MOV   first_ball_DefaultShiftY   , AX
-
                                    MOV   AX , ChangeShiftlow
                                    MOV   first_ball_ChangeShiftlow  , AX
                                    MOV   AX , ChangeShiftHigh
@@ -613,8 +610,6 @@ MovBall PROC
                                    CALL  setBreaker2
     singl_mode_2:                  
 
-
-
                                    MOV   AX , ShiftX
                                    ADD   Xc , AX
 
@@ -634,7 +629,7 @@ MovBall PROC
                                    NEG   ShiftX
                                    MOV   AX , ShiftX
                                    ADD   Xc , AX
-                                ;    JMP ToDraw
+    ;    JMP ToDraw
 
     ToY:                           
 
@@ -655,7 +650,7 @@ MovBall PROC
     ;                                CMP   Yc , AX
     ;                                JL    rel_jmp_down_collision_2
     ;                                JMP   cont_down_2
-    ; rel_jmp_down_collision_2:      
+    ; rel_jmp_down_collision_2:
     ;                                JMP   ToY
     cont_down_2:                   
                                    MOV   AX , x
@@ -698,19 +693,34 @@ MovBall PROC
                                    ja    firstquarter
     ;  NEG  ChangeShiftlow
     ;  NEG  ChangeShiftHigh
-    firstquarter:                                                                ;here i increment by 3 as top decrease the slope of the ball
+    
+    firstquarter:                  
+                                   mov   ax,Shiftx                               ;here i increment by 3 as top decrease the slope of the ball
+                                   cmp   ax,x_limit
+                                   Jl    cont1_firstq
+
+                                   jmp   neutralizeshift
+    cont1_firstq:                  
+                                   mov   bx,x_limit
+                                   neg   bx
+                                   cmp   ax,bx
+                                   jg    cont2_firstq
+    
+                                   jmp   neutralizeshift
+    cont2_firstq:                  
                                    mov   ax,Xc
                                    cmp   ax,firstQ
                                    ja    secQ
                                    MOV   AX,ShiftX
                                    cmp   ax,0
                                    jb    fristq_cont
-                                   sub   ax,ChangeShiftHigh
+                                   
+                                   add   ax,ChangeShiftHigh
                     
                                    jmp   fristq_cont2
     fristq_cont:                   
                     
-                                   add   ax,ChangeShiftHigh
+                                   sub   ax,ChangeShiftHigh
     fristq_cont2:                  
                                    mov   ShiftX,ax
  
@@ -739,14 +749,14 @@ MovBall PROC
                                    MOV   AX,ShiftX
                                    cmp   ax,0
                                    ja    lastq_cont
-                                   sub   ax,ChangeShiftHigh
+                                   add   ax,ChangeShiftHigh
     ;NEG ax
                                    mov   ShiftX,ax
                                    jmp   neutralizeshift
     lastq_cont:                    
-                                   add   ax,ChangeShiftHigh
+                                   sub   ax,ChangeShiftHigh
                                    mov   ShiftX,ax
-
+                                   NEG   ShiftX
     neutralizeshift:               
                                    mov   determine_breaker_Flag ,0
                                    CALL  setBreaker1
@@ -839,18 +849,31 @@ MovBall PROC
     ;  NEG  ChangeShiftlow
     ;  NEG  ChangeShiftHigh
     firstquarter_2:                                                              ;here i increment by 3 as top decrease the slope of the ball
+                                   mov   ax,Shiftx                               ;here i increment by 3 as top decrease the slope of the ball
+                                   cmp   ax,x_limit
+                                   Jl    cont1_firstq2
+
+                                   jmp   neutralizeshift_2
+    cont1_firstq2:                 
+                                   mov   bx,x_limit
+                                   neg   bx
+                                   cmp   ax,bx
+                                   jg    cont2_firstq2
+    
+                                   jmp   neutralizeshift_2
+    cont2_firstq2:                 
                                    mov   ax,Xc
                                    cmp   ax,firstQ
                                    ja    secQ_2
                                    MOV   AX,ShiftX
                                    cmp   ax,0
                                    jb    fristq_cont_2
-                                   sub   ax,ChangeShiftHigh
+                                   add   ax,ChangeShiftHigh
                     
                                    jmp   fristq_cont2_2
     fristq_cont_2:                 
                     
-                                   add   ax,ChangeShiftHigh
+                                   sub   ax,ChangeShiftHigh
     fristq_cont2_2:                
                                    mov   ShiftX,ax
  
@@ -879,12 +902,12 @@ MovBall PROC
                                    MOV   AX,ShiftX
                                    cmp   ax,0
                                    ja    lastq_cont_2
-                                   sub   ax,ChangeShiftHigh
+                                   add   ax,ChangeShiftHigh
     ;NEG ax
                                    mov   ShiftX,ax
                                    jmp   neutralizeshift_2
     lastq_cont_2:                  
-                                   add   ax,ChangeShiftHigh
+                                   sub   ax,ChangeShiftHigh
                                    mov   ShiftX,ax
 
     neutralizeshift_2:             
@@ -1716,7 +1739,7 @@ Draw_t proc
                                    ret
 Draw_t endp
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 send_data proc
 
@@ -1770,7 +1793,7 @@ recive_data proc
                                    mov   determine_breaker_Flag ,1
                                    CALL  setBreaker1
                                    MOV   al ,value
-                                   CBW                      
+                                   CBW
                                    MOV   dx ,AX
 
 
@@ -1787,31 +1810,31 @@ recive_data proc
                                    mov   endx,ax
                    
                                    jmp   cont3_1
-    rightbound_1:                    
+    rightbound_1:                  
                                    mov   ax,lenght
                                    mov   bx,320
                                    sub   bx,ax
                                    mov   endx,320
-    inbound_1:                       
+    inbound_1:                     
                                    mov   ax,endx
                                    mov   bx,lenght
                                    sub   ax,bx
                                    mov   x,ax
            
                
-    cont3_1:                         
+    cont3_1:                       
     
                                    cmp   value,0
-                                   jG   drawR_1
+                                   jG    drawR_1
                                    call  draw_breakerL
-                                                CALL  setBreaker2
-                                                 popa
-                                    ret
-    drawR_1:                         
+                                   CALL  setBreaker2
+                                   popa
+                                   ret
+    drawR_1:                       
                                    call  draw_breakerR
-                                                CALL  setBreaker2
-                                                 popa
-                                                  ret
+                                   CALL  setBreaker2
+                                   popa
+                                   ret
 
 
 
@@ -1828,7 +1851,7 @@ recive_data proc
     ;                                CALL  setBreaker2
                                   
     ;                                ret
-    ; negative:                      
+    ; negative:
     ;                                MOV   negativebs ,AX
     ;                                CALL  draw_breakerL
     ;                                CALL  setBreaker2
@@ -1889,55 +1912,54 @@ DrawBall ENDP
 
 
 RestartBall PROC
-                                ;    MOV   AX , WindowWidth
-                                ;    MOV   BX , 2
-                                ;    MOV   DX , 0
-                                ;    DIV   BX
+    ;    MOV   AX , WindowWidth
+    ;    MOV   BX , 2
+    ;    MOV   DX , 0
+    ;    DIV   BX
 
-                                ;    MOV   Xc , AX
+    ;    MOV   Xc , AX
 
-                                ;    MOV   AX , WindowHeight
-                                ;    MOV   BX , 2
-                                ;    MOV   DX , 0
-                                ;    DIV   BX
+    ;    MOV   AX , WindowHeight
+    ;    MOV   BX , 2
+    ;    MOV   DX , 0
+    ;    DIV   BX
 
-                                ;    MOV   Yc , AX
+    ;    MOV   Yc , AX
 
-                                   MOV   ShiftX , 0
-                                MOV  AX , DefaultShiftY
-                                 MOV  ShiftY , AX
+                                   MOV   ShiftX , 1
+                                   MOV   AX , DefaultShiftY
+                                   MOV   ShiftY , AX
                                    cmp   determineFlag , 1
                                    jz    sec_ball_dec_hearts
-                                     MOV determine_breaker_Flag,0
-                                     CALL  setBreaker1
-                                     call CenterBreaker
-                                     CALL  setBreaker2
-                                    MOV  AX , CBreaker
-                                    MOV  Xc,AX
-                                    MOV  AX , y
-                                    SUB AX ,10 
-                                    MOV Yc , AX
+                                   MOV   determine_breaker_Flag,0
+                                   CALL  setBreaker1
+                                   call  CenterBreaker
+                                   CALL  setBreaker2
+                                   MOV   AX , CBreaker
+                                   MOV   Xc,AX
+                                   MOV   AX , y
+                                   SUB   AX ,10
+                                   MOV   Yc , AX
                                    DEC   first_heart
                                    CMP   first_heart,0
                                    JZ    game_over
                                    RET
-    sec_ball_dec_hearts:        
-                                  MOV determine_breaker_Flag,1
-                                     CALL  setBreaker1
-                                     call CenterBreaker
-                                     CALL  setBreaker2
-                                    MOV  AX , CBreaker
-                                    MOV  Xc,AX
-                                    MOV  AX , y
-                                    ADD AX ,10 
-                                    MOV Yc , AX
+    sec_ball_dec_hearts:           
+                                   MOV   determine_breaker_Flag,1
+                                   CALL  setBreaker1
+                                   call  CenterBreaker
+                                   CALL  setBreaker2
+                                   MOV   AX , CBreaker
+                                   MOV   Xc,AX
+                                   MOV   AX , y
+                                   ADD   AX ,10
+                                   MOV   Yc , AX
                                    DEC   sec_heart
                                    CMP   sec_heart,0
                                    JZ    game_over
                                    RET
     game_over:                     
-    ;  MOV  AX , 4C00H
-    ;  INT  21H
+    ;jmp   endgame
 
 RestartBall ENDP
 
@@ -2244,14 +2266,7 @@ MAIN PROC
                                    MOV   AX, @DATA
                                    MOV   DS, AX
          
-                                   mov   ch,50
-                                   mov   cl,10
-
-
-                                   MOV   BH,1
-                                   mov   ah,0
-                                   mov   al,13h
-                                   int   10h
+                               
 
 
     ; initinalize COM
@@ -2271,6 +2286,14 @@ MAIN PROC
 
     ;jmp play
     Menu:                          
+                                   mov   ch,50
+                                   mov   cl,10
+
+
+                                   MOV   BH,1
+                                   mov   ah,0
+                                   mov   al,13h
+                                   int   10h
                                    call  draw_menu
                                    mov   ah,0
                                    int   16h
@@ -2330,171 +2353,171 @@ MAIN PROC
                                    jmp   chat_menu
     menu_cont:                     
     play:                          
-            ;==================================================================select mode
-                                 mov bh,0
-                                  mov   ah,0
-                                  mov   al,3
-                                  int   10h
+    ;==================================================================select mode
+                                   mov   bh,0
+                                   mov   ah,0
+                                   mov   al,3
+                                   int   10h
 
     ;== move cureser
-                                  mov   ah,2
-                                  mov   dh,5
-                                  mov   dl,25
-                                  int   10h
+                                   mov   ah,2
+                                   mov   dh,5
+                                   mov   dl,25
+                                   int   10h
     ;====
          
-                                  mov   ah, 9
-                                  mov   dx, offset mode1
-                                  int   21h
+                                   mov   ah, 9
+                                   mov   dx, offset mode1
+                                   int   21h
     ;== move cureser
-                                  mov   ah,2
-                                  mov   dh,8
-                                  mov   dl,25
-                                  int   10h
+                                   mov   ah,2
+                                   mov   dh,8
+                                   mov   dl,25
+                                   int   10h
     ;====
-                                  mov   ah, 9
-                                  mov   dx, offset mode2
-                                  int   21h
+                                   mov   ah, 9
+                                   mov   dx, offset mode2
+                                   int   21h
     ;== move cureser
-                                  mov   ah,2
-                                  mov   dh,11
-                                  mov   dl,25
-                                  int   10h
+                                   mov   ah,2
+                                   mov   dh,11
+                                   mov   dl,25
+                                   int   10h
     ;====
-                                  mov   ah, 9
-                                  mov   dx, offset mode3
-                                  int   21h
+                                   mov   ah, 9
+                                   mov   dx, offset mode3
+                                   int   21h
     ;== move cureser
-                                  mov   ah,2
-                                  mov   dh,14
-                                  mov   dl,25
-                                  int   10h
+                                   mov   ah,2
+                                   mov   dh,14
+                                   mov   dl,25
+                                   int   10h
     ;====
-                                  mov   ah, 9
-                                  mov   dx, offset mode4
-                                  int   21h
-                                  ;===================wait for button to be pressed
+                                   mov   ah, 9
+                                   mov   dx, offset mode4
+                                   int   21h
+    ;===================wait for button to be pressed
 
                                                                  
-                                mov   ah,2                              
-                                  mov   dh,5
-                                  mov   dl,22
-                                  int   10h
-                                  mov mode,0
-                                  reagain_butt:
-                                  mov   ah,0
-                                  int   16h
-                                  cmp ah , 50h
-                                  jne chk_upper
-                                inc mode
-                                JMP valid_mode
-                                jmp  reagain_butt
-                                chk_upper:
+                                   mov   ah,2
+                                   mov   dh,5
+                                   mov   dl,22
+                                   int   10h
+                                   mov   mode,0
+    reagain_butt:                  
+                                   mov   ah,0
+                                   int   16h
+                                   cmp   ah , 50h
+                                   jne   chk_upper
+                                   inc   mode
+                                   JMP   valid_mode
+                                   jmp   reagain_butt
+    chk_upper:                     
 
-                                cmp ah , 48h
-                                jne chk_enter
-                                dec mode
-                                                                JMP valid_mode
-                                jmp  reagain_butt
-                                chk_enter:
-                                cmp ah , 1ch
-                                jne reagain_butt
-                                jmp selectiondone
-
-
-                                valid_mode:
-                                   cmp mode,4
-                                   je choice_1
-                                   cmp mode , 0
-                                   je choice_1
-                                   cmp mode,1
-                                   je choice_2
-                                    cmp mode,2
-                                   je choice_3
-                                    cmp mode,3
-                                   je choice_4
-                                   cmp mode ,0
-                                   jl choice_4
-                                   jmp selectiondone
-                                    choice_1:
-                                    mov mode,0
-                                                                      mov   ah,2
-                                  mov   dh,5
-                                  mov   dl,22
-                                  int   10h
-                                    jmp reagain_butt
-                                    choice_2:
-                                    mov mode,1
-                                                                      mov   ah,2
-                                  mov   dh,8
-                                  mov   dl,22
-                                  int   10h
-                                    jmp reagain_butt
-
-                                    choice_3:
-                                    mov mode,2
-                                                                      mov   ah,2
-                                  mov   dh,11
-                                  mov   dl,22
-                                  int   10h
-                                    jmp reagain_butt
-                                    choice_4:
-                                    mov mode,3
-                                                                      mov   ah,2
-                                  mov   dh,14
-                                  mov   dl,22
-                                  int   10h
-                                    jmp reagain_butt
-
-                                ;   cmp mode,4
-
-                                ;   jne select_mode2
-                                ;   mov mode,0
-                                ;   jmp select_modef
-                                ;   select_mode2:
-                                ;   cmp al,"2"
-                                ;   jne select_mode3
-                                ;   mov mode,1
-                                ;   jmp select_modef
-                                ;   select_mode3:
-                                ;   cmp al,"3"
-                                ;   jne select_mode4
-                                ;  mov mode,2
-                                ;  jmp select_modef
-                                ;  select_mode4:
-                                ;   cmp al,"4"
-                                ;   jne rechk_mode
-                                ;   mov mode,3
-                                ;   select_modef:
+                                   cmp   ah , 48h
+                                   jne   chk_enter
+                                   dec   mode
+                                   JMP   valid_mode
+                                   jmp   reagain_butt
+    chk_enter:                     
+                                   cmp   ah , 1ch
+                                   jne   reagain_butt
+                                   jmp   selectiondone
 
 
+    valid_mode:                    
+                                   cmp   mode,4
+                                   je    choice_1
+                                   cmp   mode , 0
+                                   je    choice_1
+                                   cmp   mode,1
+                                   je    choice_2
+                                   cmp   mode,2
+                                   je    choice_3
+                                   cmp   mode,3
+                                   je    choice_4
+                                   cmp   mode ,0
+                                   jl    choice_4
+                                   jmp   selectiondone
+    choice_1:                      
+                                   mov   mode,0
+                                   mov   ah,2
+                                   mov   dh,5
+                                   mov   dl,22
+                                   int   10h
+                                   jmp   reagain_butt
+    choice_2:                      
+                                   mov   mode,1
+                                   mov   ah,2
+                                   mov   dh,8
+                                   mov   dl,22
+                                   int   10h
+                                   jmp   reagain_butt
+
+    choice_3:                      
+                                   mov   mode,2
+                                   mov   ah,2
+                                   mov   dh,11
+                                   mov   dl,22
+                                   int   10h
+                                   jmp   reagain_butt
+    choice_4:                      
+                                   mov   mode,3
+                                   mov   ah,2
+                                   mov   dh,14
+                                   mov   dl,22
+                                   int   10h
+                                   jmp   reagain_butt
+
+    ;   cmp mode,4
+
+    ;   jne select_mode2
+    ;   mov mode,0
+    ;   jmp select_modef
+    ;   select_mode2:
+    ;   cmp al,"2"
+    ;   jne select_mode3
+    ;   mov mode,1
+    ;   jmp select_modef
+    ;   select_mode3:
+    ;   cmp al,"3"
+    ;   jne select_mode4
+    ;  mov mode,2
+    ;  jmp select_modef
+    ;  select_mode4:
+    ;   cmp al,"4"
+    ;   jne rechk_mode
+    ;   mov mode,3
+    ;   select_modef:
 
 
-                                ;   rechk_mode:
-                                ;   mov   ah,0
-                                ;   int   16h
-                                ;   cmp al,"1"
-                                ;   jne select_mode2
-                                ;   mov mode,0
-                                ;   jmp select_modef
-                                ;   select_mode2:
-                                ;   cmp al,"2"
-                                ;   jne select_mode3
-                                ;   mov mode,1
-                                ;   jmp select_modef
-                                ;   select_mode3:
-                                ;   cmp al,"3"
-                                ;   jne select_mode4
-                                ;  mov mode,2
-                                ;  jmp select_modef
-                                ;  select_mode4:
-                                ;   cmp al,"4"
-                                ;   jne rechk_mode
-                                ;   mov mode,3
-                                ;   select_modef:
+
+
+    ;   rechk_mode:
+    ;   mov   ah,0
+    ;   int   16h
+    ;   cmp al,"1"
+    ;   jne select_mode2
+    ;   mov mode,0
+    ;   jmp select_modef
+    ;   select_mode2:
+    ;   cmp al,"2"
+    ;   jne select_mode3
+    ;   mov mode,1
+    ;   jmp select_modef
+    ;   select_mode3:
+    ;   cmp al,"3"
+    ;   jne select_mode4
+    ;  mov mode,2
+    ;  jmp select_modef
+    ;  select_mode4:
+    ;   cmp al,"4"
+    ;   jne rechk_mode
+    ;   mov mode,3
+    ;   select_modef:
     ;========================================================================
 
-                                    selectiondone:
+    selectiondone:                 
 
                                    mov   ah,0
                                    mov   al,13h                                  ;13h
@@ -2520,38 +2543,38 @@ MAIN PROC
     ;======================================
     ;;;;;;;;;;;;choose level;;;;;;;;;;;;;;;;;
     ;======================================
-    mov al,mode
-    cmp mode,3
-    je cont_chooseLeve
-   jmp cont_chooseleve2
-   cont_chooseleve:
-   ;====================================================================== send that u are ready
-   ;Set port configuration
-    mov dx,3fbh
-    mov al,00011011b
-    out dx,al
+                                   mov   al,mode
+                                   cmp   mode,3
+                                   je    cont_chooseLeve
+                                   jmp   cont_chooseleve2
+    cont_chooseleve:               
+    ;====================================================================== send that u are ready
+    ;Set port configuration
+                                   mov   dx,3fbh
+                                   mov   al,00011011b
+                                   out   dx,al
 
     ;===================
-       AGAIN_to_start: ;Check that Transmitter Holding Register is Empty
-            mov dx , 3FDH	; Line Status Register 
-            In al , dx 			;Read Line Status
-            AND al , 00100000b
-            Jz AGAIN_to_start
+    AGAIN_to_start:                                                              ;Check that Transmitter Holding Register is Empty
+                                   mov   dx , 3FDH                               ; Line Status Register
+                                   In    al , dx                                 ;Read Line Status
+                                   AND   al , 00100000b
+                                   Jz    AGAIN_to_start
                   
-                               ;If empty put the VALUE in Transmit data ;register
-            mov dx , 3F8H		; Transmit data register
-            mov al,1
-            out dx , al 
-   ;=======================================================================
+    ;If empty put the VALUE in Transmit data ;register
+                                   mov   dx , 3F8H                               ; Transmit data register
+                                   mov   al,1
+                                   out   dx , al
+    ;=======================================================================
    
-       CHK_to_start:    mov dx , 3FDH		; Line Status Register
-    	    in al , dx 
-            AND al , 1
-            JZ    CHK_to_start ;whait for user 2 to connect
+    CHK_to_start:                  mov   dx , 3FDH                               ; Line Status Register
+                                   in    al , dx
+                                   AND   al , 1
+                                   JZ    CHK_to_start                            ;whait for user 2 to connect
 
-            ;===============================================================================
-   mov al,2
-  cont_chooseleve2:
+    ;===============================================================================
+                                   mov   al,2
+    cont_chooseleve2:              
                                    mov   lvl,al
                                    cmp   lvl,0
                                    jnz   cmpAgain
@@ -2570,8 +2593,8 @@ MAIN PROC
                                    jmp   choice_done
     lvl3:                          
                                    mov   starts_x,0
-                                   mov   starts_y,50
-                                   mov   rows,7
+                                   mov   starts_y,60
+                                   mov   rows,8
                                    mov   cols,14
     choice_done:                   
     ;=======================================
@@ -2592,13 +2615,13 @@ MAIN PROC
     ;  CALL DrawBall              ;check the upper pixel of the ball is not as the background ;;;;;;;;;;;;;;;
     singl_mode:                    
                                    mov   cx,0
-                                     MOV   determineFlag , 0
+                                   MOV   determineFlag , 0
                                    CALL  setBall1
-                                    CALL RestartBall
+                                   CALL  RestartBall
                                    CALL  setBall2
-                                    MOV   determineFlag , 1
+                                   MOV   determineFlag , 1
                                    CALL  setBall1
-                                    CALL RestartBall
+                                   CALL  RestartBall
                                    CALL  setBall2
     game:                          
                                    cmp   cx,Speed
@@ -2607,24 +2630,37 @@ MAIN PROC
                                    MOV   determineFlag , 0
                                    CALL  setBall1
                                    CALL  MovBall
-                                   pusha
-                                   call bricksCollision
-                                   popa
+                                 
                                    CALL  setBall2
                                    CMP   mode ,1
                                    JLE   singl_mode_1
                                    MOV   determineFlag , 1
                                    CALL  setBall1
                                    CALL  MovBall
+                                
+
+                                   CALL  setBall2
+
+    singl_mode_1:                  
+                                   MOV   determineFlag , 0
+                                   CALL  setBall1
+                                 
+                                   pusha
+                                   call  bricksCollision
+                                   popa
+                                   CALL  setBall2
+                
+                                   CMP   mode ,1
+                                   JLE   singl_mode_22
+                                   MOV   determineFlag , 1
+                                   CALL  setBall1
+                                  
                                    pusha
                                    call  bricksCollision
                                    popa
 
                                    CALL  setBall2
-
-    singl_mode_1:  
-
-                
+    singl_mode_22:                 
                                    mov   cx,0
     ; Second ball
     ;      MOV determineFlag ,1
@@ -2656,8 +2692,65 @@ MAIN PROC
     singl_mode_6:                  
                                    inc   cx
                                    jmp   game
+    endgame:                       
+                                   jmp   Score
 
     Score:                         
+                                   mov   bh,0
+                                   mov   ah,0
+                                   mov   al,3
+                                   int   10h
+
+                                   mov   bh,0
+                                   mov   ah,2
+                                   mov   dh,9
+                                   mov   dl,30
+                                   int   10h
+                                   mov   ah, 9
+                                   mov   dx, offset player1_str
+                                   int   21h
+                                   pusha
+
+                                   mov   ax,first_score
+                                   lea   di,string_score1
+                                   lea   si,string_score1
+                                   call  convert_to_str
+                                   popa
+
+
+                                   mov   ah, 9
+                                   mov   dx, offset string_score1
+                                   int   21h
+
+
+                                   mov   ah,2
+                                   mov   dh,12
+                                   mov   dl,30
+                                   int   10h
+                                   mov   ah, 9
+                                   mov   dx, offset player2_str
+                                   int   21h
+                                   pusha
+                                   mov   ax,sec_score
+                                   lea   di,string_score2
+                                   lea   si,string_score2
+                                   call  convert_to_str
+                                   popa
+
+
+                                   mov   ah, 9
+                                   mov   dx, offset string_score2
+                                   int   21h
+
+    cont_score:                    
+                                   mov   ah,0
+                                   int   16h
+                      
+                                   cmp   ah,1ch
+                                   jnz   cont_score
+                                   jmp   Menu
+
+
 
 
     chat_menu:                     
@@ -2672,6 +2765,33 @@ MAIN PROC
 
 MAIN ENDP
 
+convert_to_str proc
+    
+                                   mov   bx,0ah
+    convertstro:                   
+                                   mov   dx,0
+                                   div   bx
+                                   add   dx,'0'
+                                   mov   [di],dl
+                                   inc   di
+                                   and   ax,ax
+                                   jnz   convertstro
+
+                                   dec   di
+    
+
+    revstro:                       
+                                   CMP   SI, DI
+                                   JAE   stoprstro
+                                   MOV   AL, [SI]
+                                   XCHG  AL, [DI]
+                                   MOV   [SI], AL
+                                   inc   si
+                                   dec   di
+                                   jmp   revstro
+    stoprstro:                     
+                                   ret
+convert_to_str endp
 Mov_Breaker proc
 
     loop2:                         
@@ -2684,17 +2804,17 @@ Mov_Breaker proc
                                    JMP   no_key_1
     rel_cont_key:                  
 
-                                mov al , right_arrow
-                                 mov curr_right ,al
-                                mov al , left_arrow
-                                 mov curr_left , al
-                                  cmp first_player_butt ,0
-                                  jz cont_butt
-                              mov al , right_butt
-                                 mov curr_right ,al
-                                mov al , left_butt
-                                 mov curr_left , al
-                                  cont_butt:
+                                   mov   al , right_arrow
+                                   mov   curr_right ,al
+                                   mov   al , left_arrow
+                                   mov   curr_left , al
+                                   cmp   first_player_butt ,0
+                                   jz    cont_butt
+                                   mov   al , right_butt
+                                   mov   curr_right ,al
+                                   mov   al , left_butt
+                                   mov   curr_left , al
+    cont_butt:                     
                                    mov   buttonpressed,ah
                                    mov   determine_breaker_Flag,0
                                    mov   ah,0                                    ;  make it int 16/0
@@ -2711,22 +2831,22 @@ Mov_Breaker proc
 
     cont2:                         
                                    CMP   mode ,2
-                                   jne rel_nokey_1
-                                   jmp rel_nokey_2
-                                    rel_nokey_1:
+                                   jne   rel_nokey_1
+                                   jmp   rel_nokey_2
+    rel_nokey_1:                   
                                    jmp   no_key_1
-                                   rel_nokey_2:
-                                mov al , right_arrow
-                                 mov curr_right ,al
-                                mov al , left_arrow
-                                 mov curr_left , al
-                                  cmp sec_player_butt ,0
-                                  jz cont_butt_2
-                              mov al , right_butt
-                                 mov curr_right ,al
-                                mov al , left_butt
-                                 mov curr_left , al
-                                  cont_butt_2:
+    rel_nokey_2:                   
+                                   mov   al , right_arrow
+                                   mov   curr_right ,al
+                                   mov   al , left_arrow
+                                   mov   curr_left , al
+                                   cmp   sec_player_butt ,0
+                                   jz    cont_butt_2
+                                   mov   al , right_butt
+                                   mov   curr_right ,al
+                                   mov   al , left_butt
+                                   mov   curr_left , al
+    cont_butt_2:                   
 
 
 
@@ -2746,7 +2866,8 @@ Mov_Breaker proc
                                    cmp   mode , 3
                                    JNE   not_mode_3
                                    pusha
-                                   mov   value, dl                               ;;;;;;;;;;;;;;;;;;;send shift value
+                                   mov   value, dl
+                                   neg   value                                   ;;;;;;;;;;;;;;;;;;;send shift value
                                    call  send_data
                                    popa
     not_mode_3:                    
@@ -3153,368 +3274,368 @@ clearMyBlock endp
     ;
 
 
-getDownBlockStarts         proc
-                    mov ax, dummy          ; xc of the ball
-                    mov cx, mywidth     ; block width 
-                    add cx, space       ;div by block length and space in between => cx = 23 for our eg.
-                    mov dx, 0
-                    div cx              ;  AX = AX/CX and DX=AX % CX   
-                    mul cx              ; mul with the block width and space in between => now ax contain the startx for the block
-                    mov startx, ax      ; startx has the right posit
+getDownBlockStarts proc
+                                   mov   ax, dummy                               ; xc of the ball
+                                   mov   cx, mywidth                             ; block width
+                                   add   cx, space                               ;div by block length and space in between => cx = 23 for our eg.
+                                   mov   dx, 0
+                                   div   cx                                      ;  AX = AX/CX and DX=AX % CX
+                                   mul   cx                                      ; mul with the block width and space in between => now ax contain the startx for the block
+                                   mov   startx, ax                              ; startx has the right posit
 
-                    mov cx,height
-                    add cx,space
-                    mov ax, yc 
-                    mov dx,0
-                    div cx          ; xc of the ball
-                    mul cx
-                    mov starty, ax      ; starty has the right posit
+                                   mov   cx,height
+                                   add   cx,space
+                                   mov   ax, yc
+                                   mov   dx,0
+                                   div   cx                                      ; xc of the ball
+                                   mul   cx
+                                   mov   starty, ax                              ; starty has the right posit
 
-                    ret
-getDownBlockStarts         endp
+                                   ret
+getDownBlockStarts endp
 
 
-checkDownBlockColl         proc
-                    ; down collision
+checkDownBlockColl proc
+    ; down collision
 
-                    mov cx, xc          ; left upper of ball
-                    mov dx, yc     
-                    sub dx, 1     
-                    mov dummy, cx
-                    mov bh, 0               ; page number
-                    mov ah, 0DH             ; get background color into al
-                    int 10h                 ; get 
-                    cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
-                    jz skipFirstDown
+                                   mov   cx, xc                                  ; left upper of ball
+                                   mov   dx, yc
+                                   sub   dx, 1
+                                   mov   dummy, cx
+                                   mov   bh, 0                                   ; page number
+                                   mov   ah, 0DH                                 ; get background color into al
+                                   int   10h                                     ; get
+                                   cmp   al, BackGroundColor                     ; if the current pixel color not same as the background loop till end of ball width
+                                   jz    skipFirstDown
                     
-                    call getDownBlockStarts
-                    call clearMyBlock  
-                      mov checked,1        
-                    mov lowerCollFlag, 1       
+                                   call  getDownBlockStarts
+                                   call  clearMyBlock
+                                   mov   checked,1
+                                   mov   lowerCollFlag, 1
 
-                    ; for testing
-                    mov ax, startx
-                    mov bx, startY
-               ;     call DrawPixel 
+    ; for testing
+                                   mov   ax, startx
+                                   mov   bx, startY
+    ;     call DrawPixel
                     
-                    skipFirstDown:
-                    ; check the end of the ball
-                    mov cx, xc          ; left upper of ball
-                    add cx, S
-                    mov dummy, cx
-                    mov dx, yc       
-                    sub dx, 1   
+    skipFirstDown:                 
+    ; check the end of the ball
+                                   mov   cx, xc                                  ; left upper of ball
+                                   add   cx, S
+                                   mov   dummy, cx
+                                   mov   dx, yc
+                                   sub   dx, 1
 
-                    mov bh, 0               ; page number
-                    mov ah, 0DH             ; get background color into al
-                    int 10h                 ; get 
-                    cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
-                    jz exitDownColl
+                                   mov   bh, 0                                   ; page number
+                                   mov   ah, 0DH                                 ; get background color into al
+                                   int   10h                                     ; get
+                                   cmp   al, BackGroundColor                     ; if the current pixel color not same as the background loop till end of ball width
+                                   jz    exitDownColl
                     
-                    call getDownBlockStarts
-                    call clearMyBlock   
-                    mov checked,1            
-                    ;test
-                    mov ax, startx
-                    mov bx, startY
-                  ;  call DrawPixel 
+                                   call  getDownBlockStarts
+                                   call  clearMyBlock
+                                   mov   checked,1
+    ;test
+                                   mov   ax, startx
+                                   mov   bx, startY
+    ;  call DrawPixel
 
-                    mov lowerCollFlag, 1
+                                   mov   lowerCollFlag, 1
                     
-                    exitDownColl:
+    exitDownColl:                  
                 
-                    cmp lowerCollFlag, 1
-                    jnz retLowerBlockLoop
-                    mov lowerCollFlag, 0
-                    ; NEG  Shiftx
-                    NEG  ShiftY
+                                   cmp   lowerCollFlag, 1
+                                   jnz   retLowerBlockLoop
+                                   mov   lowerCollFlag, 0
+    ; NEG  Shiftx
+                                   NEG   ShiftY
 
-                    retLowerBlockLoop:
-                    ret
-checkDownBlockColl         endp
-
-
-getUpperBlockStarts         proc
-                    mov ax, dummy          ; xc of the ball
-                    mov cx, mywidth     ; block width 
-                    add cx, space       ;div by block length and space in between => cx = 23 for our eg.
-                    mov dx, 0
-                    div cx              ;  AX = AX/CX and DX=AX % CX   
-                    mul cx              ; mul with the block width and space in between => now ax contain the startx for the block
-                    mov startx, ax      ; startx has the right posit
+    retLowerBlockLoop:             
+                                   ret
+checkDownBlockColl endp
 
 
-                    mov ax, yc          ; xc of the ball
-                    add ax, S
-                    mov cx,height
-                    add cx,space 
-                    mov dx,0
-                    div cx          ; xc of the ball
-                    mul cx
-
-                    mov starty, ax      ; starty has the right posit
-
-                    ret
-getUpperBlockStarts         endp
+getUpperBlockStarts proc
+                                   mov   ax, dummy                               ; xc of the ball
+                                   mov   cx, mywidth                             ; block width
+                                   add   cx, space                               ;div by block length and space in between => cx = 23 for our eg.
+                                   mov   dx, 0
+                                   div   cx                                      ;  AX = AX/CX and DX=AX % CX
+                                   mul   cx                                      ; mul with the block width and space in between => now ax contain the startx for the block
+                                   mov   startx, ax                              ; startx has the right posit
 
 
-checkUpperBlockColl         proc
-                    ; upper collision
+                                   mov   ax, yc                                  ; xc of the ball
+                                   add   ax, S
+                                   mov   cx,height
+                                   add   cx,space
+                                   mov   dx,0
+                                   div   cx                                      ; xc of the ball
+                                   mul   cx
+
+                                   mov   starty, ax                              ; starty has the right posit
+
+                                   ret
+getUpperBlockStarts endp
+
+
+checkUpperBlockColl proc
+    ; upper collision
                     
-                    mov cx, xc          ; left upper of ball
-                    mov dx, yc     
-                    add dx, S     
-                    add dx, 1     
-                    mov dummy, cx
-                    mov bh, 0               ; page number
-                    mov ah, 0DH             ; get background color into al
-                    int 10h                 ; get 
-                    cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
-                    jz skipFirstUpper
+                                   mov   cx, xc                                  ; left upper of ball
+                                   mov   dx, yc
+                                   add   dx, S
+                                   add   dx, 1
+                                   mov   dummy, cx
+                                   mov   bh, 0                                   ; page number
+                                   mov   ah, 0DH                                 ; get background color into al
+                                   int   10h                                     ; get
+                                   cmp   al, BackGroundColor                     ; if the current pixel color not same as the background loop till end of ball width
+                                   jz    skipFirstUpper
                     
-                    call getUpperBlockStarts
-                    call clearMyBlock 
-                      mov checked,1         
-                    mov upperCollFlag, 1       
+                                   call  getUpperBlockStarts
+                                   call  clearMyBlock
+                                   mov   checked,1
+                                   mov   upperCollFlag, 1
 
-                    ; for testing
-                    mov ax, startx
-                    mov bx, startY
-                  ;  call DrawPixel 
+    ; for testing
+                                   mov   ax, startx
+                                   mov   bx, startY
+    ;  call DrawPixel
                     
-                    skipFirstUpper:
-                    ; check the end of the ball
-                    mov cx, xc          ; left upper of ball
-                    add cx, S
-                    mov dummy, cx
-                    mov dx, yc       
-                    add dx, 1
-                    add dx, S   
+    skipFirstUpper:                
+    ; check the end of the ball
+                                   mov   cx, xc                                  ; left upper of ball
+                                   add   cx, S
+                                   mov   dummy, cx
+                                   mov   dx, yc
+                                   add   dx, 1
+                                   add   dx, S
 
-                    mov bh, 0               ; page number
-                    mov ah, 0DH             ; get background color into al
-                    int 10h                 ; get 
-                    cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
-                    jz exitUpperColl
+                                   mov   bh, 0                                   ; page number
+                                   mov   ah, 0DH                                 ; get background color into al
+                                   int   10h                                     ; get
+                                   cmp   al, BackGroundColor                     ; if the current pixel color not same as the background loop till end of ball width
+                                   jz    exitUpperColl
                     
-                    call getUpperBlockStarts
-                    call clearMyBlock 
-                    mov checked,1                
-                    ;test
-                    mov ax, startx
-                    mov bx, startY
-                ;    call DrawPixel 
+                                   call  getUpperBlockStarts
+                                   call  clearMyBlock
+                                   mov   checked,1
+    ;test
+                                   mov   ax, startx
+                                   mov   bx, startY
+    ;    call DrawPixel
 
-                    mov upperCollFlag, 1
+                                   mov   upperCollFlag, 1
                     
-                    exitUpperColl:
+    exitUpperColl:                 
                 
-                    cmp upperCollFlag, 1
-                    jnz retUpperBlockLoop
-                    mov upperCollFlag, 0
-                    ; NEG  Shiftx
-                    NEG  ShiftY
+                                   cmp   upperCollFlag, 1
+                                   jnz   retUpperBlockLoop
+                                   mov   upperCollFlag, 0
+    ; NEG  Shiftx
+                                   NEG   ShiftY
 
-                    retUpperBlockLoop:
-                    ret
+    retUpperBlockLoop:             
+                                   ret
 
-checkUpperBlockColl         endp
-
-
-getLeftBlockStarts         proc
-                    mov ax, xc         ; xc of the ball
-                    add ax, S
-                    add ax, 1
-                    mov cx, mywidth
-                    add cx, space
-                    mov dx,0
-                    div cx
-                    mul cx
-                    mov startx, ax      ; startx has the right posit
-
-                    mov ax, dummy          ; xc of the ball
-                    mov cx, height      ; block width 
-                    add cx, space       ;div by block length and space in between => cx = 10 for our eg.
-                    mov dx, 0
-                    div cx              ;  AX = AX/CX and DX=AX % CX   
-                    mul cx              ; mul with the block width and space in between => now ax contain the startx for the block
-                    mov starty, ax          ; startغ has the right posit
-
-                    ret
-getLeftBlockStarts         endp
+checkUpperBlockColl endp
 
 
-checkLeftBlockColl         proc
-                    ; left collision
+getLeftBlockStarts proc
+                                   mov   ax, xc                                  ; xc of the ball
+                                   add   ax, S
+                                   add   ax, 1
+                                   mov   cx, mywidth
+                                   add   cx, space
+                                   mov   dx,0
+                                   div   cx
+                                   mul   cx
+                                   mov   startx, ax                              ; startx has the right posit
 
-                    mov cx, xc          ; left upper of ball
-                    mov dx, yc     
-                    add cx, S     
-                    add cx, 1     
-                    mov dummy, dx
+                                   mov   ax, dummy                               ; xc of the ball
+                                   mov   cx, height                              ; block width
+                                   add   cx, space                               ;div by block length and space in between => cx = 10 for our eg.
+                                   mov   dx, 0
+                                   div   cx                                      ;  AX = AX/CX and DX=AX % CX
+                                   mul   cx                                      ; mul with the block width and space in between => now ax contain the startx for the block
+                                   mov   starty, ax                              ; startغ has the right posit
 
-                    mov bh, 0               ; page number
-                    mov ah, 0DH             ; get background color into al
-                    int 10h                 ; get 
-                    cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
-                    jz skipFirstLeft
+                                   ret
+getLeftBlockStarts endp
+
+
+checkLeftBlockColl proc
+    ; left collision
+
+                                   mov   cx, xc                                  ; left upper of ball
+                                   mov   dx, yc
+                                   add   cx, S
+                                   add   cx, 1
+                                   mov   dummy, dx
+
+                                   mov   bh, 0                                   ; page number
+                                   mov   ah, 0DH                                 ; get background color into al
+                                   int   10h                                     ; get
+                                   cmp   al, BackGroundColor                     ; if the current pixel color not same as the background loop till end of ball width
+                                   jz    skipFirstLeft
                     
-                    call getLeftBlockStarts
-                    call clearMyBlock     
-                    mov checked,1     
-                    mov leftCollFlag, 1       
+                                   call  getLeftBlockStarts
+                                   call  clearMyBlock
+                                   mov   checked,1
+                                   mov   leftCollFlag, 1
 
-                    ; for testing
-                    mov ax, startx
-                    mov bx, startY
-                ;    call DrawPixel 
+    ; for testing
+                                   mov   ax, startx
+                                   mov   bx, startY
+    ;    call DrawPixel
                     
-                    skipFirstLeft:
-                    ; check the end of the ball
-                    mov cx, xc          ; left upper of ball
-                    add cx, S
-                    add cx, 1
-                    mov dx, yc  
-                    add dx, S        
-                    mov dummy,dx
+    skipFirstLeft:                 
+    ; check the end of the ball
+                                   mov   cx, xc                                  ; left upper of ball
+                                   add   cx, S
+                                   add   cx, 1
+                                   mov   dx, yc
+                                   add   dx, S
+                                   mov   dummy,dx
 
-                    mov bh, 0               ; page number
-                    mov ah, 0DH             ; get background color into al
-                    int 10h                 ; get 
-                    cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
-                    jz exitLeftColl
+                                   mov   bh, 0                                   ; page number
+                                   mov   ah, 0DH                                 ; get background color into al
+                                   int   10h                                     ; get
+                                   cmp   al, BackGroundColor                     ; if the current pixel color not same as the background loop till end of ball width
+                                   jz    exitLeftColl
                     
-                    call getLeftBlockStarts
-                    call clearMyBlock
-                        mov checked,1               
-                    ;test
-                    mov ax, startx
-                    mov bx, startY
-                ;    call DrawPixel 
+                                   call  getLeftBlockStarts
+                                   call  clearMyBlock
+                                   mov   checked,1
+    ;test
+                                   mov   ax, startx
+                                   mov   bx, startY
+    ;    call DrawPixel
 
-                    mov leftCollFlag, 1
+                                   mov   leftCollFlag, 1
                     
-                    exitLeftColl:
+    exitLeftColl:                  
                 
-                    cmp leftCollFlag, 1
-                    jnz retLeftBlockLoop
-                    mov leftCollFlag, 0
-                    NEG  Shiftx
-                    ; NEG  ShiftY
-                    retLeftBlockLoop:
-                    ret
-checkLeftBlockColl         endp
+                                   cmp   leftCollFlag, 1
+                                   jnz   retLeftBlockLoop
+                                   mov   leftCollFlag, 0
+                                   NEG   Shiftx
+    ; NEG  ShiftY
+    retLeftBlockLoop:              
+                                   ret
+checkLeftBlockColl endp
 
 
-getRightBlockStarts         proc
-                    mov ax, xc          ; xc of the ball
-                    mov cx, mywidth 
-                    add cx,space
-                    mov dx,0
-                    div cx
-                    mul cx
-                    mov startx, ax      ; startx has the right posit
+getRightBlockStarts proc
+                                   mov   ax, xc                                  ; xc of the ball
+                                   mov   cx, mywidth
+                                   add   cx,space
+                                   mov   dx,0
+                                   div   cx
+                                   mul   cx
+                                   mov   startx, ax                              ; startx has the right posit
 
-                    mov ax, dummy          ; xc of the ball
-                    mov cx, height      ; block width 
-                    add cx, space       ;div by block length and space in between => cx = 10 for our eg.
-                    mov dx, 0
-                    div cx              ;  AX = AX/CX and DX=AX % CX   
-                    mul cx              ; mul with the block width and space in between => now ax contain the startx for the block
-                    mov starty, ax      ; starty has the right posit
+                                   mov   ax, dummy                               ; xc of the ball
+                                   mov   cx, height                              ; block width
+                                   add   cx, space                               ;div by block length and space in between => cx = 10 for our eg.
+                                   mov   dx, 0
+                                   div   cx                                      ;  AX = AX/CX and DX=AX % CX
+                                   mul   cx                                      ; mul with the block width and space in between => now ax contain the startx for the block
+                                   mov   starty, ax                              ; starty has the right posit
 
-                    ret
-getRightBlockStarts         endp
+                                   ret
+getRightBlockStarts endp
 
 
-checkRightBlockColl         proc
-                    ; right collision
-                    mov cx, xc
-                    mov dx, yc
-                    sub cx, 1
-                    mov dummy, dx
+checkRightBlockColl proc
+    ; right collision
+                                   mov   cx, xc
+                                   mov   dx, yc
+                                   sub   cx, 1
+                                   mov   dummy, dx
 
-                    mov bh, 0               ; page number
-                    mov ah, 0DH             ; get background color into al
-                    int 10h                 ; get 
-                    cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
-                    jz skipFirstRight
+                                   mov   bh, 0                                   ; page number
+                                   mov   ah, 0DH                                 ; get background color into al
+                                   int   10h                                     ; get
+                                   cmp   al, BackGroundColor                     ; if the current pixel color not same as the background loop till end of ball width
+                                   jz    skipFirstRight
                     
-                    call getRightBlockStarts
-                    call clearMyBlock
-                        mov checked,1        
-                    mov rightCollFlag, 1       
+                                   call  getRightBlockStarts
+                                   call  clearMyBlock
+                                   mov   checked,1
+                                   mov   rightCollFlag, 1
 
-                    ; for testing
-                    mov ax, startx
-                    mov bx, startY
-                ;    call DrawPixel 
+    ; for testing
+                                   mov   ax, startx
+                                   mov   bx, startY
+    ;    call DrawPixel
                     
-                    skipFirstRight:
-                    ; check the end of the ball
-                    mov cx, xc          ; left upper of ball 
-                    sub cx, 1
-                    mov dx, yc  
-                    add dx, S        
-                    mov dummy,dx
+    skipFirstRight:                
+    ; check the end of the ball
+                                   mov   cx, xc                                  ; left upper of ball
+                                   sub   cx, 1
+                                   mov   dx, yc
+                                   add   dx, S
+                                   mov   dummy,dx
 
-                    mov bh, 0               ; page number
-                    mov ah, 0DH             ; get background color into al
-                    int 10h                 ; get 
-                    cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
-                    jz exitRightColl
+                                   mov   bh, 0                                   ; page number
+                                   mov   ah, 0DH                                 ; get background color into al
+                                   int   10h                                     ; get
+                                   cmp   al, BackGroundColor                     ; if the current pixel color not same as the background loop till end of ball width
+                                   jz    exitRightColl
                     
-                    call getRightBlockStarts
-                    call clearMyBlock     
-                    mov checked,1          
-                    ;test
-                    mov ax, startx
-                    mov bx, startY
-                ;    call DrawPixel 
+                                   call  getRightBlockStarts
+                                   call  clearMyBlock
+                                   mov   checked,1
+    ;test
+                                   mov   ax, startx
+                                   mov   bx, startY
+    ;    call DrawPixel
 
-                    mov rightCollFlag, 1
+                                   mov   rightCollFlag, 1
                     
-                    exitRightColl:
+    exitRightColl:                 
                 
-                    cmp rightCollFlag, 1
-                    jnz retRightBlockLoop
-                    mov rightCollFlag, 0
-                    NEG  Shiftx
-                    ; NEG  ShiftY
-                    retRightBlockLoop:
+                                   cmp   rightCollFlag, 1
+                                   jnz   retRightBlockLoop
+                                   mov   rightCollFlag, 0
+                                   NEG   Shiftx
+    ; NEG  ShiftY
+    retRightBlockLoop:             
 
-                    ret
-checkRightBlockColl         endp
+                                   ret
+checkRightBlockColl endp
 
-bricksCollision             proc 
-pusha
+bricksCollision proc
+                                   pusha
 
-                                call checkDownBlockColl
-                                popa
-                                cmp yc, 180
-                                jge skipUp
-                                pusha
-                                call checkUpperBlockColl
-                                popa
-                                skipUp:
-                                mov ax, WindowWidth
-                                sub ax, S
-                                cmp ax, xc
-                                jz skipLeft
-                                pusha
-                                call checkLeftBlockColl
-                                popa
-                                skipLeft:
-                                cmp xc, 0
-                                jz skipRight
-                                pusha
-                                call checkRightBlockColl
-                                popa
-                                skipRight:
-                                ; collision part  => make proc
-                            ret
+                                   call  checkDownBlockColl
+                                   popa
+                                   cmp   yc, 180
+                                   jge   skipUp
+                                   pusha
+                                   call  checkUpperBlockColl
+                                   popa
+    skipUp:                        
+                                   mov   ax, WindowWidth
+                                   sub   ax, S
+                                   cmp   ax, xc
+                                   jz    skipLeft
+                                   pusha
+                                   call  checkLeftBlockColl
+                                   popa
+    skipLeft:                      
+                                   cmp   xc, 0
+                                   jz    skipRight
+                                   pusha
+                                   call  checkRightBlockColl
+                                   popa
+    skipRight:                     
+    ; collision part  => make proc
+                                   ret
 
-bricksCollision             endp 
+bricksCollision endp
     ;==================================================================
 clrbreaker_shift proc
 
