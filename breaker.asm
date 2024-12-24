@@ -2500,7 +2500,21 @@ MAIN PROC
                                    jnz   Draw_break2
     ; first ball
                                 ; collision with breaks
+                                 MOV   determineFlag , 0
+                                   CALL  setBall1
+                                   CALL  MovBall
+  
+                                   CMP   mode ,1
+                                   JLE   singl_mode_1
+                                   MOV   determineFlag , 1
+                                   CALL  setBall1
+                                   CALL  MovBall
+
+                                   CALL  setBall2
+    singl_mode_1:  
+
                                 pusha
+
                                 call checkDownBlockColl
                                 popa
                                 cmp yc, 190
@@ -2525,18 +2539,8 @@ MAIN PROC
                                 skipRight:
                                 ; collision part  => make proc
 
-                                   MOV   determineFlag , 0
-                                   CALL  setBall1
-                                   CALL  MovBall
-                                   CALL  setBall2
-                                   CMP   mode ,1
-                                   JLE   singl_mode_1
-                                   MOV   determineFlag , 1
-                                   CALL  setBall1
-                                   CALL  MovBall
-
-                                   CALL  setBall2
-    singl_mode_1:                  
+                                  CALL  setBall2
+                
                                    mov   cx,0
     ; Second ball
     ;      MOV determineFlag ,1
