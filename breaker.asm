@@ -95,7 +95,11 @@
     total                         db 0
     ;==========================================     ;Ball
     determineFlag                 db 0                                                          ; To know which ball will be set
-    dummy                         dw ?
+    dummy                         dw ? 
+    upperCollFlag                 db 0
+    lowerCollFlag                 db 0
+    leftCollFlag                  db 0
+    rightCollFlag                 db 0
     Xc                            DW 160d                                                       ; X of Top Left Corner of the Ball
     Yc                            DW 100d                                                       ; Y of Top Left Corner of the Ball
     S                             DW 6d                                                         ; Side Length of Ball
@@ -109,10 +113,6 @@
     WindowHeight                  DW 200d
     WindowHeight_start            DW 0                                                          ;
     ; ShiftX DW  0d
-    ShiftX                        DW 5d
-    ShiftY                        DW 2d
-    DefaultShiftY                  DW 3d
-    DefaultShiftX                 DW 5d
     PrevTime                      DB 0
     ChangeShiftlow                dw 1
     ChangeShiftHigh               dw 3
@@ -131,10 +131,13 @@
     first_ball_WindowHeight_end   DW 200d                                                       ; end of window height of  first player
 
     ; ShiftX DW  0d
+    ShiftX           DW 2d
+    ShiftY           DW 3d
+    DefaultShiftX    DW 5d
     first_ball_ShiftX             DW 5d
     first_ball_ShiftY             DW 2d
     first_ball_DefaultShiftX      DW 5d
-    first_ball_DefaultShiftY       DW 2d
+
     ; PrevTime         DB 0
     first_ball_ChangeShiftlow     dw 1
     first_ball_ChangeShiftHigh    dw 3
@@ -154,19 +157,19 @@
 
     ; ShiftX DW  0d
     sec_ball_ShiftX               DW 5d
-    sec_ball_ShiftY               DW -2d
+    sec_ball_ShiftY               DW 2d
     sec_ball_DefaultShiftX        DW 5d
-    sec_ball_DefaultShiftY             DW -2d
+
     ; PrevTime         DB 0
     sec_ball_ChangeShiftlow       dw 1
     sec_ball_ChangeShiftHigh      dw 3
     sec_ball_flag_collision       db 0
     ;=================================================================== menu
-    l                             dw 30
-    lorg                          dw 50
-    w                             dw 9
-    worg                          dw 20
-    letters                       db "play$"
+    l                dw 30
+    lorg             dw 50
+    w                dw 9
+    worg             dw 20
+    letters          db "play$"
     State                         db 0
     curX                          dw 90
     curY                          dw 55
@@ -205,6 +208,8 @@
     ; mode 2 multiplayer in level 3  same device
     ; mode 3 multiplayer in level 3  send and recieve (2 devices)
     ;=================================================================chat
+    ;===================================================================
+    checked db 0
 
     messsage                      DB 'reciever on , press esc to end session', 0AH, 0DH, "$"
     messsage2                     DB 'Enter your string', 0AH, 0DH, "$"
@@ -413,8 +418,7 @@ setBall1 PROC
                                    MOV   AX ,first_ball_DefaultShiftX
                                    MOV   DefaultShiftX    , AX
 
-                                                                       MOV   AX ,first_ball_DefaultShiftY
-                                   MOV   DefaultShiftY    , AX
+
                                    MOV   AX ,first_ball_ChangeShiftlow
                                    MOV   ChangeShiftlow  , AX
                                    MOV   AX ,first_ball_ChangeShiftHigh
@@ -456,8 +460,6 @@ setBall1 PROC
                                    MOV   AX ,sec_ball_DefaultShiftX
                                    MOV   DefaultShiftX    , AX
 
-                                                                      MOV   AX ,sec_ball_DefaultShiftY
-                                   MOV   DefaultShiftY    , AX
 
                                    MOV   AX ,sec_ball_ChangeShiftlow
                                    MOV   ChangeShiftlow  , AX
@@ -501,8 +503,7 @@ setBall2 PROC
                                    MOV   first_ball_ShiftY , AX
                                    MOV   AX , DefaultShiftX
                                    MOV   first_ball_DefaultShiftX   , AX
-                                   MOV   AX , DefaultShiftY
-                                   MOV   first_ball_DefaultShiftY   , AX
+
 
                                    MOV   AX , ChangeShiftlow
                                    MOV   first_ball_ChangeShiftlow  , AX
@@ -542,8 +543,6 @@ setBall2 PROC
                                    MOV   AX , DefaultShiftX
                                    MOV   sec_ball_DefaultShiftX   , AX
 
-                                   MOV   AX , DefaultShiftY
-                                   MOV   sec_ball_DefaultShiftY   , AX
 
                                    MOV   AX , ChangeShiftlow
                                    MOV   sec_ball_ChangeShiftlow  , AX
@@ -614,143 +613,6 @@ MovBall PROC
                                    CALL  setBreaker2
     singl_mode_2:                  
 
-
-    ; Check if iam in right position
-    ;                                          MOV  AX , WindowHeight_start
-    ;                      CMP  Yc , AX
-    ;                         JL rel_jmp_down_collision_1
-    ;                         JMP cont_down_1
-    ;                          rel_jmp_down_collision_1:
-    ;                      JMP   ResetPosition
-    ;                      cont_down_1:
-    ;                     CMP flagBallCollision , 1
-    ;                     JZ rel_jmp_flag
-    ;                     JMP cont_flag
-    ;                     rel_jmp_flag:
-    ;                     jmp almost_right_postion
-    ;                     cont_flag:
-    ;                      MOV  AX , x
-    ;                      ADD  AX , lenght
-    ;                      CMP  Xc , AX
-    ;                      Jb   cont55_r1
-    ;                      jmp  almost_right_postion
-    ;     cont55_r1:
-                     
-    ;                      MOV  AX ,Xc
-    ;                      ADD  AX , S
-    ;                      CMP  AX , x
-    ;                      JG   ch1_r1
-    ;                      jmp  almost_right_postion
-    ;     ch1_r1:
-
-    ;                      MOV  AX , y
-    ;                      ADD  AX , Bidth
-    ;                      CMP  Yc ,AX
-    ;                      Jb   ch2_r1
-    ;                      jmp  almost_right_postion
-    ;     ch2_r1:
-    ;                      MOV  AX ,Yc
-    ;                      ADD  AX , S
-    ;                      CMP  AX , y
-    ;                      JG   ch3_r1
-    ;                      jmp  almost_right_postion
-    ;     ch3_r1:
-
-    ;     ; I am not in right position colliosn exists
-    ;                      call CenterBreaker
-    ;                      mov  ax, ShiftX
-    ;                      cmp  ax,0
-    ;                      ja   firstquarter_r1
-    ;                      NEG  ChangeShiftlow
-    ;                      NEG  ChangeShiftHigh
-    ;     firstquarter_r1:                                 ;here i increment by 3 as top decrease the slope of the ball
-    ;                      mov  ax,Xc
-    ;                      cmp  ax,firstQ
-    ;                      ja   secQ_r1
-    ;                      MOV  AX,ShiftX
-                      
-    ;                      add  ax,ChangeShiftHigh
-    ;                      add  Speed,200h
-    ;                      mov  ShiftX,ax
-    ;                     ;  call draw_breaker
-    ;                                          mov determine_breaker_Flag ,0
-    ;                                          CALL setBreaker1
-    ;                      call draw_breaker
-    ;                     CALL setBreaker2
-    ;                      JMP  neutralizeshift_r1
-    ;     secQ_r1:                                         ;its close to the center so i inc by 1 only
-    ;                      mov  ax,Xc
-    ;                      cmp  ax,CBreaker
-    ;                      ja   thirdQuarter_r1
-    ;                      mov  ax,ShiftX
-    ;                      add  ax,ChangeShiftlow
-    ;                      add  Speed,100h
-    ;                      mov  ShiftX,ax
-    ;                     ;  call draw_breaker
-    ;                                          mov determine_breaker_Flag ,0
-    ;                                          CALL setBreaker1
-    ;                      call draw_breaker
-    ;                     CALL setBreaker2
-    ;                      JMP  neutralizeshift_r1
-    ;     thirdQuarter_r1:                                 ;third same as sec
-    ;                      mov  ax,Xc
-    ;                      cmp  ax, thirdQ
-    ;                      ja   lastq_r1
-    ;                      mov  ax,ShiftX
-    ;                      add  ax,ChangeShiftlow
-    ;                      add  Speed,200h
-    ;                      mov  ShiftX,ax
-    ;                     ;  call draw_breaker
-    ;                                          mov determine_breaker_Flag ,0
-    ;                                          CALL setBreaker1
-    ;                      call draw_breaker
-    ;                     CALL setBreaker2
-    ;                      JMP  neutralizeshift_r1
-    ;     lastq_r1:                                        ;last part of the breaker same as the first
-    ;                      MOV  AX,ShiftX
-    ;                      add  ax,ChangeShiftHigh
-    ;                      add  Speed,100h
-    ;                      mov  ShiftX,ax
-    ;                     ;  call draw_breaker
-    ;                                          mov determine_breaker_Flag ,0
-    ;                                          CALL setBreaker1
-    ;                      call draw_breaker
-    ;                     CALL setBreaker2
-
-    ;     neutralizeshift_r1:
-
-    ;                      cmp  ShiftX,0
-    ;                      ja   reljmp_r1
-    ;                      NEG  ChangeShiftlow
-    ;                      NEG  ChangeShiftHigh
-
-    ;                     reljmp_r1 :
-    ;                     MOV flagBallCollision ,1
-    ;                      JMP  NegY
-
-
-    ;                     almost_right_postion:
-
-    ; MOV flagBallCollision ,0
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                    MOV   AX , ShiftX
                                    ADD   Xc , AX
 
@@ -786,12 +648,12 @@ MovBall PROC
     ; )
                                    mov   determine_breaker_Flag ,0
                                    CALL  setBreaker1
-    ;                                MOV   AX , WindowHeight_start
-    ;                                CMP   Yc , AX
-    ;                                JL    rel_jmp_down_collision_2
-    ;                                JMP   cont_down_2
-    ; rel_jmp_down_collision_2:      
-    ;                                JMP   ToY
+                                   MOV   AX , WindowHeight_start
+                                   CMP   Yc , AX
+                                   JL    rel_jmp_down_collision_2
+                                   JMP   cont_down_2
+    rel_jmp_down_collision_2:      
+                                   JMP   ResetPosition
     cont_down_2:                   
                                    MOV   AX , x
                                    ADD   AX , lenght
@@ -1850,6 +1712,8 @@ Draw_t proc
                                    ret
 Draw_t endp
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 send_data proc
 
 
@@ -1898,74 +1762,24 @@ recive_data proc
             
     ; mov sec_breaker_color,0
     ; ; call draw_breaker2
-
                                    mov   determine_breaker_Flag ,1
-                                   CALL  setBreaker1
+                                   CALL  setBall1
                                    MOV   al ,value
-                                   CBW                      
-                                   MOV   dx ,AX
+                                   CBW
+                                   CMP   AX , 0
+                                   JB    negative
 
-
-
-                                   mov   ax ,endx
-                                   add   ax,dx
-                                   mov   endx,ax
-                                   cmp   ax,320
-                                   ja    rightbound_1
-                                   cmp   ax,lenght
-                                   ja    inbound_1
-                                   mov   ax,lenght
-                                   mov   x,0
-                                   mov   endx,ax
-                   
-                                   jmp   cont3_1
-    rightbound_1:                    
-                                   mov   ax,lenght
-                                   mov   bx,320
-                                   sub   bx,ax
-                                   mov   endx,320
-    inbound_1:                       
-                                   mov   ax,endx
-                                   mov   bx,lenght
-                                   sub   ax,bx
-                                   mov   x,ax
-           
-               
-    cont3_1:                         
-    
-                                   cmp   value,0
-                                   jG   drawR_1
-                                   call  draw_breakerL
-                                                CALL  setBreaker2
-                                                 popa
-                                    ret
-    drawR_1:                         
-                                   call  draw_breakerR
-                                                CALL  setBreaker2
-                                                 popa
-                                                  ret
-
-
-
-
-    ;                                mov   determine_breaker_Flag ,1
-    ;                                CALL  setBall1
-    ;                                MOV   al ,value
-    ;                                CBW
-    ;                                CMP   AX , 0
-    ;                                JB    negative
-
-    ;                                MOV   breakersmothness , AX
-    ;                                CALL  draw_breakerR
-    ;                                CALL  setBreaker2
-                                  
-    ;                                ret
-    ; negative:                      
-    ;                                MOV   negativebs ,AX
-    ;                                CALL  draw_breakerL
-    ;                                CALL  setBreaker2
-    ;                                popa
-    ;                                ret
+                                   MOV   breakersmothness , AX
+                                   CALL  draw_breakerR
+                                   CALL  setBall2
+                                   popa
+                                   ret
+    negative:                      
+                                   MOV   negativebs ,AX
+                                   CALL  draw_breakerL
+                                   CALL  setBall2
+                                   popa
+                                   ret
     ; mov sec_breaker_color,5
     ;=========================
     ; mov cx,sec_x
@@ -2036,8 +1850,7 @@ RestartBall PROC
                                    MOV   Yc , AX
 
                                    MOV   ShiftX , 0
-                                MOV  AX , DefaultShiftY
-                                 MOV  ShiftY , AX
+
                                    cmp   determineFlag , 1
                                    jz    sec_ball_dec_hearts
                                    DEC   first_heart
@@ -2627,10 +2440,9 @@ MAIN PROC
                                    MOV   BL , BackGroundColor                    ; BackGround Color
                                    int   10h
 
-                                   MOV   determineFlag , 0
-                                   CALL  setBall1
-      CALL RestartBall
-    CALL  setBall2
+
+    ;  CALL RestartBall
+  
 
 
     ;======================================
@@ -2687,20 +2499,11 @@ MAIN PROC
                                    cmp   cx,Speed
                                    jnz   Draw_break2
     ; first ball
-<<<<<<< HEAD
-    
-=======
->>>>>>> 4e2dbba221c7eacd70cfa9a68a4cf7c725c56c75
                                    MOV   determineFlag , 0
                                    CALL  setBall1
-                                   
                                    CALL  MovBall
                                    pusha
-<<<<<<< HEAD
-                                   call  checkCollisionBlocks
-=======
                                    call bricksCollision
->>>>>>> 4e2dbba221c7eacd70cfa9a68a4cf7c725c56c75
                                    popa
                                    CALL  setBall2
                                    CMP   mode ,1
@@ -2709,13 +2512,6 @@ MAIN PROC
                                    CALL  setBall1
                                    CALL  MovBall
                                    pusha
-<<<<<<< HEAD
-                                   call  checkCollisionBlocks
-                                   popa
-
-                                   CALL  setBall2
-    singl_mode_1:                  
-=======
                                    call  bricksCollision
                                    popa
 
@@ -2724,7 +2520,6 @@ MAIN PROC
     singl_mode_1:  
 
                 
->>>>>>> 4e2dbba221c7eacd70cfa9a68a4cf7c725c56c75
                                    mov   cx,0
     ; Second ball
     ;      MOV determineFlag ,1
@@ -2820,8 +2615,6 @@ Mov_Breaker proc
                                    call  send_data
                                    popa
     not_mode_3:                    
-
-    ; endx+somth
                                    mov   ax ,endx
                                    add   ax,dx
                                    mov   endx,ax
@@ -3222,181 +3015,339 @@ clearMyBlock endp
     ; Yc -> div 10 get the divisor and mul with 10 to get block start y
     ;
 
-detectBlockStartPoints proc
 
-                                   mov   ax, xc                                  ; xc of the ball
-                                   mov   cx, mywidth                             ; block width
-                                   add   cx, space                               ;div by block length and space in between => cx = 23 for our eg.
-                                   mov   dx, 0
-                                   div   cx                                      ;  AX = AX/CX and DX=AX % CX
-                                   mul   cx                                      ; mul with the block width and space in between => now ax contain the startx for the block
+getDownBlockStarts         proc
+                    mov ax, dummy          ; xc of the ball
+                    mov cx, mywidth     ; block width 
+                    add cx, space       ;div by block length and space in between => cx = 23 for our eg.
+                    mov dx, 0
+                    div cx              ;  AX = AX/CX and DX=AX % CX   
+                    mul cx              ; mul with the block width and space in between => now ax contain the startx for the block
+                    mov startx, ax      ; startx has the right posit
 
-                                   mov   startx, ax                              ; startx has the right posit
+                    mov cx,height
+                    add cx,space
+                    mov ax, yc 
+                    mov dx,0
+                    div cx          ; xc of the ball
+                    mul cx
+                    mov starty, ax      ; starty has the right posit
 
-                                   mov   ax, yc                                  ; xc of the ball
-                                   mov   cx, height                              ; block width
-                                   add   cx, space                               ;div by block length and space in between => cx = 10 for our eg.
-                                   mov   dx, 0
-                                   div   cx                                      ;  AX = AX/CX and DX=AX % CX
-                                   mul   cx                                      ; mul with the block width and space in between => now ax contain the startx for the block
-
-                                   mov   starty, ax                              ; startx has the right posit
-
-                                   ret
-detectBlockStartPoints endp
+                    ret
+getDownBlockStarts         endp
 
 
-checkCollisionBlocks proc
-    ; upper collision
+checkDownBlockColl         proc
+                    ; down collision
 
-                                   mov   cx, xc                                  ; cx -> the upper left corner of the ball
-                                   mov   dx, Yc
-                                   sub   dx, 1                                   ; check for just the upper pixel of the ball if not background then it is a block
+                    mov cx, xc          ; left upper of ball
+                    mov dx, yc     
+                    sub dx, 1     
+                    mov dummy, cx
+                    mov bh, 0               ; page number
+                    mov ah, 0DH             ; get background color into al
+                    int 10h                 ; get 
+                    cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
+                    jz skipFirstDown
+                    
+                    call getDownBlockStarts
+                    call clearMyBlock  
+                      mov checked,1        
+                    mov lowerCollFlag, 1       
 
-                                   mov   ax, S                                   ; set ax to the ball size
-                                   mov   dummy, ax
-    repBallSize:                   
-                                   cmp   dummy, 0                                ; compare till the ball size to check if there is collision with the upper pixel of the ball in each side pixel
-                                   jnz   label2
-                                   jmp   exitCheckColl
-    label2:                        
+                    ; for testing
+                    mov ax, startx
+                    mov bx, startY
+               ;     call DrawPixel 
+                    
+                    skipFirstDown:
+                    ; check the end of the ball
+                    mov cx, xc          ; left upper of ball
+                    add cx, S
+                    mov dummy, cx
+                    mov dx, yc       
+                    sub dx, 1   
 
-                                   mov   bh, 0                                   ; page number
-                                   mov   ah, 0DH                                 ; get background color into al
-                                   int   10h                                     ; get
-                                   inc   cx
-                                   cmp   al, BackGroundColor                     ; if the current pixel color not same as the background loop till end of ball width
-                                   jnz   colorBlockBackground
-                                   dec   dummy
-                                   jnz   repBallSize
-                                   jnz   label3
-                                   jmp   exitCheckColl
-    label3:                        
+                    mov bh, 0               ; page number
+                    mov ah, 0DH             ; get background color into al
+                    int 10h                 ; get 
+                    cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
+                    jz exitDownColl
+                    
+                    call getDownBlockStarts
+                    call clearMyBlock   
+                    mov checked,1            
+                    ;test
+                    mov ax, startx
+                    mov bx, startY
+                  ;  call DrawPixel 
 
-    colorBlockBackground:          
+                    mov lowerCollFlag, 1
+                    
+                    exitDownColl:
+                
+                    cmp lowerCollFlag, 1
+                    jnz retLowerBlockLoop
+                    mov lowerCollFlag, 0
+                    ; NEG  Shiftx
+                    NEG  ShiftY
 
-                                   push  ax
-                                   push  bx
-                                   push  cx
-                                   push  dx
-                                   call  detectBlockStartPoints                  ; set the values of startx, starty to prepare the block to hide
-                                   pop   dx
-                                   pop   cx
-                                   pop   bx
-                                   pop   ax
-
-                                   push  ax
-                                   push  bx
-                                   push  cx
-                                   push  dx
-                                   call  clearMyBlock                            ; color the block in position startx, starty with background color
-                                   pop   dx
-                                   pop   cx
-                                   pop   bx
-                                   pop   ax
-
-    upperBLockCollision:           
-    ; NEG  ShiftX
-                                   NEG   Shifty
-                                   jmp   repBallSize
-
-
-    ; down block
-                                   mov   cx, xc                                  ; cx -> the upper left corner of the ball
-                                   mov   dx, Yc
-                                   add   dx, 1                                   ; check for just the upper pixel of the ball if not background then it is a block
-                                   mov   ax, S                                   ; set ax to the ball size
-                                   mov   dummy, ax
-    repDownBallSize:               
-                                   cmp   dummy, 0                                ; compare till the ball size to check if there is collision with the upper pixel of the ball in each side pixel
-                                   jz    exitCheckColl
-                                   mov   bh, 0                                   ; page number
-                                   mov   ah, 0DH                                 ; get background color into al
-                                   int   10h                                     ; get
-                                   inc   cx
-                                   cmp   al, BackGroundColor                     ; if the current pixel color not same as the background loop till end of ball width
-                                   jnz   colorDownBlockBackground
-                                   dec   dummy
-                                   jnz   repDownBallSize
-                                   jz    exitCheckColl
-    colorDownBlockBackground:      
-                                   push  ax
-                                   push  bx
-                                   push  cx
-                                   push  dx
-                                   call  detectBlockStartPoints                  ; set the values of startx, starty to prepare the block to hide
-                                   pop   dx
-                                   pop   cx
-                                   pop   bx
-                                   pop   ax
-
-                                   push  ax
-                                   push  bx
-                                   push  cx
-                                   push  dx
-                                   call  clearMyBlock                            ; color the block in position startx, starty with background color
-                                   pop   dx
-                                   pop   cx
-                                   pop   bx
-                                   pop   ax
-
-    downBLockCollision:            
-    ; NEG  ShiftX
-                                   NEG   Shifty
-                                   jmp   repDownBallSize
-
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ; side collision
-
-                                   mov   cx, xc                                  ; cx -> the upper left corner of the ball
-                                   mov   dx, Yc
-                                   add   dx, 1                                   ; check for just the upper pixel of the ball if not background then it is a block
-                                   mov   ax, S                                   ; set ax to the ball size
-                                   mov   dummy, ax
-    repRightSideBallSize:          
-                                   cmp   dummy, 0                                ; compare till the ball size to check if there is collision with the upper pixel of the ball in each side pixel
-                                   jz    exitCheckColl
-                                   mov   bh, 0                                   ; page number
-                                   mov   ah, 0DH                                 ; get background color into al
-                                   int   10h                                     ; get
-                                   inc   cx
-                                   cmp   al, BackGroundColor                     ; if the current pixel color not same as the background loop till end of ball width
-                                   jnz   colorRightSideBlockBackground
-                                   dec   dummy
-                                   jnz   repRightSideBallSize
-                                   jz    exitCheckColl
-    colorRightSideBlockBackground: 
-                                   push  ax
-                                   push  bx
-                                   push  cx
-                                   push  dx
-                                   call  detectBlockStartPoints                  ; set the values of startx, starty to prepare the block to hide
-                                   pop   dx
-                                   pop   cx
-                                   pop   bx
-                                   pop   ax
-    ; sub startx, 20
-                                   push  ax
-                                   push  bx
-                                   push  cx
-                                   push  dx
-                                   call  clearMyBlock                            ; color the block in position startx, starty with background color
-                                   pop   dx
-                                   pop   cx
-                                   pop   bx
-                                   pop   ax
-
-    rightSideBLockCollision:       
-    ; NEG  ShiftX
-                                   NEG   Shifty
-                                   jmp   repRightSideBallSize
+                    retLowerBlockLoop:
+                    ret
+checkDownBlockColl         endp
 
 
+getUpperBlockStarts         proc
+                    mov ax, dummy          ; xc of the ball
+                    mov cx, mywidth     ; block width 
+                    add cx, space       ;div by block length and space in between => cx = 23 for our eg.
+                    mov dx, 0
+                    div cx              ;  AX = AX/CX and DX=AX % CX   
+                    mul cx              ; mul with the block width and space in between => now ax contain the startx for the block
+                    mov startx, ax      ; startx has the right posit
 
 
-    exitCheckColl:                 
-                                   ret
-checkCollisionBlocks endp
+                    mov ax, yc          ; xc of the ball
+                    add ax, S
+                    mov cx,height
+                    add cx,space 
+                    mov dx,0
+                    div cx          ; xc of the ball
+                    mul cx
+
+                    mov starty, ax      ; starty has the right posit
+
+                    ret
+getUpperBlockStarts         endp
+
+
+checkUpperBlockColl         proc
+                    ; upper collision
+                    
+                    mov cx, xc          ; left upper of ball
+                    mov dx, yc     
+                    add dx, S     
+                    add dx, 1     
+                    mov dummy, cx
+                    mov bh, 0               ; page number
+                    mov ah, 0DH             ; get background color into al
+                    int 10h                 ; get 
+                    cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
+                    jz skipFirstUpper
+                    
+                    call getUpperBlockStarts
+                    call clearMyBlock 
+                      mov checked,1         
+                    mov upperCollFlag, 1       
+
+                    ; for testing
+                    mov ax, startx
+                    mov bx, startY
+                  ;  call DrawPixel 
+                    
+                    skipFirstUpper:
+                    ; check the end of the ball
+                    mov cx, xc          ; left upper of ball
+                    add cx, S
+                    mov dummy, cx
+                    mov dx, yc       
+                    add dx, 1
+                    add dx, S   
+
+                    mov bh, 0               ; page number
+                    mov ah, 0DH             ; get background color into al
+                    int 10h                 ; get 
+                    cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
+                    jz exitUpperColl
+                    
+                    call getUpperBlockStarts
+                    call clearMyBlock 
+                    mov checked,1                
+                    ;test
+                    mov ax, startx
+                    mov bx, startY
+                ;    call DrawPixel 
+
+                    mov upperCollFlag, 1
+                    
+                    exitUpperColl:
+                
+                    cmp upperCollFlag, 1
+                    jnz retUpperBlockLoop
+                    mov upperCollFlag, 0
+                    ; NEG  Shiftx
+                    NEG  ShiftY
+
+                    retUpperBlockLoop:
+                    ret
+
+checkUpperBlockColl         endp
+
+
+getLeftBlockStarts         proc
+                    mov ax, xc         ; xc of the ball
+                    add ax, S
+                    add ax, 1
+                    mov cx, mywidth
+                    add cx, space
+                    mov dx,0
+                    div cx
+                    mul cx
+                    mov startx, ax      ; startx has the right posit
+
+                    mov ax, dummy          ; xc of the ball
+                    mov cx, height      ; block width 
+                    add cx, space       ;div by block length and space in between => cx = 10 for our eg.
+                    mov dx, 0
+                    div cx              ;  AX = AX/CX and DX=AX % CX   
+                    mul cx              ; mul with the block width and space in between => now ax contain the startx for the block
+                    mov starty, ax          ; startغ has the right posit
+
+                    ret
+getLeftBlockStarts         endp
+
+
+checkLeftBlockColl         proc
+                    ; left collision
+
+                    mov cx, xc          ; left upper of ball
+                    mov dx, yc     
+                    add cx, S     
+                    add cx, 1     
+                    mov dummy, dx
+
+                    mov bh, 0               ; page number
+                    mov ah, 0DH             ; get background color into al
+                    int 10h                 ; get 
+                    cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
+                    jz skipFirstLeft
+                    
+                    call getLeftBlockStarts
+                    call clearMyBlock     
+                    mov checked,1     
+                    mov leftCollFlag, 1       
+
+                    ; for testing
+                    mov ax, startx
+                    mov bx, startY
+                ;    call DrawPixel 
+                    
+                    skipFirstLeft:
+                    ; check the end of the ball
+                    mov cx, xc          ; left upper of ball
+                    add cx, S
+                    add cx, 1
+                    mov dx, yc  
+                    add dx, S        
+                    mov dummy,dx
+
+                    mov bh, 0               ; page number
+                    mov ah, 0DH             ; get background color into al
+                    int 10h                 ; get 
+                    cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
+                    jz exitLeftColl
+                    
+                    call getLeftBlockStarts
+                    call clearMyBlock
+                        mov checked,1               
+                    ;test
+                    mov ax, startx
+                    mov bx, startY
+                ;    call DrawPixel 
+
+                    mov leftCollFlag, 1
+                    
+                    exitLeftColl:
+                
+                    cmp leftCollFlag, 1
+                    jnz retLeftBlockLoop
+                    mov leftCollFlag, 0
+                    NEG  Shiftx
+                    ; NEG  ShiftY
+                    retLeftBlockLoop:
+                    ret
+checkLeftBlockColl         endp
+
+
+getRightBlockStarts         proc
+                    mov ax, xc          ; xc of the ball
+                    mov cx, mywidth 
+                    add cx,space
+                    mov dx,0
+                    div cx
+                    mul cx
+                    mov startx, ax      ; startx has the right posit
+
+                    mov ax, dummy          ; xc of the ball
+                    mov cx, height      ; block width 
+                    add cx, space       ;div by block length and space in between => cx = 10 for our eg.
+                    mov dx, 0
+                    div cx              ;  AX = AX/CX and DX=AX % CX   
+                    mul cx              ; mul with the block width and space in between => now ax contain the startx for the block
+                    mov starty, ax      ; starty has the right posit
+
+                    ret
+getRightBlockStarts         endp
+
+
+checkRightBlockColl         proc
+                    ; right collision
+                    mov cx, xc
+                    mov dx, yc
+                    sub cx, 1
+                    mov dummy, dx
+
+                    mov bh, 0               ; page number
+                    mov ah, 0DH             ; get background color into al
+                    int 10h                 ; get 
+                    cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
+                    jz skipFirstRight
+                    
+                    call getRightBlockStarts
+                    call clearMyBlock
+                        mov checked,1        
+                    mov rightCollFlag, 1       
+
+                    ; for testing
+                    mov ax, startx
+                    mov bx, startY
+                ;    call DrawPixel 
+                    
+                    skipFirstRight:
+                    ; check the end of the ball
+                    mov cx, xc          ; left upper of ball 
+                    sub cx, 1
+                    mov dx, yc  
+                    add dx, S        
+                    mov dummy,dx
+
+                    mov bh, 0               ; page number
+                    mov ah, 0DH             ; get background color into al
+                    int 10h                 ; get 
+                    cmp al, BackGroundColor ; if the current pixel color not same as the background loop till end of ball width                    
+                    jz exitRightColl
+                    
+                    call getRightBlockStarts
+                    call clearMyBlock     
+                    mov checked,1          
+                    ;test
+                    mov ax, startx
+                    mov bx, startY
+                ;    call DrawPixel 
+
+                    mov rightCollFlag, 1
+                    
+                    exitRightColl:
+                
+                    cmp rightCollFlag, 1
+                    jnz retRightBlockLoop
+                    mov rightCollFlag, 0
+                    NEG  Shiftx
+                    ; NEG  ShiftY
+                    retRightBlockLoop:
+
+                    ret
+checkRightBlockColl         endp
 
 bricksCollision             proc 
 pusha
