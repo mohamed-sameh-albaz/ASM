@@ -26,7 +26,7 @@
     mywidth          dw 21
     height           dw 8
     space            dw 2
-    rows             db 6
+    rows             db 8
     cols             db 14
     color            db 14                                                             ;11
     end_x            dw 0
@@ -34,7 +34,7 @@
     starts_x         dw 0,23,46,69,92,115, 138, 161,184, 207, 230 ,253,276,299        ;===========================
                                                                                             ; --------------- ------------------
                                                                                             ;                 |cx 
-    starts_y         dw  20,30, 40, 50, 60,70
+    starts_y         dw  0, 10, 20,30, 40, 50, 60,70
     rl               db 1                                                              ;?
     cc               db 23                                                             ;?
     ;==========================================
@@ -45,7 +45,7 @@
     leftCollFlag    db 0
     rightCollFlag    db 0
     Xc               DW 160d                                                           ; X of Top Left Corner of the Ball
-    Yc               DW 5d                                                           ; Y of Top Left Corner of the Ball
+    Yc               DW 150d                                                           ; Y of Top Left Corner of the Ball
     S                DW 4d                                                             ; Side Length of Ball
     CBall            DW 0d
     ; X OF Center of the Ball (initial zero will be calculated)
@@ -1159,36 +1159,24 @@ MAIN PROC
                     
                     ;  CALL DrawBall              ;check the upper pixel of the ball is not as the background ;;;;;;;;;;;;;;;
 
+
                      mov  cx,0
     game:            
                     mov checked,0
-                     cmp  cx,1bffh
-                     jnz  Draw_break2
-                     cmp Yc , AX
-                    jz skipDown
-                    
+                    cmp  cx,1bffh
+                    jnz  Draw_break2
                     call checkDownBlockColl
-                    skipDown:
-                    mov ax, WindowHeight
-                    sub ax, Bidth
-                    sub ax, 70
-                    cmp yc, ax
+                    cmp yc, 190
                     jg skipUp
-                    cmp checked,1
-                    jz skipRight 
                     call checkUpperBlockColl
-                     skipUp:
+                    skipUp:
                     mov ax, WindowWidth
                     sub ax, S
                     cmp ax, xc
                     jz skipLeft
-                    cmp checked,1
-                    jz skipRight
                     call checkLeftBlockColl
                     skipLeft:
                     cmp xc, 0
-                    jz skipRight
-                    cmp checked,1
                     jz skipRight
                     call checkRightBlockColl
                     skipRight:
