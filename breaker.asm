@@ -2431,29 +2431,127 @@ MAIN PROC
                                   mov   dx, offset mode4
                                   int   21h
                                   ;===================wait for button to be pressed
+
+                                                                 
+                                mov   ah,2                              
+                                  mov   dh,5
+                                  mov   dl,22
+                                  int   10h
+                                  mov mode,0
+                                  reagain_butt:
                                   mov   ah,0
                                   int   16h
-                                  cmp al,"1"
-                                  jne select_mode2
-                                  mov mode,0
-                                  jmp select_modef
-                                  select_mode2:
-                                  cmp al,"2"
-                                  jne select_mode3
-                                  mov mode,1
-                                  jmp select_modef
-                                  select_mode3:
-                                  cmp al,"3"
-                                  jne select_mode4
-                                 mov mode,2
-                                 jmp select_modef
-                                 select_mode4:
-                                  cmp al,"4"
-                                  mov mode,3
-                                  select_modef:
+                                  cmp ah , 50h
+                                  jne chk_upper
+                                inc mode
+                                JMP valid_mode
+                                jmp  reagain_butt
+                                chk_upper:
+
+                                cmp ah , 48h
+                                jne chk_enter
+                                dec mode
+                                                                JMP valid_mode
+                                jmp  reagain_butt
+                                chk_enter:
+                                cmp ah , 1ch
+                                jne reagain_butt
+                                jmp selectiondone
+
+
+                                valid_mode:
+                                   cmp mode,4
+                                   je choice_1
+                                   cmp mode , 0
+                                   je choice_1
+                                   cmp mode,1
+                                   je choice_2
+                                    cmp mode,2
+                                   je choice_3
+                                    cmp mode,3
+                                   je choice_4
+                                   cmp mode ,0
+                                   jl choice_4
+                                   jmp selectiondone
+                                    choice_1:
+                                    mov mode,0
+                                                                      mov   ah,2
+                                  mov   dh,5
+                                  mov   dl,22
+                                  int   10h
+                                    jmp reagain_butt
+                                    choice_2:
+                                    mov mode,1
+                                                                      mov   ah,2
+                                  mov   dh,8
+                                  mov   dl,22
+                                  int   10h
+                                    jmp reagain_butt
+
+                                    choice_3:
+                                    mov mode,2
+                                                                      mov   ah,2
+                                  mov   dh,11
+                                  mov   dl,22
+                                  int   10h
+                                    jmp reagain_butt
+                                    choice_4:
+                                    mov mode,3
+                                                                      mov   ah,2
+                                  mov   dh,14
+                                  mov   dl,22
+                                  int   10h
+                                    jmp reagain_butt
+
+                                ;   cmp mode,4
+
+                                ;   jne select_mode2
+                                ;   mov mode,0
+                                ;   jmp select_modef
+                                ;   select_mode2:
+                                ;   cmp al,"2"
+                                ;   jne select_mode3
+                                ;   mov mode,1
+                                ;   jmp select_modef
+                                ;   select_mode3:
+                                ;   cmp al,"3"
+                                ;   jne select_mode4
+                                ;  mov mode,2
+                                ;  jmp select_modef
+                                ;  select_mode4:
+                                ;   cmp al,"4"
+                                ;   jne rechk_mode
+                                ;   mov mode,3
+                                ;   select_modef:
+
+
+
+
+                                ;   rechk_mode:
+                                ;   mov   ah,0
+                                ;   int   16h
+                                ;   cmp al,"1"
+                                ;   jne select_mode2
+                                ;   mov mode,0
+                                ;   jmp select_modef
+                                ;   select_mode2:
+                                ;   cmp al,"2"
+                                ;   jne select_mode3
+                                ;   mov mode,1
+                                ;   jmp select_modef
+                                ;   select_mode3:
+                                ;   cmp al,"3"
+                                ;   jne select_mode4
+                                ;  mov mode,2
+                                ;  jmp select_modef
+                                ;  select_mode4:
+                                ;   cmp al,"4"
+                                ;   jne rechk_mode
+                                ;   mov mode,3
+                                ;   select_modef:
     ;========================================================================
 
-
+                                    selectiondone:
 
                                    mov   ah,0
                                    mov   al,13h                                  ;13h
