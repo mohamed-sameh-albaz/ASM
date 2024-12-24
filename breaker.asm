@@ -9,9 +9,13 @@
     yorigin                       dw 192                                                        ;190
     x                             dw 120
     y                             dw 192
+    defaultx                     DW 120                                                  
+    defaulty                     DW 192    
     breaker_color                 db 5
     endx                          dw 170
     endy                          dw 197
+    defaultendx                     DW 170                                                  
+    defaultendy                     DW 197   
     CBreaker                      dw ?
     buttonpressed                 db ?
     breakersmothness              dw 5
@@ -24,9 +28,13 @@
     first_yorigin                 dw 192                                                        ;190
     first_x                       dw 120
     first_y                       dw 192
+    first_defaultx                 dw 120
+    first_defaulty                dw 192
     first_breaker                 db 5
     first_endx                    dw 170
     first_endy                    dw 197
+    first_defaultendx                 dw 170
+    first_defaultendy                dw 197
     first_CBreaker                dw ?
     first_buttonpressed           db ?
     first_breakersmothness        dw 5
@@ -37,12 +45,16 @@
     ;========================== second breaker data
     sec_lenght                    dw 50                                                         ;------
     sec_Bidth                     dw 5                                                          ; |
-    sec_yorigin                   dw 5                                                          ;190
+    sec_yorigin                   dw 3                                                          ;190
     sec_x                         dw 120
-    sec_y                         dw 5
+    sec_y                         dw 3
+    sec_defaultx                 dw 120
+    sec_defaulty                  dw 5
     sec_breaker                   db 5
     sec_endx                      dw 170
-    sec_endy                      dw 10
+    sec_endy                      dw 8
+    sec_defaultendx                 dw 170
+    sec_defaultendy                dw 8
     sec_CBreaker                  dw ?
     sec_buttonpressed             db ?
     sec_breakersmothness          dw 5
@@ -83,7 +95,8 @@
     leftCollFlag                  db 0
     rightCollFlag                 db 0
     Xc                            DW 160d                                                       ; X of Top Left Corner of the Ball
-    Yc                            DW 100d                                                       ; Y of Top Left Corner of the Ball
+    Yc                            DW 100d                                                        ; Y of Top Left Corner of the Ball
+                                              
     S                             DW 6d                                                         ; Side Length of Ball
     CBall                         DW 0d
     ;09ffh                                                       ; X OF Center of the Ball (initial zero will be calculated)
@@ -100,13 +113,14 @@
     DefaultShiftX    DW 5d
     DefaultShiftY                  DW 3d
 
+
     PrevTime                      DB 0
     ChangeShiftlow                dw 1
     ChangeShiftHigh               dw 3
     flagBallCollision             db 0
     ;================================================== first player ball
     first_ball_Xc                 DW 160d                                                       ; X of Top Left Corner of the 1St Ball
-    first_ball_Yc                 DW 30d                                                       ; Y of Top Left Corner of the 1St Ball
+    first_ball_Yc                 DW 100d                                                       ; Y of Top Left Corner of the 1St Ball
     first_ball_S                  DW 4d                                                         ; Side Length of 1St  Ball
     first_ball_CBall              DW 0d                                                         ; X OF Center of the 1St Ball (initial zero will be calculated)
     first_ball_BackGroundColor    DB 00h
@@ -168,6 +182,11 @@
     mode2                         db "Single Player Hard $"
     mode3                         db "Multi-Player Offline$"
     mode4                         db "Multi-Player Online$"
+
+    option_single                 db  " <<<  Controllers  >>>> $"
+    option_multi                 db  "  <<<Player 1 Controllers >>>$"
+    option1                       db "Left-Right Arrow$"
+    option2                       db "A  -  D   button$"
     ;================================================== send
     value                         db ?
     type1                         db ?
@@ -183,14 +202,16 @@
     ; sec_breaker_center dw ?
     ;================================================== first player
     first_heart                   db 3
+    default_heart                 db 3
     first_score                   db 0
     ;================================================== secound player
     sec_heart                     db 3
     sec_score                     db 0
     ;========================================================= mode
     mode                          db 3
-        first_player_butt             db 0
-    sec_player_butt             db 1
+    first_player_butt             db 0
+    sec_player_butt               db 1
+    curr_option                   db 0
 
     right_arrow  db 4DH 
     left_arrow   db 4BH 
@@ -198,7 +219,9 @@
     left_butt    db 1EH  
     curr_right   db ?
     curr_left    db ?
-    
+    flag_init_port db 0 
+    begin_game     db  0
+    pause_flag     db 0
     ; mode 0 single player in level 1
     ; mode 1 single player in level 2
     ; mode 2 multiplayer in level 3  same device
@@ -241,12 +264,26 @@ setBreaker1 PROC
                                    MOV   x             ,AX
                                    MOV   AX  ,first_y
                                    MOV   y             ,AX
+
+                                   MOV   AX ,first_defaultx
+                                   MOV   defaultx             ,AX
+                                   MOV   AX  ,first_defaulty
+                                   MOV   defaulty             ,AX
+
+
                                    MOV   AL   ,first_breaker
                                    MOV   breaker_color       ,AL
                                    MOV   AX  ,first_endx
                                    MOV   endx          ,AX
                                    MOV   AX ,first_endy
                                    MOV   endy          ,AX
+
+                                   MOV   AX  ,first_defaultendx
+                                   MOV   defaultendx          ,AX
+                                   MOV   AX ,first_defaultendy
+                                   MOV   defaultendy          ,AX
+
+
                                    MOV   AX   ,first_CBreaker
                                    MOV   CBreaker      ,AX
                                    MOV   AL  ,first_buttonpressed
@@ -277,12 +314,31 @@ setBreaker1 PROC
                                    MOV   x             ,AX
                                    MOV   AX  ,sec_y
                                    MOV   y             ,AX
+                                  MOV   AX ,sec_defaultx
+                                   MOV   defaultx             ,AX
+                                   MOV   AX  ,sec_defaulty
+                                   MOV   defaulty             ,AX
+
+
+
+
+
+
                                    MOV   AL   ,sec_breaker
                                    MOV   breaker_color       ,AL
                                    MOV   AX  ,sec_endx
                                    MOV   endx          ,AX
                                    MOV   AX ,sec_endy
                                    MOV   endy          ,AX
+
+                                   MOV   AX  ,sec_defaultendx
+                                   MOV   defaultendx          ,AX
+                                   MOV   AX ,sec_defaultendy
+                                   MOV   defaultendy          ,AX
+
+
+
+
                                    MOV   AX   ,sec_CBreaker
                                    MOV   CBreaker      ,AX
                                    MOV   AL  ,sec_buttonpressed
@@ -318,12 +374,36 @@ setBreaker2 PROC
                                    MOV   first_x          ,AX
                                    MOV   AX  ,y
                                    MOV   first_y          ,AX
+
+
+                                   MOV   AX , defaultx            
+                                  MOV  first_defaultx  ,AX
+
+                                   MOV   AX  , defaulty           
+                                   MOV  first_defaulty   ,AX
+
+
+
+
                                    MOV   AL   ,breaker_color
                                    MOV   first_breaker    ,AL
                                    MOV   AX  ,endx
                                    MOV   first_endx     ,AX
                                    MOV   AX ,endy
                                    MOV   first_endy      ,AX
+
+                               MOV   AX , defaultendx            
+                                  MOV  first_defaultendx  ,AX
+
+                                   MOV   AX  , defaultendy           
+                                   MOV  first_defaultendy   ,AX
+
+
+
+
+
+
+
                                    MOV   AX   ,CBreaker
                                    MOV   first_CBreaker   ,AX
                                    MOV   AL  ,buttonpressed
@@ -351,12 +431,30 @@ setBreaker2 PROC
                                    MOV   sec_x          ,AX
                                    MOV   AX  ,y
                                    MOV   sec_y          ,AX
+
+                               MOV   AX , defaultx            
+                                  MOV  sec_defaultx  ,AX
+
+                                   MOV   AX  , defaulty           
+                                   MOV  sec_defaulty   ,AX
+
+
                                    MOV   AL   ,breaker_color
                                    MOV   sec_breaker    ,AL
                                    MOV   AX  ,endx
                                    MOV   sec_endx     ,AX
                                    MOV   AX ,endy
                                    MOV   sec_endy      ,AX
+
+                               MOV   AX , defaultendx            
+                                  MOV  sec_defaultendx  ,AX
+
+                                   MOV   AX  , defaultendy           
+                                   MOV  sec_defaultendy   ,AX
+
+
+
+
                                    MOV   AX   ,CBreaker
                                    MOV   sec_CBreaker   ,AX
                                    MOV   AL  ,buttonpressed
@@ -995,8 +1093,9 @@ MovBall PROC
     ;  MOV  ShiftX , AX
     ;  MOV  AX , DefaultShiftY
     ;  MOV  ShiftY , AX
-                      
+                                  MOV begin_game ,1 
                                    CALL  RestartBall
+                                 
 
 
 
@@ -1917,9 +2016,23 @@ RestartBall PROC
                                     MOV  AX , y
                                     SUB AX ,10 
                                     MOV Yc , AX
+                                    cmp begin_game , 0
+                                    jz begGame
                                    DEC   first_heart
                                    CMP   first_heart,0
                                    JZ    game_over
+                                   begGame:
+                                   cmp mode , 1
+                                  JLE  wait_space
+                                   RET
+                                   wait_space:
+                                    MOV   Flag , 0
+                                   CALL DrawBall
+                                  rewait_space:
+                                   mov   ah,0
+                                   int   16h
+                                   cmp ah , 39H
+                                   JNZ rewait_space
                                    RET
     sec_ball_dec_hearts:        
                                   MOV determine_breaker_Flag,1
@@ -1931,9 +2044,12 @@ RestartBall PROC
                                     MOV  AX , y
                                     ADD AX ,10 
                                     MOV Yc , AX
+                                    cmp begin_game , 0
+                                    jz begGame2
                                    DEC   sec_heart
                                    CMP   sec_heart,0
                                    JZ    game_over
+                                                                      begGame2:
                                    RET
     game_over:                     
     ;  MOV  AX , 4C00H
@@ -2241,17 +2357,11 @@ Chat endp
     ;===========================
 MAIN PROC
     ; Initialize data segment
+    cmp flag_init_port , 1
+    jz   Menu
                                    MOV   AX, @DATA
                                    MOV   DS, AX
          
-                                   mov   ch,50
-                                   mov   cl,10
-
-
-                                   MOV   BH,1
-                                   mov   ah,0
-                                   mov   al,13h
-                                   int   10h
 
 
     ; initinalize COM
@@ -2271,6 +2381,16 @@ MAIN PROC
 
     ;jmp play
     Menu:                          
+                                    mov   ch,50
+                                   mov   cl,10
+
+
+                                   MOV   BH,1
+                                   mov   ah,0
+                                   mov   al,13h
+                                   int   10h
+
+
                                    call  draw_menu
                                    mov   ah,0
                                    int   16h
@@ -2496,6 +2616,129 @@ MAIN PROC
 
                                     selectiondone:
 
+
+                                  mov bh,0
+                                  mov   ah,0
+                                  mov   al,3
+                                  int   10h
+
+
+
+
+                                  mov   ah,2
+                                  mov   dh,3
+                                  mov   dl,20
+                                  int   10h
+    ;====
+                                 CMP mode,2 
+                                 JZ control_mode2
+                                  mov   ah, 9
+                                  mov   dx, offset option_single
+                                  int   21h
+
+                                    JMP cont_control
+                                control_mode2:
+
+                                  mov   ah, 9
+                                  mov   dx, offset option_multi
+                                  int   21h
+                                cont_control:
+
+
+    ;== move cureser
+                                  mov   ah,2
+                                  mov   dh,8
+                                  mov   dl,25
+                                  int   10h
+    ;====
+         
+                                  mov   ah, 9
+                                  mov   dx, offset option1
+                                  int   21h
+    ;== move cureser
+                                  mov   ah,2
+                                  mov   dh,11
+                                  mov   dl,25
+                                  int   10h
+    ;====
+                                  mov   ah, 9
+                                  mov   dx, offset option2
+                                  int   21h
+
+
+
+
+                                mov   ah,2                              
+                                  mov   dh,8
+                                  mov   dl,22
+                                  int   10h
+                                  mov curr_option,0
+                                  reagain_option:
+                                  mov   ah,0
+                                  int   16h
+                                  cmp ah , 50h
+                                  jne chk_upper_option
+                                inc curr_option
+                                JMP valid_option
+                                jmp  reagain_option
+                                chk_upper_option:
+
+                                cmp ah , 48h
+                                jne chk_enter_option
+                                dec curr_option
+                                                                JMP valid_option
+                                jmp  reagain_option
+                                chk_enter_option:
+                                cmp ah , 1ch
+                                jne reagain_option
+                                jmp selectiondone_option
+
+                                valid_option:
+
+
+   
+
+                                   cmp curr_option , 0
+                                   je choice_1_option
+
+                                   cmp curr_option,1
+                                   je choice_2_option
+
+                                    cmp curr_option,2
+                                   je choice_1_option
+
+                                   cmp curr_option ,0
+                                   jl choice_2_option
+                                   jmp selectiondone_option
+                                    choice_1_option:
+                                    mov curr_option,0
+                                 mov   ah,2
+                                  mov   dh,8
+                                  mov   dl,22
+                                  int   10h
+                                    jmp reagain_option
+                                    choice_2_option:
+                                    mov curr_option,1
+                                                                      mov   ah,2
+                                  mov   dh,11
+                                  mov   dl,22
+                                  int   10h
+                                    jmp reagain_option
+
+                                selectiondone_option:
+
+                                MOV    AL  ,curr_option
+                                MOV first_player_butt,AL
+
+
+                                MOV sec_player_butt,1
+
+                                CMP curr_option , 0 
+                                JZ cont_option_player2
+                                MOV sec_player_butt,0
+
+                                cont_option_player2:
+
                                    mov   ah,0
                                    mov   al,13h                                  ;13h
                                    int   10h
@@ -2578,6 +2821,14 @@ MAIN PROC
                                    call  draw_grid_loop
                                    mov   determine_breaker_Flag ,0
                                    CALL  setBreaker1
+                                                                       MOV AX , defaultx 
+                                    mov x , AX 
+                                     MOV AX , defaulty 
+                                    mov y, AX 
+                                    MOV AX , defaultendx 
+                                    mov endx , AX 
+                                    MOV AX , defaultendy 
+                                    mov endy , AX 
                                    call  draw_breaker
                                    CALL  setBreaker2
 
@@ -2586,14 +2837,37 @@ MAIN PROC
                                    JLE   singl_mode
                                    mov   determine_breaker_Flag ,1
                                    CALL  setBreaker1
+                                                                       MOV AX , defaultx 
+                                    mov x , AX 
+                                     MOV AX , defaulty 
+                                    mov y, AX 
+                                    MOV AX , defaultendx 
+                                    mov endx , AX 
+                                    MOV AX , defaultendy 
+                                    mov endy , AX 
                                    call  draw_breaker
                                    CALL  setBreaker2
     ;  call draw_breaker2
     ;  CALL DrawBall              ;check the upper pixel of the ball is not as the background ;;;;;;;;;;;;;;;
     singl_mode:                    
+
+                                
+
+
+
+            
+                                    
+                                    MOV total,0
+                                    MOV begin_game , 0
+                                    MOV  AL ,default_heart
+                                    MOV first_heart ,AL 
+                                    MOV sec_heart ,AL 
+                                    MOV first_score , 0 
+                                    MOV sec_score, 0 
                                    mov   cx,0
                                      MOV   determineFlag , 0
                                    CALL  setBall1
+                                
                                     CALL RestartBall
                                    CALL  setBall2
                                     MOV   determineFlag , 1
@@ -2678,6 +2952,7 @@ Mov_Breaker proc
                                    mov   dx,breakersmothness
                                    mov   ah,1
                                    int   16h
+                                   
                                    Jz    rel_no_key
                                    jmp   rel_cont_key
     rel_no_key:                    
@@ -2701,7 +2976,11 @@ Mov_Breaker proc
                                    int   16h
                                    mov   rl,1                                    ;;;;;;;;;;
                                    cmp   ah,curr_right
-                                   jz    movr
+                                   jz    rel_movr
+                                 jmp not_rel_mov
+                                   rel_movr:
+                                   jmp movr
+                                   not_rel_mov:
                                    cmp   ah,curr_left
                                    jnz   cont2
     ;jnz loop2
@@ -2710,6 +2989,58 @@ Mov_Breaker proc
                                    JMP   movr
 
     cont2:                         
+                                    cmp mode,3
+                                    je cont_mode_3
+                                    
+                                    cmp ah, 01H ; esc 
+                                    JE    escapetomenu
+                                    jmp cont_mode_3
+
+                                    escapetomenu:
+                                    ; mov flag_init_port , 1
+                                    
+                                    mov   cx,0
+                                   mov   dx,0
+                   
+                                     d_c211:                                                                      
+                                    ;call draw_line_H
+
+                                   mov   al,0          ;Pixel color
+                                   mov   ah,0ch
+                  
+                                 d_c222:                         
+                                   int   10h
+                                   inc   cx
+                                   cmp   cx,320
+                                   jnz   d_c222
+                                   inc   dx
+                                   mov   cx,0
+                                   cmp   dx,200
+                                   jnz   d_c211
+                                    jmp Menu
+
+
+                                  cont_mode_3:
+
+                                  cmp mode,3
+                                    je cont_mode_33
+                                    
+                                    cmp ah, 3BH ; f1 
+                                    JE    pausetomenu
+                                    jmp cont_mode_33
+
+                                    pausetomenu:
+                                    
+                                    ; mov pause_flag ,1
+                                    mov   ah,0
+                                   int   16h
+                                  cmp ah, 3BH ; f1 
+                                JNZ pausetomenu
+
+                                cont_mode_33:
+                                ;    mov pause_flag ,0
+
+
                                    CMP   mode ,2
                                    jne rel_nokey_1
                                    jmp rel_nokey_2
