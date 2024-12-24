@@ -101,7 +101,7 @@
     S                             DW 6d                                                         ; Side Length of Ball
     CBall                         DW 0d
     ;09ffh                                                       ; X OF Center of the Ball (initial zero will be calculated)
-    Speed                         dw 0bffh
+    Speed                         dw 2bffh
     BackGroundColor               DB 00h
     ballColor                     DB 0Fh
     Flag                          DB 0                                                          ;Flag to clear the ball in its previous location
@@ -209,6 +209,7 @@
     ;================================================== secound player
     sec_heart                     db 3
     sec_score                     dw 3242
+    increamentPoints              dw 10
     ;========================================================= mode
     mode                          db 3
     first_player_butt             db 0
@@ -3650,6 +3651,20 @@ checkDownBlockColl proc
                     ; if not grey
                     call getDownBlockStarts
                     call breakerLenPowerUp
+                    
+                    ; players score
+                    cmp determineFlag, 0
+                    jnz incPlayer2
+                    push ax
+                    mov ax, increamentPoints
+                    add first_score, ax
+                    pop ax
+                    incPlayer2:
+                    push ax
+                    mov ax, increamentPoints
+                    add sec_score, ax
+                    pop ax
+
                     call clearMyBlock  
                       mov checked,1        
                     mov lowerCollFlag, 1       
@@ -3679,6 +3694,20 @@ checkDownBlockColl proc
 
                     call getDownBlockStarts
                     call breakerLenPowerUp
+                    
+                    ; players score
+                    cmp determineFlag, 0
+                    jnz incPlayer2Last
+                    push ax
+                    mov ax, increamentPoints
+                    add first_score, ax
+                    pop ax
+                    incPlayer2Last:
+                    push ax
+                    mov ax, increamentPoints
+                    add sec_score, ax
+                    pop ax
+
                     call clearMyBlock   
                     mov checked,1            
                     ;test
