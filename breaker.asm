@@ -37,13 +37,13 @@
 
 
     ;========================== second breaker data
-    sec_lenght                    dw 20                                                         ;------
+    sec_lenght                    dw 50                                                         ;------
     sec_Bidth                     dw 5                                                          ; |
     sec_yorigin                   dw 5                                                          ;190
     sec_x                         dw 120
     sec_y                         dw 5
     sec_breaker                   db 5
-    sec_endx                      dw 140
+    sec_endx                      dw 170
     sec_endy                      dw 10
     sec_CBreaker                  dw ?
     sec_buttonpressed             db ?
@@ -207,7 +207,7 @@
     sec_score                     db 0
     ;========================================================= mode
     mode                          db 3
-        first_player_butt             db 1
+        first_player_butt             db 0
     sec_player_butt             db 1
 
     right_arrow  db 4DH 
@@ -787,6 +787,7 @@ MovBall PROC
                                    NEG   ShiftX
                                    MOV   AX , ShiftX
                                    ADD   Xc , AX
+                            
 
     ToY:                           
 
@@ -2041,30 +2042,48 @@ DrawBall ENDP
 
 
 RestartBall PROC
-                                   MOV   AX , WindowWidth
-                                   MOV   BX , 2
-                                   MOV   DX , 0
-                                   DIV   BX
+                                ;    MOV   AX , WindowWidth
+                                ;    MOV   BX , 2
+                                ;    MOV   DX , 0
+                                ;    DIV   BX
 
-                                   MOV   Xc , AX
+                                ;    MOV   Xc , AX
 
-                                   MOV   AX , WindowHeight
-                                   MOV   BX , 2
-                                   MOV   DX , 0
-                                   DIV   BX
+                                ;    MOV   AX , WindowHeight
+                                ;    MOV   BX , 2
+                                ;    MOV   DX , 0
+                                ;    DIV   BX
 
-                                   MOV   Yc , AX
+                                ;    MOV   Yc , AX
 
                                    MOV   ShiftX , 0
                                 MOV  AX , DefaultShiftY
                                  MOV  ShiftY , AX
                                    cmp   determineFlag , 1
                                    jz    sec_ball_dec_hearts
+                                     MOV determine_breaker_Flag,0
+                                     CALL  setBreaker1
+                                     call CenterBreaker
+                                     CALL  setBreaker2
+                                    MOV  AX , CBreaker
+                                    MOV  Xc,AX
+                                    MOV  AX , y
+                                    SUB AX ,10 
+                                    MOV Yc , AX
                                    DEC   first_heart
                                    CMP   first_heart,0
                                    JZ    game_over
                                    RET
-    sec_ball_dec_hearts:           
+    sec_ball_dec_hearts:        
+                                  MOV determine_breaker_Flag,1
+                                     CALL  setBreaker1
+                                     call CenterBreaker
+                                     CALL  setBreaker2
+                                    MOV  AX , CBreaker
+                                    MOV  Xc,AX
+                                    MOV  AX , y
+                                    ADD AX ,10 
+                                    MOV Yc , AX
                                    DEC   sec_heart
                                    CMP   sec_heart,0
                                    JZ    game_over
@@ -2701,6 +2720,14 @@ MAIN PROC
     ;  CALL DrawBall              ;check the upper pixel of the ball is not as the background ;;;;;;;;;;;;;;;
     singl_mode:                    
                                    mov   cx,0
+                                     MOV   determineFlag , 0
+                                   CALL  setBall1
+                                    CALL RestartBall
+                                   CALL  setBall2
+                                    MOV   determineFlag , 1
+                                   CALL  setBall1
+                                    CALL RestartBall
+                                   CALL  setBall2
     game:                          
                                    cmp   cx,Speed
                                    jnz   Draw_break2
