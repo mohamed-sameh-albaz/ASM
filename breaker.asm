@@ -3000,7 +3000,8 @@ MAIN PROC
                                    mov   dx, offset string_score1
                                    int   21h
 
-
+                                cmp mode, 2
+                                jl cont_score
                                    mov   ah,2
                                    mov   dh,12
                                    mov   dl,30
@@ -3659,11 +3660,13 @@ checkDownBlockColl proc
                     mov ax, increamentPoints
                     add first_score, ax
                     pop ax
+                    jmp contDownColl 
                     incPlayer2Down:
                     push ax
                     mov ax, increamentPoints
                     add sec_score, ax
                     pop ax
+                    contDownColl:
 
                     call clearMyBlock  
                       mov checked,1        
@@ -3702,11 +3705,13 @@ checkDownBlockColl proc
                     mov ax, increamentPoints
                     add first_score, ax
                     pop ax
+                    jmp contDownCollLast 
                     incPlayer2DownLast:
                     push ax
                     mov ax, increamentPoints
                     add sec_score, ax
                     pop ax
+                    contDownCollLast:
 
                     call clearMyBlock   
                     mov checked,1            
@@ -3782,12 +3787,14 @@ checkUpperBlockColl proc
                     mov ax, increamentPoints
                     add first_score, ax
                     pop ax
+                    jmp contUpperColl
                     incPlayer2Upper:
                     push ax
                     mov ax, increamentPoints
                     add sec_score, ax
                     pop ax
-                    
+                    contUpperColl:
+
                     call clearMyBlock 
                     mov checked,1         
                     mov upperCollFlag, 1       
@@ -3825,11 +3832,14 @@ checkUpperBlockColl proc
                     mov ax, increamentPoints
                     add first_score, ax
                     pop ax
+                    jmp contUpperCollLast
                     incPlayer2UpperLast:
                     push ax
                     mov ax, increamentPoints
                     add sec_score, ax
                     pop ax
+                    contUpperCollLast:
+
                     call clearMyBlock 
                     mov checked,1                
                     ;test
@@ -3904,11 +3914,13 @@ checkLeftBlockColl proc
                     mov ax, increamentPoints
                     add first_score, ax
                     pop ax
+                    jmp contLeftColl
                     incPlayer2Left:
                     push ax
                     mov ax, increamentPoints
                     add sec_score, ax
                     pop ax
+                    contLeftColl:
                     
                     call clearMyBlock     
                     mov checked,1     
@@ -3947,12 +3959,14 @@ checkLeftBlockColl proc
                     mov ax, increamentPoints
                     add first_score, ax
                     pop ax
+                    jmp contLeftCollLast
                     incPlayer2LeftLast:
                     push ax
                     mov ax, increamentPoints
                     add sec_score, ax
                     pop ax
-                    
+                    contLeftCollLast: 
+
                     call clearMyBlock
                         mov checked,1               
                     ;test
@@ -4021,12 +4035,14 @@ checkRightBlockColl proc
                     mov ax, increamentPoints
                     add first_score, ax
                     pop ax
+                    jmp contRightColl
                     incPlayer2Right:
                     push ax
                     mov ax, increamentPoints
                     add sec_score, ax
                     pop ax
-                    
+                    contRightColl:
+
                     ; for testing
                     mov ax, startx
                     mov bx, startY
@@ -4063,12 +4079,13 @@ checkRightBlockColl proc
                     mov ax, increamentPoints
                     add first_score, ax
                     pop ax
+                    jmp contRightCollLast
                     incPlayer2RightLast:
                     push ax
                     mov ax, increamentPoints
                     add sec_score, ax
                     pop ax
-
+                    contRightCollLast:
                     call clearMyBlock     
                     mov checked,1          
                     ;test
