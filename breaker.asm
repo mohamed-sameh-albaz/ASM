@@ -1006,12 +1006,6 @@ MovBall PROC
 
                      
     ;================================================================
-          
-
-
-
-
-
 
     ;JMP  CheckTime
     ;  MOV  AX , DefaultShiftX
