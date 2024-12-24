@@ -113,6 +113,11 @@
     WindowHeight                  DW 200d
     WindowHeight_start            DW 0                                                          ;
     ; ShiftX DW  0d
+    ShiftX           DW 2d
+    ShiftY           DW 3d
+    DefaultShiftX    DW 5d
+    DefaultShiftY                  DW 3d
+
     PrevTime                      DB 0
     ChangeShiftlow                dw 1
     ChangeShiftHigh               dw 3
@@ -131,12 +136,11 @@
     first_ball_WindowHeight_end   DW 200d                                                       ; end of window height of  first player
 
     ; ShiftX DW  0d
-    ShiftX           DW 2d
-    ShiftY           DW 3d
-    DefaultShiftX    DW 5d
+
     first_ball_ShiftX             DW 5d
     first_ball_ShiftY             DW 2d
     first_ball_DefaultShiftX      DW 5d
+    first_ball_DefaultShiftY       DW 2d
 
     ; PrevTime         DB 0
     first_ball_ChangeShiftlow     dw 1
@@ -159,7 +163,7 @@
     sec_ball_ShiftX               DW 5d
     sec_ball_ShiftY               DW 2d
     sec_ball_DefaultShiftX        DW 5d
-
+    sec_ball_DefaultShiftY             DW -2d
     ; PrevTime         DB 0
     sec_ball_ChangeShiftlow       dw 1
     sec_ball_ChangeShiftHigh      dw 3
@@ -203,6 +207,16 @@
     sec_score                     db 0
     ;========================================================= mode
     mode                          db 3
+        first_player_butt             db 1
+    sec_player_butt             db 1
+
+    right_arrow  db 4DH 
+    left_arrow   db 4BH 
+    right_butt   db 20H   
+    left_butt    db 1EH  
+    curr_right   db ?
+    curr_left    db ?
+    
     ; mode 0 single player in level 1
     ; mode 1 single player in level 2
     ; mode 2 multiplayer in level 3  same device
@@ -418,7 +432,8 @@ setBall1 PROC
                                    MOV   AX ,first_ball_DefaultShiftX
                                    MOV   DefaultShiftX    , AX
 
-
+                                                                       MOV   AX ,first_ball_DefaultShiftY
+                                   MOV   DefaultShiftY    , AX
                                    MOV   AX ,first_ball_ChangeShiftlow
                                    MOV   ChangeShiftlow  , AX
                                    MOV   AX ,first_ball_ChangeShiftHigh
@@ -460,6 +475,8 @@ setBall1 PROC
                                    MOV   AX ,sec_ball_DefaultShiftX
                                    MOV   DefaultShiftX    , AX
 
+                                                                      MOV   AX ,sec_ball_DefaultShiftY
+                                   MOV   DefaultShiftY    , AX
 
                                    MOV   AX ,sec_ball_ChangeShiftlow
                                    MOV   ChangeShiftlow  , AX
@@ -503,7 +520,8 @@ setBall2 PROC
                                    MOV   first_ball_ShiftY , AX
                                    MOV   AX , DefaultShiftX
                                    MOV   first_ball_DefaultShiftX   , AX
-
+                                   MOV   AX , DefaultShiftY
+                                   MOV   first_ball_DefaultShiftY   , AX
 
                                    MOV   AX , ChangeShiftlow
                                    MOV   first_ball_ChangeShiftlow  , AX
@@ -543,6 +561,8 @@ setBall2 PROC
                                    MOV   AX , DefaultShiftX
                                    MOV   sec_ball_DefaultShiftX   , AX
 
+                                   MOV   AX , DefaultShiftY
+                                   MOV   sec_ball_DefaultShiftY   , AX
 
                                    MOV   AX , ChangeShiftlow
                                    MOV   sec_ball_ChangeShiftlow  , AX
@@ -553,7 +573,6 @@ setBall2 PROC
 
                                    RET
 setBall2 ENDP
-
 
 
 
@@ -585,7 +604,6 @@ GetTime PROC
                                    int   21h
                                    RET
 GetTime ENDP
-
 MovBall PROC
     ; CheckTime:
     ;  CALL GetTime
@@ -612,6 +630,143 @@ MovBall PROC
                                    call  draw_breaker
                                    CALL  setBreaker2
     singl_mode_2:                  
+
+
+    ; Check if iam in right position
+    ;                                          MOV  AX , WindowHeight_start
+    ;                      CMP  Yc , AX
+    ;                         JL rel_jmp_down_collision_1
+    ;                         JMP cont_down_1
+    ;                          rel_jmp_down_collision_1:
+    ;                      JMP   ResetPosition
+    ;                      cont_down_1:
+    ;                     CMP flagBallCollision , 1
+    ;                     JZ rel_jmp_flag
+    ;                     JMP cont_flag
+    ;                     rel_jmp_flag:
+    ;                     jmp almost_right_postion
+    ;                     cont_flag:
+    ;                      MOV  AX , x
+    ;                      ADD  AX , lenght
+    ;                      CMP  Xc , AX
+    ;                      Jb   cont55_r1
+    ;                      jmp  almost_right_postion
+    ;     cont55_r1:
+                     
+    ;                      MOV  AX ,Xc
+    ;                      ADD  AX , S
+    ;                      CMP  AX , x
+    ;                      JG   ch1_r1
+    ;                      jmp  almost_right_postion
+    ;     ch1_r1:
+
+    ;                      MOV  AX , y
+    ;                      ADD  AX , Bidth
+    ;                      CMP  Yc ,AX
+    ;                      Jb   ch2_r1
+    ;                      jmp  almost_right_postion
+    ;     ch2_r1:
+    ;                      MOV  AX ,Yc
+    ;                      ADD  AX , S
+    ;                      CMP  AX , y
+    ;                      JG   ch3_r1
+    ;                      jmp  almost_right_postion
+    ;     ch3_r1:
+
+    ;     ; I am not in right position colliosn exists
+    ;                      call CenterBreaker
+    ;                      mov  ax, ShiftX
+    ;                      cmp  ax,0
+    ;                      ja   firstquarter_r1
+    ;                      NEG  ChangeShiftlow
+    ;                      NEG  ChangeShiftHigh
+    ;     firstquarter_r1:                                 ;here i increment by 3 as top decrease the slope of the ball
+    ;                      mov  ax,Xc
+    ;                      cmp  ax,firstQ
+    ;                      ja   secQ_r1
+    ;                      MOV  AX,ShiftX
+                      
+    ;                      add  ax,ChangeShiftHigh
+    ;                      add  Speed,200h
+    ;                      mov  ShiftX,ax
+    ;                     ;  call draw_breaker
+    ;                                          mov determine_breaker_Flag ,0
+    ;                                          CALL setBreaker1
+    ;                      call draw_breaker
+    ;                     CALL setBreaker2
+    ;                      JMP  neutralizeshift_r1
+    ;     secQ_r1:                                         ;its close to the center so i inc by 1 only
+    ;                      mov  ax,Xc
+    ;                      cmp  ax,CBreaker
+    ;                      ja   thirdQuarter_r1
+    ;                      mov  ax,ShiftX
+    ;                      add  ax,ChangeShiftlow
+    ;                      add  Speed,100h
+    ;                      mov  ShiftX,ax
+    ;                     ;  call draw_breaker
+    ;                                          mov determine_breaker_Flag ,0
+    ;                                          CALL setBreaker1
+    ;                      call draw_breaker
+    ;                     CALL setBreaker2
+    ;                      JMP  neutralizeshift_r1
+    ;     thirdQuarter_r1:                                 ;third same as sec
+    ;                      mov  ax,Xc
+    ;                      cmp  ax, thirdQ
+    ;                      ja   lastq_r1
+    ;                      mov  ax,ShiftX
+    ;                      add  ax,ChangeShiftlow
+    ;                      add  Speed,200h
+    ;                      mov  ShiftX,ax
+    ;                     ;  call draw_breaker
+    ;                                          mov determine_breaker_Flag ,0
+    ;                                          CALL setBreaker1
+    ;                      call draw_breaker
+    ;                     CALL setBreaker2
+    ;                      JMP  neutralizeshift_r1
+    ;     lastq_r1:                                        ;last part of the breaker same as the first
+    ;                      MOV  AX,ShiftX
+    ;                      add  ax,ChangeShiftHigh
+    ;                      add  Speed,100h
+    ;                      mov  ShiftX,ax
+    ;                     ;  call draw_breaker
+    ;                                          mov determine_breaker_Flag ,0
+    ;                                          CALL setBreaker1
+    ;                      call draw_breaker
+    ;                     CALL setBreaker2
+
+    ;     neutralizeshift_r1:
+
+    ;                      cmp  ShiftX,0
+    ;                      ja   reljmp_r1
+    ;                      NEG  ChangeShiftlow
+    ;                      NEG  ChangeShiftHigh
+
+    ;                     reljmp_r1 :
+    ;                     MOV flagBallCollision ,1
+    ;                      JMP  NegY
+
+
+    ;                     almost_right_postion:
+
+    ; MOV flagBallCollision ,0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                                    MOV   AX , ShiftX
                                    ADD   Xc , AX
@@ -648,12 +803,12 @@ MovBall PROC
     ; )
                                    mov   determine_breaker_Flag ,0
                                    CALL  setBreaker1
-                                   MOV   AX , WindowHeight_start
-                                   CMP   Yc , AX
-                                   JL    rel_jmp_down_collision_2
-                                   JMP   cont_down_2
-    rel_jmp_down_collision_2:      
-                                   JMP   ResetPosition
+    ;                                MOV   AX , WindowHeight_start
+    ;                                CMP   Yc , AX
+    ;                                JL    rel_jmp_down_collision_2
+    ;                                JMP   cont_down_2
+    ; rel_jmp_down_collision_2:      
+    ;                                JMP   ToY
     cont_down_2:                   
                                    MOV   AX , x
                                    ADD   AX , lenght
@@ -1018,6 +1173,7 @@ MovBall PROC
     ;  MOV  ShiftX , AX
                                    RET
 MovBall ENDP
+
 draw_curser proc
                                    mov   cx,curX
                                    mov   dx,curY
@@ -1762,24 +1918,74 @@ recive_data proc
             
     ; mov sec_breaker_color,0
     ; ; call draw_breaker2
-                                   mov   determine_breaker_Flag ,1
-                                   CALL  setBall1
-                                   MOV   al ,value
-                                   CBW
-                                   CMP   AX , 0
-                                   JB    negative
 
-                                   MOV   breakersmothness , AX
-                                   CALL  draw_breakerR
-                                   CALL  setBall2
-                                   popa
-                                   ret
-    negative:                      
-                                   MOV   negativebs ,AX
-                                   CALL  draw_breakerL
-                                   CALL  setBall2
-                                   popa
-                                   ret
+                                   mov   determine_breaker_Flag ,1
+                                   CALL  setBreaker1
+                                   MOV   al ,value
+                                   CBW                      
+                                   MOV   dx ,AX
+
+
+
+                                   mov   ax ,endx
+                                   add   ax,dx
+                                   mov   endx,ax
+                                   cmp   ax,320
+                                   ja    rightbound_1
+                                   cmp   ax,lenght
+                                   ja    inbound_1
+                                   mov   ax,lenght
+                                   mov   x,0
+                                   mov   endx,ax
+                   
+                                   jmp   cont3_1
+    rightbound_1:                    
+                                   mov   ax,lenght
+                                   mov   bx,320
+                                   sub   bx,ax
+                                   mov   endx,320
+    inbound_1:                       
+                                   mov   ax,endx
+                                   mov   bx,lenght
+                                   sub   ax,bx
+                                   mov   x,ax
+           
+               
+    cont3_1:                         
+    
+                                   cmp   value,0
+                                   jG   drawR_1
+                                   call  draw_breakerL
+                                                CALL  setBreaker2
+                                                 popa
+                                    ret
+    drawR_1:                         
+                                   call  draw_breakerR
+                                                CALL  setBreaker2
+                                                 popa
+                                                  ret
+
+
+
+
+    ;                                mov   determine_breaker_Flag ,1
+    ;                                CALL  setBall1
+    ;                                MOV   al ,value
+    ;                                CBW
+    ;                                CMP   AX , 0
+    ;                                JB    negative
+
+    ;                                MOV   breakersmothness , AX
+    ;                                CALL  draw_breakerR
+    ;                                CALL  setBreaker2
+                                  
+    ;                                ret
+    ; negative:                      
+    ;                                MOV   negativebs ,AX
+    ;                                CALL  draw_breakerL
+    ;                                CALL  setBreaker2
+    ;                                popa
+    ;                                ret
     ; mov sec_breaker_color,5
     ;=========================
     ; mov cx,sec_x
@@ -1850,7 +2056,8 @@ RestartBall PROC
                                    MOV   Yc , AX
 
                                    MOV   ShiftX , 0
-
+                                MOV  AX , DefaultShiftY
+                                 MOV  ShiftY , AX
                                    cmp   determineFlag , 1
                                    jz    sec_ball_dec_hearts
                                    DEC   first_heart
@@ -1867,7 +2074,6 @@ RestartBall PROC
     ;  INT  21H
 
 RestartBall ENDP
-
 
 
 CenterBall PROC
@@ -2578,14 +2784,26 @@ Mov_Breaker proc
     rel_no_key:                    
                                    JMP   no_key_1
     rel_cont_key:                  
+
+                                mov al , right_arrow
+                                 mov curr_right ,al
+                                mov al , left_arrow
+                                 mov curr_left , al
+                                  cmp first_player_butt ,0
+                                  jz cont_butt
+                              mov al , right_butt
+                                 mov curr_right ,al
+                                mov al , left_butt
+                                 mov curr_left , al
+                                  cont_butt:
                                    mov   buttonpressed,ah
                                    mov   determine_breaker_Flag,0
                                    mov   ah,0                                    ;  make it int 16/0
                                    int   16h
                                    mov   rl,1                                    ;;;;;;;;;;
-                                   cmp   ah,4Dh
+                                   cmp   ah,curr_right
                                    jz    movr
-                                   cmp   ah,4Bh
+                                   cmp   ah,curr_left
                                    jnz   cont2
     ;jnz loop2
                                    mov   dx,negativebs
@@ -2594,11 +2812,29 @@ Mov_Breaker proc
 
     cont2:                         
                                    CMP   mode ,2
-                                   JNE   no_key_1
+                                   jne rel_nokey_1
+                                   jmp rel_nokey_2
+                                    rel_nokey_1:
+                                   jmp   no_key_1
+                                   rel_nokey_2:
+                                mov al , right_arrow
+                                 mov curr_right ,al
+                                mov al , left_arrow
+                                 mov curr_left , al
+                                  cmp sec_player_butt ,0
+                                  jz cont_butt_2
+                              mov al , right_butt
+                                 mov curr_right ,al
+                                mov al , left_butt
+                                 mov curr_left , al
+                                  cont_butt_2:
+
+
+
                                    mov   determine_breaker_Flag,1
-                                   cmp   ah,20h
+                                   cmp   ah,curr_right
                                    jz    movr
-                                   cmp   ah,1Eh
+                                   cmp   ah,curr_left
                                    jnz   no_key_1
                                    mov   dx,negativebs
                                    mov   rl,0
@@ -2615,6 +2851,8 @@ Mov_Breaker proc
                                    call  send_data
                                    popa
     not_mode_3:                    
+
+    ; endx+somth
                                    mov   ax ,endx
                                    add   ax,dx
                                    mov   endx,ax
