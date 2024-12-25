@@ -5,6 +5,7 @@
     ;========================== breaker data
     determine_breaker_Flag        db 0                                                          ; To know which Breaker will be set
     lenght                        dw 50                                                         ;------
+    default_lenght                 dw 50                                                         ;------
     Bidth                         dw 5                                                          ; |
     yorigin                       dw 192                                                        ;190
     x                             dw 120
@@ -12,6 +13,7 @@
     defaultx                     DW 120                                                  
     defaulty                     DW 192    
     breaker_color                 db 5
+    default_breaker_color         db 5
     endx                          dw 170
     endy                          dw 197
     defaultendx                     DW 170                                                  
@@ -84,10 +86,19 @@
     
     lvl                           db 1
     
-    total                         db 0
+    total                         db 0          ; increase breaker length
+    total2                        db 0          ; for fire ball powerup
+    total3                        db 0          ; decrease breaker lenght
     grey_block                    db 8
     red_block                     db 4
     green_block                   db 10
+    greenFlag                     db 0
+    cntIncBreaker                 db 100
+    defaultIncBreaker             db 100 
+    orange_block                  db 0Eh
+    fire                          db 0
+    cntFire                       db 100
+    defaultCntFire                db 100
     ;==========================================     ;Ball
     determineFlag                 db 0                                                          ; To know which ball will be set
     dummy                         dw ?
@@ -101,7 +112,7 @@
     S                             DW 6d                                                         ; Side Length of Ball
     CBall                         DW 0d
     ;09ffh                                                       ; X OF Center of the Ball (initial zero will be calculated)
-    Speed                         dw 2bffh
+    Speed                         dw 0bffh
     BackGroundColor               DB 00h
     ballColor                     DB 0Fh
     Flag                          DB 0                                                          ;Flag to clear the ball in its previous location
@@ -2856,6 +2867,8 @@ MAIN PROC
                                     mov endx , AX 
                                     MOV AX , defaultendy 
                                     mov endy , AX 
+                                    mov ax, default_lenght
+                                    mov lenght, ax
                                    call  draw_breaker
                                    CALL  setBreaker2
 
@@ -2885,6 +2898,20 @@ MAIN PROC
             
                                     
                                     MOV total,0
+                                    mov fire, 0
+                                    mov al, defaultCntFire
+                                    mov cntFire, al
+                                    
+                                    cmp greenFlag, 0
+                                    JZ resetGreenFlag
+                                    
+
+                                    
+                                    resetGreenFlag:
+                                    mov greenFlag, 0
+                                    mov al, defaultIncBreaker
+                                    mov cntIncBreaker, al
+
                                     MOV begin_game , 0
                                     MOV  AL ,default_heart
                                     MOV first_heart ,AL 
@@ -2902,9 +2929,52 @@ MAIN PROC
                                    CALL  setBall2
     game:                          
                                    cmp   cx,Speed
-                                   jnz   Draw_break2
+
+                                   jnz dummyFlag
+                                   jmp dummyFlag2
+                                   dummyFlag:
+                                   jmp Draw_break2
+                                    dummyFlag2:
+
+                                    ; check for fire powerUps
+                                   cmp fire, 1
+                                   jnz contAfterPowerUp
+                                   dec cntFire
+                                   cmp cntFire, 0
+                                   jge contAfterPowerUp 
+                                   mov al, defaultCntFire
+                                   mov cntFire, al
+                                   mov fire, 0
+    ; first ball            
+                                    contAfterPowerUp:
+
+                                    ; check for increase breaker power up
+                                   cmp greenFlag, 1
+                                   jnz contAfterIncPowerUp
+                                   dec cntIncBreaker
+                                   cmp cntIncBreaker, 0
+                                   jge contAfterIncPowerUp 
+                                   mov al, defaultIncBreaker
+                                   mov cntIncBreaker, al
+                                   mov greenFlag, 0
+
+                                   MOV determineFlag ,0
+                                    CALL setBreaker1
+                                    mov breaker_color, 0
+                                    call draw_breaker
+                                    add x, 20
+                                    sub endx, 20
+                                    sub lenght, 40
+                                    mov al, default_breaker_color
+                                    mov breaker_color, al
+                                    call draw_breaker
+                                    CALL setBreaker2
                                    
-    ; first ball
+                                   
+                                   
+    ; first ball            
+                                    contAfterIncPowerUp:
+
                                    MOV   determineFlag , 0
                                    CALL  setBall1
                                    CALL  MovBall
@@ -3385,7 +3455,7 @@ draw_breaker proc
                     
                                    mov   cx,x                                    ;Column
                                    mov   dx,y                                    ;Row
-                                   mov   al,5                                    ;Pixel color
+                                   mov   al,breaker_color                                    ;Pixel color
                                    mov   ah,0ch                                  ;Draw Pixel Command
     back:                          int   10h
                                    inc   cx
@@ -3531,9 +3601,19 @@ myblock proc
     ;;;;;;;;;;;;;;;;;power up
                                    cmp   lvl,0
                                    jnz   start_draw
-                                   cmp   total,134
+                                   cmp   total,133
+                                   jnz   powerUpLabel
+                                   mov dl, green_block
+                                   mov   color, dl
+                powerUpLabel:
+
+    ;;;;;;;;;;;;;;;;;power up
+                                   cmp   lvl,0
                                    jnz   start_draw
-                                   mov   color,10
+                                   cmp   total,100
+                                   jnz   start_draw
+                                   mov dl, orange_block
+                                   mov   color, dl
                      
 
 
@@ -3725,7 +3805,11 @@ checkDownBlockColl proc
     exitDownColl:                  
                 
                                    cmp   lowerCollFlag, 1
-                                   jnz   retLowerBlockLoop
+                                jnZ   retLowerBlockLoop
+                                   cmp   fire, 0    ; if 1 zero flag = 1
+                                jnZ   retLowerBlockLoop
+
+                                ;    jnz   retLowerBlockLoop
                                    mov   lowerCollFlag, 0
     ; NEG  Shiftx
                                    NEG   ShiftY
@@ -3853,6 +3937,8 @@ checkUpperBlockColl proc
                 
                                    cmp   upperCollFlag, 1
                                    jnz   retUpperBlockLoop
+                                cmp   fire, 0
+                                jnZ   retUpperBlockLoop
                                    mov   upperCollFlag, 0
     ; NEG  Shiftx
                                    NEG   ShiftY
@@ -3978,9 +4064,11 @@ checkLeftBlockColl proc
                     
     exitLeftColl:                  
                 
-                                   cmp   leftCollFlag, 1
-                                   jnz   retLeftBlockLoop
-                                   mov   leftCollFlag, 0
+                                ;    cmp   leftCollFlag, 1
+                                ;    jnz   retLeftBlockLoop
+                                ;    mov   leftCollFlag, 0
+                                cmp   fire, 1 
+                                jZ   retLeftBlockLoop
                                    NEG   Shiftx
     ; NEG  ShiftY
     retLeftBlockLoop:              
@@ -4097,9 +4185,11 @@ checkRightBlockColl proc
                     
     exitRightColl:                 
                 
-                                   cmp   rightCollFlag, 1
-                                   jnz   retRightBlockLoop
-                                   mov   rightCollFlag, 0
+                                ;    cmp   rightCollFlag, 1
+                                ;    jnz   retRightBlockLoop
+                                ;    mov   rightCollFlag, 0
+                                cmp   fire, 1
+                                jZ   retRightBlockLoop
                                    NEG   Shiftx
     ; NEG  ShiftY
     retRightBlockLoop:             
@@ -4153,16 +4243,43 @@ breakerLenPowerUp           proc
                     mov ah, 0DH             ; get background color into al
                     int 10h                 ; get 
                     cmp al, green_block ; if the current pixel color not same as the background loop till end of ball width
-                    jnz exitBreakerPowerUp
-                    
+                    jnz nxtPowerUp
+                    push ax
                     
                     MOV determineFlag ,0
+                    mov greenFlag, 1
                     CALL setBreaker1
                     sub x, 20
                     add endx, 20
                     add lenght, 40
                     call draw_breaker
                     CALL setBreaker2
+                    
+                    pop ax                    
+                    nxtPowerUp:
+                    cmp al, orange_block
+                    jnz exitBreakerPowerUp
+                    mov   cx,0
+                                   mov   dx,0
+                   
+    ;                                 d_c214:            
+    ;                                mov   al,0                                  ;Pixel color
+    ;                                mov   ah,0ch
+                  
+    ; d_c224:                         
+    ;                                int   10h
+    ;                                inc   cx
+    ;                                cmp   cx,320
+    ;                                jnz   d_c224
+    ;                                inc   dx
+    ;                                mov   cx,0
+    ;                                cmp   dx,200
+    ;                                jnz   d_c214
+                    mov fire, 1
+                    ; mov rightCollFlag, 0
+                    ; mov leftCollFlag, 0
+                    ; mov lowerCollFlag, 0
+                    ; mov CollFlag, 0
                     
                     exitBreakerPowerUp:
                     ret
