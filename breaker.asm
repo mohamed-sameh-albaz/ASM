@@ -3842,7 +3842,7 @@ myblock proc
     ;;;;;;;;;;;;;;;;;power up
                                    cmp   lvl,0
                                    jnz   start_draw
-                                   cmp   total,133
+                                   cmp   total,35
                                    jnz   powerUpLabel
                                    mov dl, green_block
                                    mov   color, dl
