@@ -993,7 +993,7 @@ MovBall PROC
                                    cmp   ax,0
                                    jb    fristq_cont
                                    
-                                   add   ax,ChangeShiftHigh
+                                   sub   ax,ChangeShiftHigh
                     
                                    jmp   fristq_cont2
     fristq_cont:                   
@@ -3532,7 +3532,7 @@ Mov_Breaker proc
                                    mov   value, dl
                                    cmp mode , 4 
                                    je mode_4_notneg
-                                   neg   value     
+                                   ;neg   value     
                                    mode_4_notneg:                              ;;;;;;;;;;;;;;;;;;;send shift value
                                    call  send_data
                                    popa
