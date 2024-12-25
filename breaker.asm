@@ -122,12 +122,12 @@
     red_block                     db 4
     green_block                   db 10
     greenFlag                     db 0
-    cntIncBreaker                 db 100
-    defaultIncBreaker             db 100 
+    cntIncBreaker                 db 150
+    defaultIncBreaker             db 150 
     orange_block                  db 0Eh
     fire                          db 0
-    cntFire                       db 100
-    defaultCntFire                db 100
+    cntFire                       db 150
+    defaultCntFire                db 150
     ;==========================================     ;Ball
     determineFlag                 db 0                                                          ; To know which ball will be set
     dummy                         dw ?
@@ -141,7 +141,7 @@
     S                             DW 4d                                                         ; Side Length of Ball
     CBall                         DW 0d
     ;09ffh                                                       ; X OF Center of the Ball (initial zero will be calculated)
-    Speed                         dw 2bffh
+    Speed                         dw 0bffh
     BackGroundColor               DB 00h
     ballColor                     DB 0Fh
     Flag                          DB 0                                                          ;Flag to clear the ball in its previous location
@@ -2553,6 +2553,7 @@ correct_mode_chatt:
                                    mov   bh,0
                                    mov   ah,2
                                    int   10h
+                                   
 
     ;print byte
                                    mov   ah,9                                    ;Display
