@@ -244,10 +244,10 @@
     ;================================================== first player
     first_heart                   db 3
     default_heart                 db 3
-    first_score                   dw 12
+    first_score                   dw 0
     ;================================================== secound player
     sec_heart                     db 3
-    sec_score                     dw 3242
+    sec_score                     dw 0
     increamentPoints              dw 10
     ;========================================================= mode
     mode                          db 3
@@ -2768,8 +2768,17 @@ MAIN PROC
                                    jmp   reagain_butt
     chk_enter:                     
                                    cmp   ah , 1ch
-                                   jne   reagain_butt
-                                   jmp   selectiondone
+                                   je   selectiondone_rel
+
+                                   cmp   ah , 01h
+                                   jne selectiondone_rel1
+                                   jmp Menu
+
+                                   selectiondone_rel:
+                                   jmp selectiondone
+
+selectiondone_rel1: jmp reagain_butt
+                                
 
 
     valid_mode:                    
@@ -2950,8 +2959,18 @@ MAIN PROC
                                 jmp  reagain_option
                                 chk_enter_option:
                                 cmp ah , 1ch
-                                jne reagain_option
+                                je  control_flag1
+                                cmp ah , 01h
+                                je control_flag2
+                                jmp reagain_option
+                                control_flag2:
+                                jmp play
+
+control_flag1:
                                 jmp selectiondone_option
+
+
+
 
                                 valid_option:
 
@@ -3333,7 +3352,7 @@ MAIN PROC
                                    mov   ah,0
                                    int   16h
                       
-                                   cmp   ah,1ch
+                                   cmp   ah,01h
                                    jnz   cont_score
                                    jmp   Menu
 
