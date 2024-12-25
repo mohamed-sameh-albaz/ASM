@@ -4,19 +4,20 @@
 .data
     ;========================== breaker data
     determine_breaker_Flag        db 0                                                          ; To know which Breaker will be set
-    lenght                        dw 50                                                         ;------
-    default_lenght                 dw 50                                                         ;------
+    lenght                        dw 40                                                         ;------
+    default_lenght                 dw 40                                                         ;------
     Bidth                         dw 5                                                          ; |
     yorigin                       dw 192                                                        ;190
-    x                             dw 120
+    defaultyorigin                  dw 192 
+    x                             dw 140
     y                             dw 192
-    defaultx                     DW 120                                                  
+    defaultx                     DW 140                                                  
     defaulty                     DW 192    
     breaker_color                 db 5
     default_breaker_color         db 5
-    endx                          dw 170
+    endx                          dw 180
     endy                          dw 197
-    defaultendx                     DW 170                                                         
+    defaultendx                     DW 180                                                         
     defaultendy                     DW 197   
     CBreaker                      dw ?
     buttonpressed                 db ?
@@ -25,17 +26,18 @@
     firstQ                        dw ?
     thirdQ                        dw ?
     ;========================== first breaker data
-    first_lenght                  dw 50                                                         ;------
+    first_lenght                  dw 40                                                         ;------
     first_Bidth                   dw 5                                                          ; |
     first_yorigin                 dw 192                                                        ;190
-    first_x                       dw 120
+    first_defaultyorigin          dw 192 
+    first_x                       dw 140
     first_y                       dw 192
-    first_defaultx                 dw 120
+    first_defaultx                 dw 140
     first_defaulty                dw 192
     first_breaker                 db 5
-    first_endx                    dw 170
+    first_endx                    dw 180
     first_endy                    dw 197
-    first_defaultendx                 dw 170
+    first_defaultendx                 dw 180
     first_defaultendy                dw 197
     first_CBreaker                dw ?
     first_buttonpressed           db ?
@@ -43,19 +45,19 @@
     first_negativebs              dw -5
     first_firstQ                  dw ?
     first_thirdQ                  dw ?
-
     ;========================== second breaker data
-    sec_lenght                    dw 50                                                         ;------
+    sec_lenght                    dw 40                                                         ;------
     sec_Bidth                     dw 5                                                          ; |
     sec_yorigin                   dw 3                                                          ;190
-    sec_x                         dw 120
+    sec_defaultyorigin           dw 3 
+    sec_x                         dw 140
     sec_y                         dw 3
-    sec_defaultx                 dw 120
+    sec_defaultx                 dw 140
     sec_defaulty                  dw 5
     sec_breaker                   db 5
-    sec_endx                      dw 170
+    sec_endx                      dw 180
     sec_endy                      dw 8
-    sec_defaultendx                 dw 170
+    sec_defaultendx                 dw 180
     sec_defaultendy                dw 8
     sec_CBreaker                  dw ?
     sec_buttonpressed             db ?
@@ -64,7 +66,6 @@
     sec_firstQ                    dw ?
     sec_thirdQ                    dw ?
     sec_breaker_color             db 5
-
 
 
     ;========================== third breaker data
@@ -140,7 +141,7 @@
     S                             DW 4d                                                         ; Side Length of Ball
     CBall                         DW 0d
     ;09ffh                                                       ; X OF Center of the Ball (initial zero will be calculated)
-    Speed                         dw 0bffh
+    Speed                         dw 2bffh
     BackGroundColor               DB 00h
     ballColor                     DB 0Fh
     Flag                          DB 0                                                          ;Flag to clear the ball in its previous location
@@ -149,9 +150,9 @@
     WindowHeight_start            DW 0                                                          ;
     ; ShiftX DW  0d
     ShiftX                        DW 2d
-    ShiftY                        DW 3d
+    ShiftY                        DW 2d
     DefaultShiftX                 DW 2d
-    DefaultShiftY                 DW 3d
+    DefaultShiftY                 DW 2d
 
 
     PrevTime                      DB 0
@@ -175,9 +176,9 @@
     ; ShiftX DW  0d
 
     first_ball_ShiftX             DW 2d
-    first_ball_ShiftY             DW 2d
+    first_ball_ShiftY             DW -2d
     first_ball_DefaultShiftX      DW 2d
-    first_ball_DefaultShiftY      DW 2d
+    first_ball_DefaultShiftY      DW -2d
 
     ; PrevTime         DB 0
     first_ball_ChangeShiftlow     dw 0
@@ -197,10 +198,10 @@
     sec_ball_WindowHeight_end     DW 200d                                                       ; end of window height of  second player
 
     ; ShiftX DW  0d
-    sec_ball_ShiftX               DW 2d
+    sec_ball_ShiftX               DW -2d
     sec_ball_ShiftY               DW 2d
     sec_ball_DefaultShiftX        DW -2d
-    sec_ball_DefaultShiftY        DW -2d
+    sec_ball_DefaultShiftY        DW 2d
     ; PrevTime         DB 0
     sec_ball_ChangeShiftlow       dw 0
     sec_ball_ChangeShiftHigh      dw 0
@@ -228,6 +229,7 @@
     option_multi                 db  "  <<<Player 1 Controllers >>>$"
     option1                       db "Left-Right Arrow$"
     option2                       db "A  -  D   button$"
+    message_online                db "Wait for other player press ESC to leave$"
     ;================================================== send
     value                         db ?
     type1                         db ?
@@ -254,6 +256,7 @@
     first_player_butt             db 0
     sec_player_butt               db 1
     curr_option                   db 0
+    prevmode                     db 9
 
     right_arrow  db 4DH 
     left_arrow   db 4BH 
@@ -319,7 +322,8 @@ setBreaker1 PROC
                                    MOV   defaultx             ,AX
                                    MOV   AX  ,first_defaulty
                                    MOV   defaulty             ,AX
-
+                                   MOV   AX  ,first_defaultyorigin
+                                   MOV       defaultyorigin    ,AX
 
                                    MOV   AL   ,first_breaker
                                    MOV   breaker_color       ,AL
@@ -386,7 +390,8 @@ setBreaker1 PROC
                                    MOV   AX ,sec_defaultendy
                                    MOV   defaultendy          ,AX
 
-
+                                   MOV   AX ,sec_defaultyorigin
+                                   MOV   defaultyorigin          ,AX
 
 
                                    MOV   AX   ,sec_CBreaker
@@ -432,7 +437,8 @@ setBreaker2 PROC
                                    MOV   AX  , defaulty           
                                    MOV  first_defaulty   ,AX
 
-
+                                   MOV   AX  , defaultyorigin           
+                                   MOV  first_defaultyorigin   ,AX
 
 
                                    MOV   AL   ,breaker_color
@@ -488,6 +494,8 @@ setBreaker2 PROC
                                    MOV   AX  , defaulty           
                                    MOV  sec_defaulty   ,AX
 
+                                   MOV   AX  , defaultyorigin           
+                                   MOV  sec_defaultyorigin   ,AX
 
                                    MOV   AL   ,breaker_color
                                    MOV   sec_breaker    ,AL
@@ -545,10 +553,10 @@ setBreaker3 PROC
                                    MOV   sec_x             ,AX
                                    MOV   AX  ,third_y
                                    MOV   sec_y             ,AX
-                                  MOV   AX ,third_defaultx
-                                   MOV   sec_defaultx             ,AX
-                                   MOV   AX  ,third_defaulty
-                                   MOV   sec_defaulty             ,AX
+                                ;   MOV   AX ,third_defaultx
+                                ;    MOV   sec_defaultx             ,AX
+                                ;    MOV   AX  ,third_defaulty
+                                ;    MOV   sec_defaulty             ,AX
 
 
 
@@ -562,10 +570,10 @@ setBreaker3 PROC
                                    MOV   AX ,third_endy
                                    MOV   sec_endy          ,AX
 
-                                   MOV   AX  ,third_defaultendx
-                                   MOV   sec_defaultendx          ,AX
-                                   MOV   AX ,third_defaultendy
-                                   MOV   sec_defaultendy          ,AX
+                                ;    MOV   AX  ,third_defaultendx
+                                ;    MOV   sec_defaultendx          ,AX
+                                ;    MOV   AX ,third_defaultendy
+                                ;    MOV   sec_defaultendy          ,AX
 
 
 
@@ -601,11 +609,11 @@ setBreaker3 PROC
                                    MOV   AX  ,sec_y
                                    MOV   third_y          ,AX
 
-                               MOV   AX , sec_defaultx            
-                                  MOV  third_defaultx  ,AX
+                            ;    MOV   AX , sec_defaultx            
+                            ;       MOV  third_defaultx  ,AX
 
-                                   MOV   AX  , sec_defaulty           
-                                   MOV  third_defaulty   ,AX
+                            ;        MOV   AX  , sec_defaulty           
+                            ;        MOV  third_defaulty   ,AX
 
 
                                    MOV   AL   ,sec_breaker
@@ -615,11 +623,11 @@ setBreaker3 PROC
                                    MOV   AX ,sec_endy
                                    MOV   third_endy      ,AX
 
-                               MOV   AX , sec_defaultendx            
-                                  MOV  third_defaultendx  ,AX
+                            ;    MOV   AX , sec_defaultendx            
+                            ;       MOV  third_defaultendx  ,AX
 
-                                   MOV   AX  , sec_defaultendy           
-                                   MOV  third_defaultendy   ,AX
+                            ;        MOV   AX  , sec_defaultendy           
+                            ;        MOV  third_defaultendy   ,AX
 
 
 
@@ -954,7 +962,7 @@ MovBall PROC
                                    MOV   AX ,Yc
                                    ADD   AX , S
                                    CMP   AX , y
-                                   JG    ch3
+                                   JGe    ch3
                                    jmp   check_second_breaker_collision
     ch3:                           
 
@@ -973,10 +981,14 @@ MovBall PROC
     ;  NEG  ChangeShiftHigh
     
     firstquarter:                  
+                                    cmp mode , 4 
+                                    jz rel_neutral1
+
                                    mov   ax,Shiftx                               ;here i increment by 3 as top decrease the slope of the ball
                                    cmp   ax,x_limit
                                    Jl    cont1_firstq
-
+                                   
+                                    rel_neutral1 :
                                    jmp   neutralizeshift
     cont1_firstq:                  
                                    mov   bx,x_limit
@@ -993,7 +1005,7 @@ MovBall PROC
                                    cmp   ax,0
                                    jb    fristq_cont
                                    
-                                   sub   ax,ChangeShiftHigh
+                                   add   ax,ChangeShiftHigh            ;;  sub  
                     
                                    jmp   fristq_cont2
     fristq_cont:                   
@@ -1034,6 +1046,8 @@ MovBall PROC
     lastq_cont:                    
                                    sub   ax,ChangeShiftHigh
                                    mov   ShiftX,ax
+                                ;    cmp mode , 4 
+                                ;    jne neutralizeshift
                                    NEG   ShiftX
     neutralizeshift:               
                                    mov   determine_breaker_Flag ,0
@@ -1099,7 +1113,7 @@ MovBall PROC
                                    MOV   AX ,Yc
                                    ADD   AX , S
                                    CMP   AX ,y
-                                   JG    ch3_2
+                                   JGe    ch3_2
                                    jmp   NotCollision
     ch3_2:                         
 
@@ -1126,11 +1140,14 @@ MovBall PROC
                                    ja    firstquarter_2
     ;  NEG  ChangeShiftlow
     ;  NEG  ChangeShiftHigh
-    firstquarter_2:                                                              ;here i increment by 3 as top decrease the slope of the ball
+firstquarter_2:                                                        
+                                    cmp mode , 4
+                                    jz rel_neutral2                                           ;here i increment by 3 as top decrease the slope of the ball
                                    mov   ax,Shiftx                               ;here i increment by 3 as top decrease the slope of the ball
                                    cmp   ax,x_limit
+                                   
                                    Jl    cont1_firstq2
-
+                                    rel_neutral2:
                                    jmp   neutralizeshift_2
     cont1_firstq2:                 
                                    mov   bx,x_limit
@@ -1187,7 +1204,7 @@ MovBall PROC
     lastq_cont_2:                  
                                    sub   ax,ChangeShiftHigh
                                    mov   ShiftX,ax
-
+                                     NEG   ShiftX
     neutralizeshift_2:             
                                    mov   determine_breaker_Flag ,1
                                    CALL  setBreaker1
@@ -2217,12 +2234,12 @@ RestartBall PROC
 
                                    MOV   Xc , AX
 
-                                   MOV   AX , WindowHeight
-                                   MOV   BX , 2
-                                   MOV   DX , 0
-                                   DIV   BX
+                                ;    MOV   AX , WindowHeight
+                                ;    MOV   BX , 2
+                                ;    MOV   DX , 0
+                                ;    DIV   BX
 
-                                   MOV   Yc , AX
+                                   MOV   Yc , 150
                                   cmp begin_game , 0
                                     jz begGame
                                    DEC   first_heart
@@ -2239,9 +2256,9 @@ mode_4_not:
 
 
 
-                                   MOV   ShiftX , 1
-                                   MOV   AX , DefaultShiftY
-                                   MOV   ShiftY , AX
+                                ;    MOV   ShiftX , 1
+                                ;    MOV   AX , DefaultShiftY
+                                ;    MOV   ShiftY , AX
                                    cmp   determineFlag , 1
                                    
                                    jz    sec_ball_dec_hearts
@@ -2385,6 +2402,120 @@ draw_line_H proc
 draw_line_H endp
 
 Chat proc
+
+
+
+
+
+  ;Set port configuration
+                                   mov   dx,3fbh
+                                   mov   al,00011011b
+                                   out   dx,al
+
+    ;===================
+    AGAIN_to_start_chatt:                                                              ;Check that Transmitter Holding Register is Empty
+                                   mov   dx , 3FDH                               ; Line Status Register
+                                   In    al , dx                                 ;Read Line Status
+                                   AND   al , 00100000b
+                                   Jz    AGAIN_to_start_chatt
+                  
+    ;If empty put the VALUE in Transmit data ;register
+                                   mov   dx , 3F8H                               ; Transmit data register
+                                   mov   al,11
+                                   out   dx , al
+    ;=======================================================================
+    pusha
+                                    mov   bh,0
+                                   mov   ah,0
+                                   mov   al,3
+                                   int   10h
+                                  mov   ah,2
+                                   mov   dh,11
+                                   mov   dl,25
+                                   int   10h
+                                    mov   ah, 9
+                                   mov   dx, offset message_online
+                                   int   21h
+
+
+popa
+   
+    CHK_to_start_chatt:          
+                                    mov ah , 1
+                                    int 16h
+                                    jz cont_online_chatt
+                                    cmp ah , 01h
+                                    jne cont_online_chatt
+
+                                    ;transmit  that I leave
+
+
+
+
+   AGAIN_to_start_esc_chatt:                                                              ;Check that Transmitter Holding Register is Empty
+                                   mov   dx , 3FDH                               ; Line Status Register
+                                   In    al , dx                                 ;Read Line Status
+                                   AND   al , 00100000b
+                                   Jz    AGAIN_to_start_esc_chatt
+                  
+    ;If empty put the VALUE in Transmit data ;register
+                                   mov   dx , 3F8H                               ; Transmit data register
+                                   mov   al,9
+                                   out   dx , al
+
+
+
+
+
+
+
+
+                                    jmp Menu
+                                    cont_online_chatt:
+                                    mov   dx , 3FDH                               ; Line Status Register
+                                   in    al , dx
+                                   AND   al , 1
+                                   JZ    CHK_to_start_chatt             ;whait for user 2 to connect
+                                                         
+                                    mov dx , 03F8H
+                                        in al , dx 
+                                    cmp al , 11  
+                                    jnz  save_prev_mode_chatt
+                                    jmp correct_mode_chatt
+                                    save_prev_mode_chatt:
+                                    jmp  Menu
+                                    mov   prevmode , al 
+                                   jmp    CHK_to_start_chatt                           ;to be same mode
+correct_mode_chatt:
+    ;===============================================================================
+
+
+
+  correct_mode_chk_chatt:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                    mov   ax,0600h
                                    mov   bh,07
                                    mov   cx,0
@@ -3046,7 +3177,17 @@ control_flag1:
                                    cmp   mode,3
                                    jge    cont_chooseLeve   ;je
                                    jmp   cont_chooseleve2
-    cont_chooseleve:               
+    cont_chooseleve:      
+
+pusha 
+mov al ,prevmode
+                cmp  mode,al
+                popa
+                je noneed_chk
+                jmp need_chk
+                noneed_chk:
+                jmp correct_mode
+                need_chk:
     ;====================================================================== send that u are ready
     ;Set port configuration
                                    mov   dx,3fbh
@@ -3062,16 +3203,89 @@ control_flag1:
                   
     ;If empty put the VALUE in Transmit data ;register
                                    mov   dx , 3F8H                               ; Transmit data register
-                                   mov   al,1
+                                   mov   al,mode
                                    out   dx , al
     ;=======================================================================
+    pusha
+                                    mov   bh,0
+                                   mov   ah,0
+                                   mov   al,3
+                                   int   10h
+                                  mov   ah,2
+                                   mov   dh,11
+                                   mov   dl,25
+                                   int   10h
+                                    mov   ah, 9
+                                   mov   dx, offset message_online
+                                   int   21h
+
+
+popa
    
-    CHK_to_start:                  mov   dx , 3FDH                               ; Line Status Register
+    CHK_to_start:          
+                                    mov ah , 1
+                                    int 16h
+                                    jz cont_online
+                                    cmp ah , 01h
+                                    jne cont_online
+
+                                    ;transmit  that I leave
+
+
+
+
+   AGAIN_to_start_esc:                                                              ;Check that Transmitter Holding Register is Empty
+                                   mov   dx , 3FDH                               ; Line Status Register
+                                   In    al , dx                                 ;Read Line Status
+                                   AND   al , 00100000b
+                                   Jz    AGAIN_to_start_esc
+                  
+    ;If empty put the VALUE in Transmit data ;register
+                                   mov   dx , 3F8H                               ; Transmit data register
+                                   mov   al,9
+                                   out   dx , al
+
+
+
+
+
+
+
+
+                                    jmp Menu
+                                    cont_online:
+                                    mov   dx , 3FDH                               ; Line Status Register
                                    in    al , dx
                                    AND   al , 1
-                                   JZ    CHK_to_start                            ;whait for user 2 to connect
-
+                                   JZ    CHK_to_start             ;whait for user 2 to connect
+                                                         
+                                    mov dx , 03F8H
+                                        in al , dx 
+                                    cmp al , mode  
+                                    jnz  save_prev_mode
+                                    jmp correct_mode
+                                    save_prev_mode:
+                                    jmp  Menu
+                                    mov   prevmode , al 
+                                   jmp    CHK_to_start                            ;to be same mode
+correct_mode:
     ;===============================================================================
+
+                                    pusha
+
+                                   mov   ah,0
+                                   mov   al,13h                                  ;13h
+                                   int   10h
+                                   mov   ah, 1Ah                                 ; BIOS function: Get Display Combination Code
+                                   int   10h
+
+                                   MOV   AH , 0Bh
+                                   MOV   BH , 00h
+                                   MOV   BL , BackGroundColor                    ; BackGround Color
+                                   int   10h
+popa
+
+  correct_mode_chk:
                                    mov   al,2
 
                                    cmp mode , 4 
@@ -3115,6 +3329,8 @@ control_flag1:
                                     mov endx , AX 
                                     MOV AX , defaultendy 
                                     mov endy , AX 
+                                                                        MOV AX , defaultyorigin 
+                                    mov yorigin , AX 
                                     mov ax, default_lenght
                                     mov lenght, ax
                                    call  draw_breaker
@@ -3127,10 +3343,11 @@ control_flag1:
                                     jne mode_4_det
                                     mov  determine_set_get_mode_4 ,0
                                     call setBreaker3
+                                    jmp singl_mode
                                     mode_4_det:
                                    mov   determine_breaker_Flag ,1
                                    CALL  setBreaker1
-                                                                       MOV AX , defaultx 
+                                     MOV AX , defaultx 
                                     mov x , AX 
                                      MOV AX , defaulty 
                                     mov y, AX 
@@ -3138,6 +3355,10 @@ control_flag1:
                                     mov endx , AX 
                                     MOV AX , defaultendy 
                                     mov endy , AX 
+                                    MOV AX , defaultyorigin 
+                                    mov yorigin , AX 
+                                    mov ax, default_lenght
+                                    mov lenght, ax
                                    call  draw_breaker
                                    CALL  setBreaker2
     ;  call draw_breaker2
@@ -3435,7 +3656,7 @@ Mov_Breaker proc
                                    not_rel_mov:
                                    cmp   ah,curr_left
                                    jnz   cont2
-    ;jnz loop2
+    ;jnz                        
                                    mov   dx,negativebs
                                    mov   rl,0
                                    JMP   movr
@@ -3532,7 +3753,7 @@ Mov_Breaker proc
                                    mov   value, dl
                                    cmp mode , 4 
                                    je mode_4_notneg
-                                   ;neg   value     
+                                   neg   value                  ;; commented it
                                    mode_4_notneg:                              ;;;;;;;;;;;;;;;;;;;send shift value
                                    call  send_data
                                    popa
