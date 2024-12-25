@@ -14,7 +14,7 @@
     breaker_color                 db 5
     endx                          dw 170
     endy                          dw 197
-    defaultendx                     DW 170                                                  
+    defaultendx                     DW 170                                                         
     defaultendy                     DW 197   
     CBreaker                      dw ?
     buttonpressed                 db ?
@@ -64,6 +64,34 @@
     sec_breaker_color             db 5
 
 
+
+    ;========================== third breaker data
+    determine_set_get_mode_4      db 0
+    third_lenght                  dw 50                                                         ;------
+    third_Bidth                   dw 5                                                          ; |
+    third_yorigin                 dw 192                                                        ;190
+    third_x                       dw 120
+    third_y                       dw 192
+    third_defaultx                 dw 120
+    third_defaulty                dw 192
+    third_breaker                 db 5
+    third_endx                    dw 170
+    third_endy                    dw 197
+    third_defaultendx                 dw 170
+    third_defaultendy                dw 197
+    third_CBreaker                dw ?
+    third_buttonpressed           db ?
+    third_breakersmothness        dw 5
+    third_negativebs              dw -5
+    third_firstQ                  dw ?
+    third_thirdQ                  dw ?
+
+
+
+
+
+
+
     ;======================================== ;blocks
     startx                        dw ?
     starty                        dw ?
@@ -98,7 +126,7 @@
     Xc                            DW 160d                                                       ; X of Top Left Corner of the Ball
     Yc                            DW 100d                                                        ; Y of Top Left Corner of the Ball
                                               
-    S                             DW 6d                                                         ; Side Length of Ball
+    S                             DW 4d                                                         ; Side Length of Ball
     CBall                         DW 0d
     ;09ffh                                                       ; X OF Center of the Ball (initial zero will be calculated)
     Speed                         dw 0bffh
@@ -138,7 +166,7 @@
     first_ball_ShiftX             DW 2d
     first_ball_ShiftY             DW 2d
     first_ball_DefaultShiftX      DW 2d
-    first_ball_DefaultShiftY      DW 3d
+    first_ball_DefaultShiftY      DW 2d
 
     ; PrevTime         DB 0
     first_ball_ChangeShiftlow     dw 0
@@ -161,7 +189,7 @@
     sec_ball_ShiftX               DW 2d
     sec_ball_ShiftY               DW 2d
     sec_ball_DefaultShiftX        DW -2d
-    sec_ball_DefaultShiftY        DW -3d
+    sec_ball_DefaultShiftY        DW -2d
     ; PrevTime         DB 0
     sec_ball_ChangeShiftlow       dw 0
     sec_ball_ChangeShiftHigh      dw 0
@@ -184,7 +212,7 @@
     mode2                         db "Single Player Hard $"
     mode3                         db "Multi-Player Offline$"
     mode4                         db "Multi-Player Online$"
-
+    mode5                         db "Multi-Player Online colloaboration $"
     option_single                 db  " <<<  Controllers  >>>> $"
     option_multi                 db  "  <<<Player 1 Controllers >>>$"
     option1                       db "Left-Right Arrow$"
@@ -480,6 +508,141 @@ setBreaker2 PROC
 
                                    RET
 setBreaker2 ENDP
+
+
+
+
+
+
+
+
+setBreaker3 PROC
+
+
+                                                   cmp    determine_set_get_mode_4  , 1
+                                   jz    sec_breaker_set_3
+
+
+                                   MOV   AX   , third_lenght
+                                   MOV   sec_lenght        ,AX
+                                   MOV   AX ,third_Bidth
+                                   MOV   sec_Bidth         ,AX
+                                   MOV   AX  ,third_yorigin
+                                   MOV   sec_yorigin       ,AX
+                                   MOV   AX ,third_x
+                                   MOV   sec_x             ,AX
+                                   MOV   AX  ,third_y
+                                   MOV   sec_y             ,AX
+                                  MOV   AX ,third_defaultx
+                                   MOV   sec_defaultx             ,AX
+                                   MOV   AX  ,third_defaulty
+                                   MOV   sec_defaulty             ,AX
+
+
+
+
+
+
+                                   MOV   AL   ,third_breaker
+                                   MOV   sec_breaker       ,AL
+                                   MOV   AX  ,third_endx
+                                   MOV   sec_endx          ,AX
+                                   MOV   AX ,third_endy
+                                   MOV   sec_endy          ,AX
+
+                                   MOV   AX  ,third_defaultendx
+                                   MOV   sec_defaultendx          ,AX
+                                   MOV   AX ,third_defaultendy
+                                   MOV   sec_defaultendy          ,AX
+
+
+
+
+                                   MOV   AX   ,third_CBreaker
+                                   MOV   sec_CBreaker      ,AX
+                                   MOV   AL  ,third_buttonpressed
+                                   MOV   sec_buttonpressed ,AL
+                                   MOV   AX ,third_breakersmothness
+                                   MOV   sec_breakersmothness,AX
+                                   MOV   AX  ,third_negativebs
+                                   MOV   sec_negativebs    ,AX
+                                   MOV   AX  ,third_firstQ
+                                   MOV   sec_firstQ        ,AX
+                                   MOV   AX  ,third_thirdQ
+                                   MOV   sec_thirdQ        ,AX
+
+                                   RET
+
+
+
+  sec_breaker_set_3: 
+
+                                   MOV   AX   , sec_lenght
+                                   MOV   third_lenght        ,AX
+                                   MOV   AX ,sec_Bidth
+                                   MOV   third_Bidth      ,AX
+    
+                                   MOV   AX  ,sec_yorigin
+                                   MOV   third_yorigin     ,AX
+                                   MOV   AX ,sec_x
+                                   MOV   third_x          ,AX
+                                   MOV   AX  ,sec_y
+                                   MOV   third_y          ,AX
+
+                               MOV   AX , sec_defaultx            
+                                  MOV  third_defaultx  ,AX
+
+                                   MOV   AX  , sec_defaulty           
+                                   MOV  third_defaulty   ,AX
+
+
+                                   MOV   AL   ,sec_breaker
+                                   MOV   third_breaker    ,AL
+                                   MOV   AX  ,sec_endx
+                                   MOV   third_endx     ,AX
+                                   MOV   AX ,sec_endy
+                                   MOV   third_endy      ,AX
+
+                               MOV   AX , sec_defaultendx            
+                                  MOV  third_defaultendx  ,AX
+
+                                   MOV   AX  , sec_defaultendy           
+                                   MOV  third_defaultendy   ,AX
+
+
+
+
+                                   MOV   AX   ,sec_CBreaker
+                                   MOV   third_CBreaker   ,AX
+                                   MOV   AL  ,sec_buttonpressed
+                                   MOV   third_buttonpressed ,AL
+                                   MOV   AX ,sec_breakersmothness
+                                   MOV   third_breakersmothness,AX
+                                   MOV   AX  ,  sec_negativebs
+                                   MOV   third_negativebs ,AX
+                                   MOV   AX  ,sec_firstQ
+                                   MOV   third_firstQ    ,AX
+                                   MOV   AX  ,sec_thirdQ
+                                   MOV   third_thirdQ    ,AX
+
+                                   RET
+
+
+
+
+setBreaker3 ENDP
+
+
+
+
+
+
+
+
+
+
+
+
 
 setBall1 PROC
                                    cmp   determineFlag , 1
@@ -2030,10 +2193,45 @@ RestartBall PROC
 
     ;    MOV   Yc , AX
 
+
+
+                                    cmp mode ,4 
+                                    jne mode_4_not
+
+                                   MOV   AX , WindowWidth
+                                   MOV   BX , 2
+                                   MOV   DX , 0
+                                   DIV   BX
+
+                                   MOV   Xc , AX
+
+                                   MOV   AX , WindowHeight
+                                   MOV   BX , 2
+                                   MOV   DX , 0
+                                   DIV   BX
+
+                                   MOV   Yc , AX
+                                  cmp begin_game , 0
+                                    jz begGame
+                                   DEC   first_heart
+                                   CMP   first_heart,0
+                                   jz  gameover_mode4
+                                    ret
+                                   gameover_mode4:
+                                   jmp    game_over
+                                ;    MOV   ShiftX , 0
+
+                                ret
+mode_4_not:
+
+
+
+
                                    MOV   ShiftX , 1
                                    MOV   AX , DefaultShiftY
                                    MOV   ShiftY , AX
                                    cmp   determineFlag , 1
+                                   
                                    jz    sec_ball_dec_hearts
                                      MOV determine_breaker_Flag,0
                                      CALL  setBreaker1
@@ -2519,6 +2717,20 @@ MAIN PROC
                                    mov   ah, 9
                                    mov   dx, offset mode4
                                    int   21h
+
+
+
+
+
+                                    ;== move cureser
+                                   mov   ah,2
+                                   mov   dh,17
+                                   mov   dl,25
+                                   int   10h
+    ;====
+                                   mov   ah, 9
+                                   mov   dx, offset mode5
+                                   int   21h
     ;===================wait for button to be pressed
 
                                                                  
@@ -2549,7 +2761,7 @@ MAIN PROC
 
 
     valid_mode:                    
-                                   cmp   mode,4
+                                   cmp   mode,5
                                    je    choice_1
                                    cmp   mode , 0
                                    je    choice_1
@@ -2559,8 +2771,10 @@ MAIN PROC
                                    je    choice_3
                                    cmp   mode,3
                                    je    choice_4
+                                  cmp   mode,4
+                                   je    choice_5
                                    cmp   mode ,0
-                                   jl    choice_4
+                                   jl    choice_5
                                    jmp   selectiondone
     choice_1:                      
                                    mov   mode,0
@@ -2588,6 +2802,14 @@ MAIN PROC
                                    mov   mode,3
                                    mov   ah,2
                                    mov   dh,14
+                                   mov   dl,22
+                                   int   10h
+                                   jmp   reagain_butt
+
+    choice_5:
+                                   mov   mode,4
+                                   mov   ah,2
+                                   mov   dh,17
                                    mov   dl,22
                                    int   10h
                                    jmp   reagain_butt
@@ -2791,7 +3013,7 @@ MAIN PROC
     ;======================================
                                    mov   al,mode
                                    cmp   mode,3
-                                   je    cont_chooseLeve
+                                   jge    cont_chooseLeve   ;je
                                    jmp   cont_chooseleve2
     cont_chooseleve:               
     ;====================================================================== send that u are ready
@@ -2820,10 +3042,17 @@ MAIN PROC
 
     ;===============================================================================
                                    mov   al,2
+
+                                   cmp mode , 4 
+                                   jne cont_chooseleve2
+                                   mov al ,4
     cont_chooseleve2:              
                                    mov   lvl,al
+                                   cmp lvl ,4 
+                                   jz mode_4_lvl
                                    cmp   lvl,0
                                    jnz   cmpAgain
+                                   mode_4_lvl:
                                    mov   rows,10
                                    mov   cols,14
                                    mov   starts_x,0
@@ -2861,6 +3090,11 @@ MAIN PROC
 
                                    CMP   mode ,1
                                    JLE   singl_mode
+                                    cmp mode , 4 
+                                    jne mode_4_det
+                                    mov  determine_set_get_mode_4 ,0
+                                    call setBreaker3
+                                    mode_4_det:
                                    mov   determine_breaker_Flag ,1
                                    CALL  setBreaker1
                                                                        MOV AX , defaultx 
@@ -2911,6 +3145,8 @@ MAIN PROC
                                    CALL  setBall2
                                    CMP   mode ,1
                                    JLE   singl_mode_1
+                                   cmp mode ,4 
+                                   je singl_mode_1
                                    MOV   determineFlag , 1
                                    CALL  setBall1
                                    CALL  MovBall
@@ -2929,6 +3165,8 @@ MAIN PROC
                 
                                    CMP   mode ,1
                                    JLE   singl_mode_22
+                                   cmp mode,4 
+                                   je singl_mode_22
                                    MOV   determineFlag , 1
                                    CALL  setBall1
                                   
@@ -3113,7 +3351,7 @@ Mov_Breaker proc
 
     cont2:                         
                                     cmp mode,3
-                                    je cont_mode_3
+                                    jge cont_mode_3     ;je
                                     
                                     cmp ah, 01H ; esc 
                                     JE    escapetomenu
@@ -3146,7 +3384,7 @@ Mov_Breaker proc
                                   cont_mode_3:
 
                                   cmp mode,3
-                                    je cont_mode_33
+                                    jge cont_mode_33                ;jg
                                     
                                     cmp ah, 3BH ; f1 
                                     JE    pausetomenu
@@ -3198,10 +3436,13 @@ Mov_Breaker proc
                                    CALL  setBreaker1
     
                                    cmp   mode , 3
-                                   JNE   not_mode_3
+                                   Jl   not_mode_3         ;jne
                                    pusha
                                    mov   value, dl
-                                   neg   value                                   ;;;;;;;;;;;;;;;;;;;send shift value
+                                   cmp mode , 4 
+                                   je mode_4_notneg
+                                   neg   value     
+                                   mode_4_notneg:                              ;;;;;;;;;;;;;;;;;;;send shift value
                                    call  send_data
                                    popa
     not_mode_3:                    
